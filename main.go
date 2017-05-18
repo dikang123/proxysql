@@ -1,34 +1,28 @@
 package main
 
 import (
+	"context"
+	"database/sql"
+	_ "github.com/go-sql-driver/mysql"
+	"github.com/pressly/chi"
+	"github.com/pressly/chi/middleware"
 	"log"
-	"proxysql-master/admin/servers"
-	"upper.io/db.v3/mysql"
+	"proxysql-master/admin/users"
 )
 
-var settings = mysql.ConnectionURL{
-	Host:     "172.18.7.204:6032",
-	User:     "admin",
-	Password: "admin",
-	Database: "stats",
-	Options:  map[string]string{"parseTime": "false"},
-}
-
 func main() {
-	sess, err := mysql.Open(settings)
+	db, err := sql.Open("mysql", "admin:admin@tcp(172.18.7.204:6032)/main?charset=utf8")
 	if err != nil {
-		log.Fatalf("db.Open(): %q\n", err)
+		log.Fatal("Open()", err)
 	}
+	defer db.Close()
 
-	defer sess.Close()
-	var proxysql_mysql_servers []servers.Servers
+	var proxysql_users users.Users
+	proxysql_users.Username = "tianlei2"
+	proxysql_users.Password = "111111"
 
-	err = sess.Collection("mysql_servers").Find().All(&proxysql_mysql_servers)
-	if err != nil {
-		log.Fatalf("Find(): %q\n", err)
-	}
-
-	for _, srvs := range proxysql_mysql_servers {
-		log.Printf("%#v\n", srvs)
-	}
+	proxysql_users.AddOneUser(db)
+	//proxysql_users.FindOneUserInfo(db)
+	users.FindAllUserInfo(db)
+	//proxysql_users.DeleteOneUser(db)
 }

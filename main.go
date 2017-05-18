@@ -33,6 +33,7 @@ func main() {
 	//proxysql_users.DeleteOneUser(db)
 
 	proxysql_servers.AddOneServers(db)
-	proxysql_servers.FindOneServersInfo(db)
-	servers.FindAllServerInfo(db)
+	//proxysql_servers.FindOneServersInfo(db)
+	proxysql_servers.DeleteOneServers(db)
+	//servers.FindAllServerInfo(db)
 }

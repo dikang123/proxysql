@@ -1,0 +1,2 @@
+ProxySQL restful api
+这个项目最终目标是输出管理ProxySQL的restful风格的api。

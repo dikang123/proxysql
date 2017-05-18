@@ -2,9 +2,9 @@ package cmd
 
 import (
 	"database/sql"
-	"fmt"
+	//	"fmt"
 	"log"
-	"os"
+	//	"os"
 )
 
 const (
@@ -106,7 +106,7 @@ func LoadUserToRuntime(db *sql.DB) {
 }
 
 func SaveUserToDisk(db *sql.DB) {
-	_, err := db.Query(CmdSaveUsertoDisk)
+	_, err := db.Query(CmdSaveUserToDisk)
 	if err != nil {
 		log.Fatal("SaveUserToDisk", err)
 	}

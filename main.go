@@ -7,6 +7,7 @@ import (
 	//	"github.com/pressly/chi"
 	//	"github.com/pressly/chi/middleware"
 	"log"
+	"proxysql-master/admin/cmd"
 	"proxysql-master/admin/servers"
 	"proxysql-master/admin/users"
 )
@@ -36,4 +37,6 @@ func main() {
 	//proxysql_servers.FindOneServersInfo(db)
 	proxysql_servers.DeleteOneServers(db)
 	//servers.FindAllServerInfo(db)
+	cmd.LoadUserToRuntime(db)
+	cmd.SaveUserToDisk(db)
 }

@@ -1,2 +1,6 @@
-ProxySQL restful api
-这个项目最终目标是输出管理ProxySQL的restful风格的api。
+# ProxySQL restful api
+
+### 1.介绍
+
+管理ProxySQL的restful风格的api。
+

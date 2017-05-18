@@ -45,6 +45,8 @@ const (
 	StmtUpdateOneServerWeight  = `UPDATE mysql_servers SET weight=%d WHERE hostgroup_id = %d AND hostname=%q AND port=%d`
 	StmtUpdateOneServerMc      = `UPDATE mysql_servers SET max_connections=%d WHERE hostgroup_id=%d AND hostname=%q AND port=%d`
 	StmtServerExists           = `SELECT count(*) FROM mysql_servers WHERE hostgroup_id=%d AND hostname=%q AND port=%d`
+	StmtFindOneServer          = `SELECT * FROM mysql_servers WHERE hostgroup_id=%d AND hostname=%q AND port=%d`
+	StmtFindAllServer          = `SELECT * FROM mysql_servers`
 )
 
 func (srvs *Servers) ServerExists(db *sql.DB) bool {
@@ -60,7 +62,7 @@ func (srvs *Servers) ServerExists(db *sql.DB) bool {
 			log.Fatal("ServerExists:", err)
 		}
 	}
-	if ServerExists == 0 {
+	if ServerCount == 0 {
 		return false
 	} else {
 		return true
@@ -143,4 +145,63 @@ func (srvs *Servers) UpdateOneServerMc(db *sql.DB) {
 			log.Fatal("UpdateOneServerMc:", err)
 		}
 	}
+}
+
+func (srvs *Servers) FindOneServersInfo(db *sql.DB) {
+	if isexist := srvs.ServerExists(db); isexist == true {
+		st := fmt.Sprintf(StmtFindOneServer, srvs.HostGroupId, srvs.HostName, srvs.Port)
+		rows, err := db.Query(st)
+		if err != nil {
+			log.Fatal("FindOneServerInfo:", err)
+		}
+		for rows.Next() {
+			err = rows.Scan(
+				&srvs.HostGroupId,
+				&srvs.HostName,
+				&srvs.Port,
+				&srvs.Status,
+				&srvs.Weight,
+				&srvs.Compression,
+				&srvs.MaxConnections,
+				&srvs.MaxReplicationLag,
+				&srvs.UseSsl,
+				&srvs.MaxLatencyMs,
+				&srvs.Comment,
+			)
+		}
+	} else {
+		log.Fatal("FindOneServerInfo: Server is not exists")
+	}
+	fmt.Fprintf(os.Stdout, "%#v\n", srvs)
+}
+
+func FindAllServerInfo(db *sql.DB) {
+	var allserver []Servers
+	var tmpserver Servers
+
+	rows, err := db.Query(StmtFindAllServer)
+	if err != nil {
+		log.Fatal("FindAllServerInfo:", err)
+	}
+
+	defer rows.Close()
+
+	for rows.Next() {
+		err = rows.Scan(
+			&tmpserver.HostGroupId,
+			&tmpserver.HostName,
+			&tmpserver.Port,
+			&tmpserver.Status,
+			&tmpserver.Weight,
+			&tmpserver.Compression,
+			&tmpserver.MaxConnections,
+			&tmpserver.MaxReplicationLag,
+			&tmpserver.UseSsl,
+			&tmpserver.MaxLatencyMs,
+			&tmpserver.Comment,
+		)
+		allserver = append(allserver, tmpserver)
+	}
+
+	fmt.Fprintf(os.Stdout, "%#v\n", allserver)
 }

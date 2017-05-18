@@ -7,6 +7,7 @@ import (
 	//	"github.com/pressly/chi"
 	//	"github.com/pressly/chi/middleware"
 	"log"
+	"proxysql-master/admin/servers"
 	"proxysql-master/admin/users"
 )
 
@@ -21,8 +22,17 @@ func main() {
 	proxysql_users.Username = "tianlei2"
 	proxysql_users.Password = "111111"
 
+	var proxysql_servers servers.Servers
+	proxysql_servers.HostGroupId = 3
+	proxysql_servers.HostName = "dn10"
+	proxysql_servers.Port = 3310
+
 	proxysql_users.AddOneUser(db)
 	//proxysql_users.FindOneUserInfo(db)
-	users.FindAllUserInfo(db)
+	//users.FindAllUserInfo(db)
 	//proxysql_users.DeleteOneUser(db)
+
+	proxysql_servers.AddOneServers(db)
+	proxysql_servers.FindOneServersInfo(db)
+	servers.FindAllServerInfo(db)
 }

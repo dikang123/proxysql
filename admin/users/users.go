@@ -15,7 +15,7 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
-	"os"
+	//	"os"
 )
 
 type Users struct {
@@ -70,18 +70,25 @@ func (users *Users) AddOneUser(db *sql.DB) int {
 		st := fmt.Sprintf(StmtAddOneUser, users.Username, users.Password)
 		_, err := db.Query(st)
 		if err != nil {
-			return 1
-			log.Fatal("AddOneUser:", err)
+			return 1 //add user failed
 		}
+		return 0
+	} else {
+		return 2 //username exists
 	}
-	return 0
 }
 
-func (users *Users) DeleteOneUser(db *sql.DB) {
-	st := fmt.Sprintf(StmtDeleteOneUser, users.Username)
-	_, err := db.Query(st)
-	if err != nil {
-		log.Fatal("DeleteOneUser:", err)
+func (users *Users) DeleteOneUser(db *sql.DB) int {
+	if isexist := users.UserExists(db); isexist == true {
+		st := fmt.Sprintf(StmtDeleteOneUser, users.Username)
+		_, err := db.Query(st)
+		if err != nil {
+			return 1 //delte failed
+		}
+		return 0 //delete success
+
+	} else {
+		return 2 //user exists
 	}
 }
 
@@ -133,7 +140,7 @@ func (users *Users) UpdateOneUserMc(db *sql.DB) {
 	}
 }
 
-func (users *Users) FindOneUserInfo(db *sql.DB) {
+func (users *Users) FindOneUserInfo(db *sql.DB) Users {
 	if isexist := users.UserExists(db); isexist == true {
 		st := fmt.Sprintf(StmtFindOneUserInfo, users.Username)
 		rows, err := db.Query(st)
@@ -157,10 +164,10 @@ func (users *Users) FindOneUserInfo(db *sql.DB) {
 	} else {
 		log.Fatal("UpdateOneUserMc: User is not exists")
 	}
-	fmt.Fprintf(os.Stdout, "%#v\n", users)
+	return *users
 }
 
-func FindAllUserInfo(db *sql.DB) {
+func FindAllUserInfo(db *sql.DB) []Users {
 	var alluser []Users
 	var tmpusr Users
 	rows, err := db.Query(StmtFindAllUserInfo)
@@ -186,5 +193,5 @@ func FindAllUserInfo(db *sql.DB) {
 		)
 		alluser = append(alluser, tmpusr)
 	}
-	fmt.Fprintf(os.Stdout, "%#v\n", alluser)
+	return alluser
 }

@@ -28,7 +28,7 @@ func main() {
 
 	pmapiv1.RegisterMiddleware()
 
-	pmapiv1.Apidb, err = sql.Open("mysql", "admin:admin@tcp(172.18.7.204:6032)/main?charset=utf8")
+	pmapiv1.Apidb, err = sql.Open("mysql", pmapiv1.PMdbi)
 	if err != nil {
 		log.Fatal("Open()", err)
 	}

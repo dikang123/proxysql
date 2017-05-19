@@ -2,7 +2,7 @@ package pmapi
 
 import (
 	"database/sql"
-	//"fmt"
+	"fmt"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/labstack/echo"
 	mw "github.com/labstack/echo/middleware"
@@ -11,14 +11,23 @@ import (
 )
 
 type PMApi struct {
+	PMuser  string
+	PMpass  string
+	PMhost  string
+	PMdb    string
+	PMdbi   string
 	Apidb   *sql.DB
 	ApiHost string
 	*echo.Echo
 }
 
+func (pmapi *PMApi) MakePMdbi() {
+	pmapi.PMdbi = fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=utf8", pmapi.PMuser, pmapi.PMpass, pmapi.PMhost, pmapi.PMdb)
+}
+
 func (pmapi *PMApi) RegisterMiddleware() {
-	pmapi.Use(mw.Logger())
-	pmapi.Use(mw.Recover())
+	pmapi.Echo.Use(mw.Logger())
+	pmapi.Echo.Use(mw.Recover())
 }
 
 func (pmapi *PMApi) DeleteOneUser(c echo.Context) error {

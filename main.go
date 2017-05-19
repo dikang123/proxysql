@@ -14,11 +14,8 @@ import (
 	//	"proxysql-master/admin/users"
 )
 
-var (
-	err error
-)
-
 func main() {
+	var err error
 	pmapiv1 := new(pmapi.PMApi)
 
 	pmapiv1.Echo = echo.New()

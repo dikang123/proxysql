@@ -19,8 +19,14 @@ func main() {
 	pmapiv1 := new(pmapi.PMApi)
 
 	pmapiv1.Echo = echo.New()
-	pmapiv1.RegisterMiddleware()
 	e := pmapiv1.Echo
+	pmapiv1.PMuser = "admin"
+	pmapiv1.PMpass = "admin"
+	pmapiv1.PMhost = "172.18.7.204:6032"
+	pmapiv1.PMdb = "main"
+	pmapiv1.MakePMdbi()
+
+	pmapiv1.RegisterMiddleware()
 
 	pmapiv1.Apidb, err = sql.Open("mysql", "admin:admin@tcp(172.18.7.204:6032)/main?charset=utf8")
 	if err != nil {

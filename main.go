@@ -2,15 +2,16 @@ package main
 
 import (
 	"database/sql"
-	"fmt"
+	//	"fmt"
 	_ "github.com/go-sql-driver/mysql"
-	"log"
-	//"proxysql-master/admin/cmd"
 	"github.com/labstack/echo"
-	"github.com/labstack/echo/middleware"
-	"net/http"
+	//	"github.com/labstack/echo/middleware"
+	"log"
+	//	"net/http"
+	"proxysql-master/pmapi"
 	//	"proxysql-master/admin/servers"
-	"proxysql-master/admin/users"
+	//"proxysql-master/admin/cmd"
+	//	"proxysql-master/admin/users"
 )
 
 var (
@@ -19,22 +20,23 @@ var (
 )
 
 func main() {
-	e := echo.New()
+	pmapiv1 := new(pmapi.PMApi)
 
-	e.Use(middleware.Logger())
-	e.Use(middleware.Recover())
+	pmapiv1.Echo = echo.New()
+	pmapiv1.RegisterMiddleware()
+	e := pmapiv1.Echo
 
-	db, err = sql.Open("mysql", "admin:admin@tcp(172.18.7.204:6032)/main?charset=utf8")
+	pmapiv1.Apidb, err = sql.Open("mysql", "admin:admin@tcp(172.18.7.204:6032)/main?charset=utf8")
 	if err != nil {
 		log.Fatal("Open()", err)
 	}
-	defer db.Close()
+	defer pmapiv1.Apidb.Close()
 
-	e.GET("/users", listAllUsers)
-	e.POST("/users", createUser)
-	e.GET("/users/:username", listOneUser)
+	e.GET("/users", pmapiv1.ListAllUsers)
+	e.POST("/users", pmapiv1.CreateUser)
+	e.GET("/users/:username", pmapiv1.ListOneUser)
 	//	e.PUT("/users/:username", updateUsers)
-	e.DELETE("/users/:username", deleteOneUser)
+	e.DELETE("/users/:username", pmapiv1.DeleteOneUser)
 
 	e.Logger.Fatal(e.Start(":3333"))
 }

@@ -1,14 +1,30 @@
-package api
+package pmapi
 
 import (
-	"fmt"
+	"database/sql"
+	//"fmt"
+	_ "github.com/go-sql-driver/mysql"
+	"github.com/labstack/echo"
+	mw "github.com/labstack/echo/middleware"
+	"net/http"
+	"proxysql-master/admin/users"
 )
 
-func deleteOneUser(c echo.Context) error {
+type PMApi struct {
+	Apidb   *sql.DB
+	ApiHost string
+	*echo.Echo
+}
+
+func (pmapi *PMApi) RegisterMiddleware() {
+	pmapi.Use(mw.Logger())
+	pmapi.Use(mw.Recover())
+}
+
+func (pmapi *PMApi) DeleteOneUser(c echo.Context) error {
 	user := new(users.Users)
 	user.Username = c.Param("username")
-	fmt.Println(user.Username)
-	dret := user.DeleteOneUser(db)
+	dret := user.DeleteOneUser((pmapi.Apidb))
 	switch dret {
 	case 0:
 		return c.JSON(http.StatusOK, user)
@@ -23,7 +39,7 @@ func deleteOneUser(c echo.Context) error {
 
 }
 
-func createUser(c echo.Context) error {
+func (pmapi *PMApi) CreateUser(c echo.Context) error {
 	args := struct {
 		UserName string `json:"username"`
 		PassWord string `json:"password"`
@@ -37,7 +53,7 @@ func createUser(c echo.Context) error {
 	user.Username = args.UserName
 	user.Password = args.PassWord
 
-	cret := user.AddOneUser(db)
+	cret := user.AddOneUser((pmapi.Apidb))
 	switch cret {
 	case 0:
 		return c.JSON(http.StatusCreated, user)
@@ -50,15 +66,15 @@ func createUser(c echo.Context) error {
 	}
 }
 
-func listOneUser(c echo.Context) error {
+func (pmapi *PMApi) ListOneUser(c echo.Context) error {
 	user := new(users.Users)
 	if err := c.Bind(user); err != nil {
 		return err
 	}
 	user.Username = c.Param("username")
-	return c.JSON(http.StatusOK, user.FindOneUserInfo(db))
+	return c.JSON(http.StatusOK, user.FindOneUserInfo((pmapi.Apidb)))
 }
 
-func listAllUsers(c echo.Context) error {
-	return c.JSON(http.StatusOK, users.FindAllUserInfo(db))
+func (pmapi *PMApi) ListAllUsers(c echo.Context) error {
+	return c.JSON(http.StatusOK, users.FindAllUserInfo((pmapi.Apidb)))
 }

@@ -15,7 +15,6 @@ import (
 )
 
 var (
-	db  *sql.DB
 	err error
 )
 

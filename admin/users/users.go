@@ -18,20 +18,22 @@ import (
 	//	"os"
 )
 
-type Users struct {
-	Username              string `db:"username" json:"username"`
-	Password              string `db:"password" json:"password"`
-	Active                uint64 `db:"active" json:"active"`
-	UseSsl                uint64 `db:"use_ssl" json:"use_ssl"`
-	DefaultHostgroup      uint64 `db:"default_hostgroup" json:"default_hostgroup"`
-	DefaultSchema         string `db:"default_schema" json:"default_schema"`
-	SchemaLocked          uint64 `db:"schema_locked" json:"schema_locked"`
-	TransactionPersistent uint64 `db:"transaction_persistent" json:"transaction_persistent"`
-	FastForward           uint64 `db:"fast_forward" json:"fast_forward"`
-	Backend               uint64 `db:"backend" json:"backend"`
-	Frontend              uint64 `db:"frontend" json:"frontend"`
-	MaxConnections        uint64 `db:"max_connections" json:"max_connections"`
-}
+type (
+	Users struct {
+		Username              string `db:"username" json:"username"`
+		Password              string `db:"password" json:"password"`
+		Active                uint64 `db:"active" json:"active"`
+		UseSsl                uint64 `db:"use_ssl" json:"use_ssl"`
+		DefaultHostgroup      uint64 `db:"default_hostgroup" json:"default_hostgroup"`
+		DefaultSchema         string `db:"default_schema" json:"default_schema"`
+		SchemaLocked          uint64 `db:"schema_locked" json:"schema_locked"`
+		TransactionPersistent uint64 `db:"transaction_persistent" json:"transaction_persistent"`
+		FastForward           uint64 `db:"fast_forward" json:"fast_forward"`
+		Backend               uint64 `db:"backend" json:"backend"`
+		Frontend              uint64 `db:"frontend" json:"frontend"`
+		MaxConnections        uint64 `db:"max_connections" json:"max_connections"`
+	}
+)
 
 const (
 	StmtUserExist        = `SELECT count(*) FROM mysql_users WHERE username = %q`
@@ -43,6 +45,7 @@ const (
 	StmtFindAllUserInfo  = `SELECT * FROM mysql_users`
 	StmtUpdateOneUserDs  = `UPDATE mysql_users SET default_schema=%q WHERE username = %q`
 	StmtUpdateOneUserMc  = `UPDATE mysql_users SET max_connections = %d WHERE username = %q`
+	StmtUpdateOneUserDH  = `UPDATE mysql_users SET default_hostgroup=%d WHERE username = %q`
 )
 
 func (users *Users) UserExists(db *sql.DB) bool {
@@ -113,6 +116,18 @@ func (users *Users) DisactiveOneUser(db *sql.DB) {
 		}
 	} else {
 		log.Fatal("DisactiveOneUser: User is not exists")
+	}
+}
+
+func (users *Users) UpdateOneUserDH(db *sql.DB) {
+	if isexist := users.UserExists(db); isexist == true {
+		st := fmt.Sprint(StmtUpdateOneUserDH, users.Username)
+		_, err := db.Query(st)
+		if err != nil {
+			log.Fatal("UpdateOneUserDH()", err)
+		}
+	} else {
+		log.Fatal("UpdateOneUserDH()", "User is not exists")
 	}
 }
 

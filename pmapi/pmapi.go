@@ -6,6 +6,7 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/labstack/echo"
 	mw "github.com/labstack/echo/middleware"
+	"log"
 	"net/http"
 	"proxysql-master/admin/users"
 )
@@ -25,9 +26,39 @@ func (pmapi *PMApi) MakePMdbi() {
 	pmapi.PMdbi = fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=utf8", pmapi.PMuser, pmapi.PMpass, pmapi.PMhost, pmapi.PMdb)
 }
 
+func (pmapi *PMApi) RegisterDBInterface() {
+	var err error
+	pmapi.Apidb, err = sql.Open("mysql", pmapi.PMdbi)
+	if err != nil {
+		log.Fatal("sql.Open()", err)
+	}
+}
+
+func (pmapi *PMApi) DestoryDBInterface() {
+	defer pmapi.Apidb.Close()
+}
+
 func (pmapi *PMApi) RegisterMiddleware() {
 	pmapi.Echo.Use(mw.Logger())
 	pmapi.Echo.Use(mw.Recover())
+}
+
+func (pmapi *PMApi) RegisterServices() {
+	/*User Services*/
+	pmapi.Echo.GET("/users", pmapi.ListAllUsers)
+	pmapi.Echo.GET("/users/:username", pmapi.ListOneUser)
+	pmapi.Echo.POST("/users", pmapi.CreateUser)
+	//pmapi.Echo.PUT("/users/:username", pmapi.updateUsers)
+	pmapi.Echo.DELETE("/users/:username", pmapi.DeleteOneUser)
+	/*Server Services*/
+
+	/*Query Rules*/
+
+	/*Scheduler*/
+}
+
+func (pmapi *PMApi) RunApiService() {
+	pmapi.Echo.Logger.Fatal(pmapi.Echo.Start(":3333"))
 }
 
 func (pmapi *PMApi) DeleteOneUser(c echo.Context) error {

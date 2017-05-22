@@ -119,39 +119,48 @@ func (users *Users) DisactiveOneUser(db *sql.DB) {
 	}
 }
 
-func (users *Users) UpdateOneUserDH(db *sql.DB) {
+func (users *Users) UpdateOneUserDH(db *sql.DB) int {
 	if isexist := users.UserExists(db); isexist == true {
 		st := fmt.Sprint(StmtUpdateOneUserDH, users.Username)
 		_, err := db.Query(st)
 		if err != nil {
 			log.Fatal("UpdateOneUserDH()", err)
+			return 1
 		}
+		return 0
 	} else {
 		log.Fatal("UpdateOneUserDH()", "User is not exists")
+		return 2
 	}
 }
 
-func (users *Users) UpdateOneUserDs(db *sql.DB) {
+func (users *Users) UpdateOneUserDs(db *sql.DB) int {
 	if isexist := users.UserExists(db); isexist == true {
 		st := fmt.Sprintf(StmtUpdateOneUserDs, users.Username)
 		_, err := db.Query(st)
 		if err != nil {
 			log.Fatal("UpdateOneUserDs:", err)
+			return 1
 		}
+		return 0
 	} else {
 		log.Fatal("UpdateOneUserDs: User is not exists")
+		return 2
 	}
 }
 
-func (users *Users) UpdateOneUserMc(db *sql.DB) {
+func (users *Users) UpdateOneUserMc(db *sql.DB) int {
 	if isexist := users.UserExists(db); isexist == true {
 		st := fmt.Sprintf(StmtUpdateOneUserMc, users.Username)
 		_, err := db.Query(st)
 		if err != nil {
 			log.Fatal("UpdateOneUserMc:", err)
+			return 1
 		}
+		return 0
 	} else {
 		log.Fatal("UpdateOneUserMc: User is not exists")
+		return 2
 	}
 }
 

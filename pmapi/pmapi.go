@@ -48,7 +48,7 @@ func (pmapi *PMApi) RegisterServices() {
 	pmapi.Echo.GET("/users", pmapi.ListAllUsers)
 	pmapi.Echo.GET("/users/:username", pmapi.ListOneUser)
 	pmapi.Echo.POST("/users", pmapi.CreateUser)
-	//pmapi.Echo.PUT("/users/:username", pmapi.updateUsers)
+	pmapi.Echo.PUT("/users/:username", pmapi.UpdateOneUserInfo)
 	pmapi.Echo.DELETE("/users/:username", pmapi.DeleteOneUser)
 	/*Server Services*/
 
@@ -117,4 +117,39 @@ func (pmapi *PMApi) ListOneUser(c echo.Context) error {
 
 func (pmapi *PMApi) ListAllUsers(c echo.Context) error {
 	return c.JSON(http.StatusOK, users.FindAllUserInfo((pmapi.Apidb)))
+}
+
+func (pmapi *PMApi) UpdateOneUserInfo(c echo.Context) error {
+
+	args := struct {
+		Password         string `json:"password"`
+		Active           uint64 `json:"active"`
+		DefaultHostgroup uint64 `json:"default_hostgroup"`
+		DefaultSchema    string `json:"default_schema"`
+		MaxConnections   uint64 `json:"max_connections"`
+	}{}
+	//u := &user{}
+	user := new(users.Users)
+	if err := c.Bind(&args); err != nil {
+		return err
+	}
+
+	user.Username = c.Param("username")
+	fmt.Println(c.Param("username"))
+	fmt.Println(args)
+	/*
+		cret := user.UpdateOneUserDH(pmapi.Apidb)
+		switch cret {
+		case 0:
+			return c.String(http.StatusOK, "Update Success")
+		case 1:
+			return c.String(http.StatusExpectationFailed, "Update Failed")
+		case 2:
+			return c.String(http.StatusNoContent, "user not exist")
+		default:
+			return c.String(http.StatusOK, "OK")
+		}
+	*/
+	return c.JSON(http.StatusOK, args)
+
 }

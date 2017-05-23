@@ -95,27 +95,33 @@ func (users *Users) DeleteOneUser(db *sql.DB) int {
 	}
 }
 
-func (users *Users) ActiveOneUser(db *sql.DB) {
+func (users *Users) ActiveOneUser(db *sql.DB) int {
 	if isexist := users.UserExists(db); isexist == true {
 		st := fmt.Sprintf(StmtActiveOneUser, users.Username)
 		_, err := db.Query(st)
 		if err != nil {
 			log.Fatal("ActiveOneUser:", err)
+			return 1
 		}
+		return 0
 	} else {
 		log.Fatal("ActiveOneUser: User is not exists")
+		return 2
 	}
 }
 
-func (users *Users) DisactiveOneUser(db *sql.DB) {
+func (users *Users) DisactiveOneUser(db *sql.DB) int {
 	if isexist := users.UserExists(db); isexist == true {
 		st := fmt.Sprintf(StmtDisactiveOneUser, users.Username)
 		_, err := db.Query(st)
 		if err != nil {
-			log.Fatal("DisactiveOneUser:", err)
+			//log.Fatal("DisactiveOneUser:", err)
+			return 1
 		}
+		return 0
 	} else {
-		log.Fatal("DisactiveOneUser: User is not exists")
+		//log.Fatal("DisactiveOneUser: User is not exists")
+		return 2
 	}
 }
 

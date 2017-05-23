@@ -45,11 +45,14 @@ func (pmapi *PMApi) RegisterMiddleware() {
 
 func (pmapi *PMApi) RegisterServices() {
 	/*User Services*/
-	pmapi.Echo.GET("/users", pmapi.ListAllUsers)
-	pmapi.Echo.GET("/users/:username", pmapi.ListOneUser)
-	pmapi.Echo.POST("/users", pmapi.CreateUser)
-	pmapi.Echo.PUT("/users/:username", pmapi.UpdateOneUserInfo)
-	pmapi.Echo.DELETE("/users/:username", pmapi.DeleteOneUser)
+	pmapi.Echo.GET("/api/v1/users", pmapi.ListAllUsers)
+	pmapi.Echo.GET("/api/v1/users/:username", pmapi.ListOneUser)
+	pmapi.Echo.POST("/api/v1/users", pmapi.CreateUser)
+	pmapi.Echo.PUT("/api/v1/users/status", pmapi.UpdateOneUserStatus)
+	pmapi.Echo.PUT("/api/v1/users/hostgroup", pmapi.UpdateOneUserDH)
+	pmapi.Echo.PUT("/api/v1/users/schema", pmapi.UpdateOneUserDS)
+	pmapi.Echo.PUT("/api/v1/users/maxconnection", pmapi.UpdateOneUserMC)
+	pmapi.Echo.DELETE("/api/v1/users/:username", pmapi.DeleteOneUser)
 	/*Server Services*/
 
 	/*Query Rules*/
@@ -93,6 +96,8 @@ func (pmapi *PMApi) CreateUser(c echo.Context) error {
 	user.Username = args.UserName
 	user.Password = args.PassWord
 
+	fmt.Println(args)
+
 	cret := user.AddOneUser((pmapi.Apidb))
 	switch cret {
 	case 0:
@@ -119,37 +124,63 @@ func (pmapi *PMApi) ListAllUsers(c echo.Context) error {
 	return c.JSON(http.StatusOK, users.FindAllUserInfo((pmapi.Apidb)))
 }
 
-func (pmapi *PMApi) UpdateOneUserInfo(c echo.Context) error {
+func (pmapi *PMApi) UpdateOneUserStatus(c echo.Context) error {
 
 	args := struct {
-		Password         string `json:"password"`
-		Active           uint64 `json:"active"`
-		DefaultHostgroup uint64 `json:"default_hostgroup"`
-		DefaultSchema    string `json:"default_schema"`
-		MaxConnections   uint64 `json:"max_connections"`
+		UserName string `json:"username"`
+		Active   uint64 `json:"active"`
 	}{}
-	//u := &user{}
+
 	user := new(users.Users)
 	if err := c.Bind(&args); err != nil {
 		return err
 	}
 
-	user.Username = c.Param("username")
-	fmt.Println(c.Param("username"))
-	fmt.Println(args)
-	/*
-		cret := user.UpdateOneUserDH(pmapi.Apidb)
+	user.Username = args.UserName
+	user.Active = args.Active
+
+	switch args.Active {
+	case 0:
+		cret := user.DisactiveOneUser(pmapi.Apidb)
 		switch cret {
 		case 0:
-			return c.String(http.StatusOK, "Update Success")
-		case 1:
-			return c.String(http.StatusExpectationFailed, "Update Failed")
-		case 2:
-			return c.String(http.StatusNoContent, "user not exist")
-		default:
 			return c.String(http.StatusOK, "OK")
-		}
-	*/
-	return c.JSON(http.StatusOK, args)
+		case 1:
+			return c.String(http.StatusExpectationFailed, "DisactiveOneUser Failed")
+		case 2:
 
+			//return c.String(http.StatusExpectationFailed, "User not exists")
+			return c.String(http.StatusExpectationFailed, args.UserName)
+		default:
+			return c.String(http.StatusExpectationFailed, "DisactiveOneUser ??")
+		}
+	case 1:
+		cret := user.ActiveOneUser(pmapi.Apidb)
+		switch cret {
+		case 0:
+			return c.String(http.StatusOK, "OK")
+		case 1:
+			return c.String(http.StatusExpectationFailed, "DisactiveOneUser Failed")
+		case 2:
+			return c.String(http.StatusExpectationFailed, "User not exists")
+		default:
+			return c.String(http.StatusExpectationFailed, "DisactiveOneUser ??")
+		}
+
+	default:
+		return c.String(http.StatusExpectationFailed, "active?")
+	}
+
+}
+
+func (pmapi *PMApi) UpdateOneUserDH(c echo.Context) error {
+	return c.String(http.StatusOK, "OK")
+}
+
+func (pmapi *PMApi) UpdateOneUserDS(c echo.Context) error {
+	return c.String(http.StatusOK, "OK")
+}
+
+func (pmapi *PMApi) UpdateOneUserMC(c echo.Context) error {
+	return c.String(http.StatusOK, "OK")
 }

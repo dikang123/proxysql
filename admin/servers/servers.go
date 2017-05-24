@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
-	"os"
+	//"os"
 )
 
 type Servers struct {
@@ -25,13 +25,14 @@ const (
 	StmtAddOneServers          = `INSERT INTO mysql_servers(hostgroup_id,hostname,port) VALUES(%d,%q,%d)`
 	StmtDeleteOneServers       = `DELETE FROM mysql_servers WHERE hostgroup_id=%d AND hostname=%q AND port=%d`
 	StmtActiveOneServer        = `UPDATE mysql_servers SET status='ONLINE' WHERE hostgroup_id=%d AND hostname=%q AND port=%d`
-	StmtSoftDisactiveOneServer = `UPDATE mysql_servers SET status='SOFT_OFFLINE' WHERE hostgroup_id=%d AND hostname=%q AND port=%d`
-	StmtHardDisactiveOneServer = `UPDATE mysql_servers SET status='HARD_OFFLINE' WHERE hostgroup_id=%d AND hostname=%q AND port=%d`
+	StmtSoftDisactiveOneServer = `UPDATE mysql_servers SET status='OFFLINE_SOFT' WHERE hostgroup_id=%d AND hostname=%q AND port=%d`
+	StmtHardDisactiveOneServer = `UPDATE mysql_servers SET status='OFFLINE_HARD' WHERE hostgroup_id=%d AND hostname=%q AND port=%d`
 	StmtUpdateOneServerWeight  = `UPDATE mysql_servers SET weight=%d WHERE hostgroup_id = %d AND hostname=%q AND port=%d`
 	StmtUpdateOneServerMc      = `UPDATE mysql_servers SET max_connections=%d WHERE hostgroup_id=%d AND hostname=%q AND port=%d`
 	StmtServerExists           = `SELECT count(*) FROM mysql_servers WHERE hostgroup_id=%d AND hostname=%q AND port=%d`
 	StmtFindOneServer          = `SELECT * FROM mysql_servers WHERE hostgroup_id=%d AND hostname=%q AND port=%d`
 	StmtFindAllServer          = `SELECT * FROM mysql_servers`
+	StmtFindServersByHostgroup = `SELECT * FROM mysql_servers WHERE hostgroup_id=%d`
 )
 
 func (srvs *Servers) ServerExists(db *sql.DB) bool {
@@ -62,11 +63,12 @@ func (srvs *Servers) AddOneServers(db *sql.DB) int {
 			return 1
 		}
 		return 0
+	} else {
+		return 2
 	}
-	return 2
 }
 
-func (srvs *Servers) DeleteOneServers(db *sql.DB) {
+func (srvs *Servers) DeleteOneServers(db *sql.DB) int {
 	if isexist := srvs.ServerExists(db); isexist == true {
 		st := fmt.Sprintf(StmtDeleteOneServers, srvs.HostGroupId, srvs.HostName, srvs.Port)
 		_, err := db.Query(st)
@@ -79,7 +81,7 @@ func (srvs *Servers) DeleteOneServers(db *sql.DB) {
 	}
 }
 
-func (srvs *Servers) ActiveOneServer(db *sql.DB) {
+func (srvs *Servers) ActiveOneServer(db *sql.DB) int {
 	if isexist := srvs.ServerExists(db); isexist == true {
 		st := fmt.Sprintf(StmtActiveOneServer, srvs.HostGroupId, srvs.HostName, srvs.Port)
 		_, err := db.Query(st)
@@ -92,11 +94,12 @@ func (srvs *Servers) ActiveOneServer(db *sql.DB) {
 	}
 }
 
-func (srvs *Servers) SoftDisactiveOneServer(db *sql.DB) {
+func (srvs *Servers) SoftDisactiveOneServer(db *sql.DB) int {
 	if isexist := srvs.ServerExists(db); isexist == true {
 		st := fmt.Sprintf(StmtSoftDisactiveOneServer, srvs.HostGroupId, srvs.HostName, srvs.Port)
 		_, err := db.Query(st)
 		if err != nil {
+			fmt.Println(err)
 			return 1
 		}
 		return 0
@@ -105,7 +108,7 @@ func (srvs *Servers) SoftDisactiveOneServer(db *sql.DB) {
 	}
 }
 
-func (srvs *Servers) HardDisactiveOneServer(db *sql.DB) {
+func (srvs *Servers) HardDisactiveOneServer(db *sql.DB) int {
 	if isexist := srvs.ServerExists(db); isexist == true {
 		st := fmt.Sprintf(StmtHardDisactiveOneServer, srvs.HostGroupId, srvs.HostName, srvs.Port)
 		_, err := db.Query(st)
@@ -118,9 +121,9 @@ func (srvs *Servers) HardDisactiveOneServer(db *sql.DB) {
 	}
 }
 
-func (srvs *Servers) UpdateOneServerWeight(db *sql.DB) {
+func (srvs *Servers) UpdateOneServerWeight(db *sql.DB) int {
 	if isexist := srvs.ServerExists(db); isexist == true {
-		st := fmt.Sprintf(StmtUpdateOneServerWeight, srvs.HostGroupId, srvs.HostName, srvs.Port)
+		st := fmt.Sprintf(StmtUpdateOneServerWeight, srvs.Weight, srvs.HostGroupId, srvs.HostName, srvs.Port)
 		_, err := db.Query(st)
 		if err != nil {
 			return 1
@@ -131,9 +134,9 @@ func (srvs *Servers) UpdateOneServerWeight(db *sql.DB) {
 	}
 }
 
-func (srvs *Servers) UpdateOneServerMc(db *sql.DB) {
+func (srvs *Servers) UpdateOneServerMc(db *sql.DB) int {
 	if isexist := srvs.ServerExists(db); isexist == true {
-		st := fmt.Sprintf(StmtUpdateOneServerMc, srvs.HostGroupId, srvs.HostName, srvs.Port)
+		st := fmt.Sprintf(StmtUpdateOneServerMc, srvs.MaxConnections, srvs.HostGroupId, srvs.HostName, srvs.Port)
 		_, err := db.Query(st)
 		if err != nil {
 			return 1
@@ -149,7 +152,7 @@ func (srvs *Servers) FindOneServersInfo(db *sql.DB) Servers {
 		st := fmt.Sprintf(StmtFindOneServer, srvs.HostGroupId, srvs.HostName, srvs.Port)
 		rows, err := db.Query(st)
 		if err != nil {
-			return 1
+			log.Fatal("FindOneServerInfo:", err)
 		}
 		for rows.Next() {
 			err = rows.Scan(
@@ -167,9 +170,9 @@ func (srvs *Servers) FindOneServersInfo(db *sql.DB) Servers {
 			)
 		}
 	} else {
-		return 2
+		log.Fatal("FindOneServerInfo: Server not exists")
 	}
-	return srvs
+	return *srvs
 }
 
 func FindAllServerInfo(db *sql.DB) []Servers {
@@ -178,7 +181,39 @@ func FindAllServerInfo(db *sql.DB) []Servers {
 
 	rows, err := db.Query(StmtFindAllServer)
 	if err != nil {
-		return 1
+		log.Fatal("FindAllServerInfo:", err)
+	}
+
+	defer rows.Close()
+
+	for rows.Next() {
+		err = rows.Scan(
+			&tmpserver.HostGroupId,
+			&tmpserver.HostName,
+			&tmpserver.Port,
+			&tmpserver.Status,
+			&tmpserver.Weight,
+			&tmpserver.Compression,
+			&tmpserver.MaxConnections,
+			&tmpserver.MaxReplicationLag,
+			&tmpserver.UseSsl,
+			&tmpserver.MaxLatencyMs,
+			&tmpserver.Comment,
+		)
+		allserver = append(allserver, tmpserver)
+	}
+
+	return allserver
+}
+
+func (srvs *Servers) FindServersInfoByHostgroup(db *sql.DB) []Servers {
+	var allserver []Servers
+	var tmpserver Servers
+
+	st := fmt.Sprintf(StmtFindServersByHostgroup, srvs.HostGroupId)
+	rows, err := db.Query(st)
+	if err != nil {
+		log.Fatal("FindServersInfoByHostgroup:", err)
 	}
 
 	defer rows.Close()

@@ -174,13 +174,90 @@ func (pmapi *PMApi) UpdateOneUserStatus(c echo.Context) error {
 }
 
 func (pmapi *PMApi) UpdateOneUserDH(c echo.Context) error {
-	return c.String(http.StatusOK, "OK")
+
+	args := struct {
+		UserName         string `json:"username"`
+		DefaultHostgroup uint64 `json:"default_hostgroup"`
+	}{}
+
+	user := new(users.Users)
+
+	if err := c.Bind(&args); err != nil {
+		return err
+	}
+
+	user.Username = args.UserName
+	user.DefaultHostgroup = args.DefaultHostgroup
+
+	cret := user.UpdateOneUserDh(pmapi.Apidb)
+	switch cret {
+	case 0:
+		return c.String(http.StatusOK, "OK")
+	case 1:
+		return c.String(http.StatusExpectationFailed, "UpdateOneUser Hostgroup Failed")
+	case 2:
+		return c.String(http.StatusExpectationFailed, "User not exists")
+	default:
+		return c.String(http.StatusExpectationFailed, "UpdateOneUserDH ???")
+
+	}
+
 }
 
 func (pmapi *PMApi) UpdateOneUserDS(c echo.Context) error {
-	return c.String(http.StatusOK, "OK")
+	args := struct {
+		UserName      string `json:"username"`
+		DefaultSchema string `json:"default_schema"`
+	}{}
+
+	user := new(users.Users)
+
+	if err := c.Bind(&args); err != nil {
+		return err
+	}
+
+	user.Username = args.UserName
+	user.DefaultSchema = args.DefaultSchema
+
+	cret := user.UpdateOneUserDs(pmapi.Apidb)
+	switch cret {
+	case 0:
+		return c.String(http.StatusOK, "OK")
+	case 1:
+		return c.String(http.StatusExpectationFailed, "UpdateOneUserDS Failed")
+	case 2:
+		return c.String(http.StatusExpectationFailed, "User not exists")
+	default:
+		return c.String(http.StatusExpectationFailed, "UpdateOneUserDS ???")
+
+	}
 }
 
 func (pmapi *PMApi) UpdateOneUserMC(c echo.Context) error {
-	return c.String(http.StatusOK, "OK")
+	args := struct {
+		UserName       string `json:"username"`
+		MaxConnections uint64 `json:"max_connections"`
+	}{}
+
+	user := new(users.Users)
+
+	if err := c.Bind(&args); err != nil {
+		return err
+	}
+
+	user.Username = args.UserName
+	user.MaxConnections = args.MaxConnections
+
+	cret := user.UpdateOneUserMc(pmapi.Apidb)
+	switch cret {
+	case 0:
+		return c.String(http.StatusOK, "OK")
+	case 1:
+		return c.String(http.StatusExpectationFailed, "UpdateOneUserMc Failed")
+	case 2:
+		return c.String(http.StatusExpectationFailed, "User not exists")
+	default:
+		return c.String(http.StatusExpectationFailed, "UpdateOneUserMc ???")
+
+	}
 }

@@ -125,9 +125,9 @@ func (users *Users) DisactiveOneUser(db *sql.DB) int {
 	}
 }
 
-func (users *Users) UpdateOneUserDH(db *sql.DB) int {
+func (users *Users) UpdateOneUserDh(db *sql.DB) int {
 	if isexist := users.UserExists(db); isexist == true {
-		st := fmt.Sprint(StmtUpdateOneUserDH, users.Username)
+		st := fmt.Sprintf(StmtUpdateOneUserDH, users.DefaultHostgroup, users.Username)
 		_, err := db.Query(st)
 		if err != nil {
 			log.Fatal("UpdateOneUserDH()", err)
@@ -142,7 +142,7 @@ func (users *Users) UpdateOneUserDH(db *sql.DB) int {
 
 func (users *Users) UpdateOneUserDs(db *sql.DB) int {
 	if isexist := users.UserExists(db); isexist == true {
-		st := fmt.Sprintf(StmtUpdateOneUserDs, users.Username)
+		st := fmt.Sprintf(StmtUpdateOneUserDs, users.DefaultSchema, users.Username)
 		_, err := db.Query(st)
 		if err != nil {
 			log.Fatal("UpdateOneUserDs:", err)
@@ -157,7 +157,7 @@ func (users *Users) UpdateOneUserDs(db *sql.DB) int {
 
 func (users *Users) UpdateOneUserMc(db *sql.DB) int {
 	if isexist := users.UserExists(db); isexist == true {
-		st := fmt.Sprintf(StmtUpdateOneUserMc, users.Username)
+		st := fmt.Sprintf(StmtUpdateOneUserMc, users.MaxConnections, users.Username)
 		_, err := db.Query(st)
 		if err != nil {
 			log.Fatal("UpdateOneUserMc:", err)

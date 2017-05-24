@@ -203,8 +203,167 @@ curl -X PUT
 
 ### 2.后端数据库服务器相关
 
+#### 2.1.查询所有后端服务节点信息
+
+```
+Action: GET
+URL: http://127.0.0.1:3333/api/v1/servers
+参数：无
+返回结果：后端数据库节点信息
+```
+
+#### 示例
+
+```
+curl -X GET
+     -H 'Content-Type: application/json'
+     127.0.0.1:3333/api/v1/servers
+```
+
+#### 2.2.根据主机组查询后端节点的信息
+
+```
+Action: GET
+URL: http://127.0.0.1:3333/api/v1/servers/:hostgroup
+参数： hostgroup主机组id号
+返回结果： 后端数据库节点信息
+```
+
+#### 示例
+
+```
+curl -X GET
+     -H 'Content-Type: application/json'
+     127.0.0.1:3333/api/v1/servers/1
+查询主机组1中的后端数据库节点信息
+```
+
+#### 2.3.查询指定主机的信息
+
+```
+Action: PUT
+URL: http://127.0.0.1:3333/api/v1/servers
+参数： hostgroup_id主机组id号，hostname主机名,port主机端口号
+```
+
+#### 示例
+
+```
+curl -X PUT
+     -H 'Content-Type: application/json'
+     -d '{"hostgroup_id":1,"hostname":"dn03","port":3307}'
+     127.0.0.1:3333/api/v1/servers
+
+查询主机组1中主机名为dn03，端口为3307的主机信息
+
+```
+
+#### 2.4.在指定主机组下新建一个主机
+
+```
+Action: POST
+URL: http://127.0.0.1:3333/api/v1/servers
+参数： hostgroup_id主机组id号，hostname主机名，port端口
+返回结果： 成功返回OK
+```
+
+#### 示例
+
+```
+curl -X POST
+     -H 'Content-Type: application/json'
+     -d '{"hostgroup_id":1,"hostname":"dn03","port":3307}'
+     127.0.0.1:3333/api/v1/servers
+```
+
+#### 2.5.改变某主机组内主机的状态
+
+```
+Action: PUT
+URL: http://127.0.0.1:3333/api/v1/servers
+参数： hostgroup_id主机组id，hostname主机组名，port主机端口
+返回结果：成功返回OK
+```
+
+#### 示例
+
+```
+curl -X PUT
+     -H 'Content-Type: application/json'
+     -d
+     '{"hostgroup_id":1,"hostname":"dn03","port":3307,"status":"ONLINE|SOFT_OFFLINE|HARD_OFFLINE"}'
+     127.0.0.1:3333/api/v1/servers
+
+```
+
+#### 2.6.改变某主机组内主机的权重
+
+```
+Action: PUT
+URL: http://127.0.0.1:3333/api/v1/servers
+参数： hostgroup_id主机组id，hostname主机组名，port主机端口,weight权重
+返回结果：成功返回OK
+```
+
+#### 示例
+
+
+```
+curl -X PUT
+     -H 'Content-Type: application/json'
+     -d
+     '{"hostgroup_id":1,"hostname":"dn03","port":3307,"weight":100}'
+     127.0.0.1:3333/api/v1/servers
+```
+
+#### 2.7.改变某主机组内主机的最大连接数
+
+```
+Action: PUT
+URL: http://127.0.0.1:3333/api/v1/servers
+参数： hostgroup_id主机组id，hostname主机组名，port主机端口,max_connections最大
+连接数
+返回结果：成功返回OK
+```
+
+#### 示例
+
+
+```
+curl -X PUT
+     -H 'Content-Type: application/json'
+     -d
+     '{"hostgroup_id":1,"hostname":"dn03","port":3307,"max_connections":100}'
+     127.0.0.1:3333/api/v1/servers
+```
+
+
+#### 2.7.删除指定主机
+
+```
+Action: DELETE
+URL: http://127.0.0.1:3333/api/v1/servers
+参数： hostgroup_id主机组id，hostname主机组名，port主机端口
+连接数
+返回结果：成功返回OK
+```
+
+#### 示例
+
+
+```
+curl -X DELETE
+     -H 'Content-Type: application/json'
+     -d
+     '{"hostgroup_id":1,"hostname":"dn03","port":3307}'
+     127.0.0.1:3333/api/v1/servers
+```
+
+
+
 
 ### 3.查询规则相关
+
 
 
 ### 4.调度器相关

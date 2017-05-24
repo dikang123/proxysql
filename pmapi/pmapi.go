@@ -53,11 +53,46 @@ func (pmapi *PMApi) RegisterServices() {
 	pmapi.Echo.PUT("/api/v1/users/schema", pmapi.UpdateOneUserDS)
 	pmapi.Echo.PUT("/api/v1/users/maxconnection", pmapi.UpdateOneUserMC)
 	pmapi.Echo.DELETE("/api/v1/users/:username", pmapi.DeleteOneUser)
+
 	/*Server Services*/
+	/*
+		pmapi.Echo.GET("/api/v1/servers", pmapi.ListAllServers)
+		pmapi.Echo.GET("/api/v1/servers/:hostgroup", pmapi.ListServerByHostgroup)
+		pmapi.Echo.PUT("/api/v1/servers", pmapi.ListOneServer)
+		pmapi.Echo.POST("/api/v1/servers", pmapi.CreateServer)
+		pmapi.Echo.PUT("/api/v1/servers/status", pmapi.UpdateOneServerStatus)
+		pmapi.Echo.PUT("/api/v1/servers/weight", pmapi.UpdateOneServerWeight)
+		pmapi.Echo.PUT("/api/v1/servers/maxconnection", pmapi.UpdateOneServerMC)
+		pmapi.Echo.DELETE("/api/v1/servers", pmapi.DeleteOneServer)
+	*/
 
 	/*Query Rules*/
+	/*
+		pmapi.Echo.GET("/api/v1/queryrules", pmapi.ListAllQueryRules)
+		pmapi.Echo.POST("/api/v1/queryrules", pmapi.CreateQueryRules)
+		pmapi.Echo.PUT("/api/v1/queryrules/status/:ruleid", pmapi.UpdateOneQueryRulesStatus)
+		pmapi.Echo.PUT("/api/v1/queryrules/username/:ruleid", pmapi.UpdateOneQueryRulesUser)
+		pmapi.Echo.PUT("/api/v1/queryrules/schemaname/:ruleid", pmapi.UpdateOneQueryRulesSchema)
+		pmapi.Echo.PUT("/api/v1/queryrules/clientaddr/:ruleid", pmapi.UpdateOneQueryRulesClient)
+		pmapi.Echo.PUT("/api/v1/queryrules/digest/:ruleid", pmapi.UpdateOneQueryRulesDigest)
+		pmapi.Echo.PUT("/api/v1/queryrules/matchdigest/:ruleid", pmapi.UpdateOneQueryRulesMatchDigest)
+		pmapi.Echo.PUT("/api/v1/queryrules/matchpattern/:ruleid", pmapi.UpdateOneQueryRulesMatchPattern)
+		pmapi.Echo.PUT("/api/v1/queryrules/replacepattern/:ruleid", pmapi.UpdateOneQueryRulesReplacePattern)
+		pmapi.Echo.PUT("/api/v1/queryrules/desthostgroup/:ruleid", pmapi.UpdateOneQueryRulesDestHostgroup)
+		pmapi.Echo.PUT("/api/v1/queryrules/errmsg/:ruleid", pmapi.UpdateOneQueryRulesErrmsg)
+		pmapi.Echo.DELETE("/api/v1/queryrules/:id", pmapi.DeleteOneQueryRules)
+	*/
 
 	/*Scheduler*/
+	/*
+		pmapi.Echo.GET("/api/v1/scheduler", pmapi.ListAllScheduler)
+		pmapi.Echo.GET("/api/v1/scheduler/:id", pmapi.ListSchedulerById)
+		pmapi.Echo.POST("/api/v1/scheduler", pmapi.CreateScheduler)
+		pmapi.Echo.PUT("/api/v1/scheduler/status", pmapi.UpdateOneSchedulerStatus)
+		pmapi.Echo.PUT("/api/v1/scheduler/interval", pmapi.UpdateOneSchedulerInterval)
+		pmapi.Echo.DELETE("/api/v1/scheduler/:id", pmapi.DeleteOneScheduler)
+	*/
+
 }
 
 func (pmapi *PMApi) RunApiService() {

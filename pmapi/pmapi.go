@@ -156,7 +156,21 @@ func (pmapi *PMApi) ListOneUser(c echo.Context) error {
 }
 
 func (pmapi *PMApi) ListAllUsers(c echo.Context) error {
-	return c.JSON(http.StatusOK, users.FindAllUserInfo((pmapi.Apidb)))
+
+	limit, _ := strconv.ParseInt(c.QueryParam("limit"), 10, 64)
+	page, _ := strconv.ParseInt(c.QueryParam("page"), 10, 64)
+
+	if limit == 0 {
+		limit = 10
+	}
+
+	if page == 0 {
+		page = 1
+	}
+
+	skip := (page - 1) * limit
+
+	return c.JSON(http.StatusOK, users.FindAllUserInfo(pmapi.Apidb, limit, skip))
 }
 
 func (pmapi *PMApi) UpdateOneUserStatus(c echo.Context) error {

@@ -42,7 +42,7 @@ const (
 	StmtActiveOneUser    = `UPDATE mysql_users SET active = 1 WHERE username = %q`
 	StmtDisactiveOneUser = `UPDATE mysql_users SET active = 0 WHERE username = %q`
 	StmtFindOneUserInfo  = `SELECT * FROM mysql_users WHERE username = %q`
-	StmtFindAllUserInfo  = `SELECT * FROM mysql_users`
+	StmtFindAllUserInfo  = `SELECT * FROM mysql_users limit %d offset %d`
 	StmtUpdateOneUserDs  = `UPDATE mysql_users SET default_schema=%q WHERE username = %q`
 	StmtUpdateOneUserMc  = `UPDATE mysql_users SET max_connections = %d WHERE username = %q`
 	StmtUpdateOneUserDH  = `UPDATE mysql_users SET default_hostgroup=%d WHERE username = %q`
@@ -197,10 +197,12 @@ func (users *Users) FindOneUserInfo(db *sql.DB) Users {
 	return *users
 }
 
-func FindAllUserInfo(db *sql.DB) []Users {
+func FindAllUserInfo(db *sql.DB, limit int64, skip int64) []Users {
 	var alluser []Users
 	var tmpusr Users
-	rows, err := db.Query(StmtFindAllUserInfo)
+	var QueryText string
+	QueryText = fmt.Sprintf(StmtFindAllUserInfo, limit, skip)
+	rows, err := db.Query(QueryText)
 	if err != nil {
 		log.Fatal("FindAllUserInfo:", err)
 	}

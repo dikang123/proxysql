@@ -111,7 +111,7 @@ func (pmapi *PMApi) DeleteOneUser(c echo.Context) error {
 	case 2:
 		return c.JSON(http.StatusFound, "Exists")
 	default:
-		return c.String(http.StatusOK, "Nothing")
+		return c.JSON(http.StatusOK, "Nothing")
 
 	}
 
@@ -138,11 +138,11 @@ func (pmapi *PMApi) CreateUser(c echo.Context) error {
 	case 0:
 		return c.JSON(http.StatusCreated, user)
 	case 1:
-		return c.String(http.StatusExpectationFailed, "Failed")
+		return c.JSON(http.StatusExpectationFailed, "Failed")
 	case 2:
-		return c.String(http.StatusFound, "Exists")
+		return c.JSON(http.StatusFound, "Exists")
 	default:
-		return c.String(http.StatusOK, "OK")
+		return c.JSON(http.StatusOK, "OK")
 	}
 }
 
@@ -193,31 +193,31 @@ func (pmapi *PMApi) UpdateOneUserStatus(c echo.Context) error {
 		cret := user.DisactiveOneUser(pmapi.Apidb)
 		switch cret {
 		case 0:
-			return c.String(http.StatusOK, "OK")
+			return c.JSON(http.StatusOK, "OK")
 		case 1:
-			return c.String(http.StatusExpectationFailed, "DisactiveOneUser Failed")
+			return c.JSON(http.StatusExpectationFailed, "DisactiveOneUser Failed")
 		case 2:
 
-			//return c.String(http.StatusExpectationFailed, "User not exists")
-			return c.String(http.StatusExpectationFailed, args.UserName)
+			//return c.JSON(http.StatusExpectationFailed, "User not exists")
+			return c.JSON(http.StatusExpectationFailed, args.UserName)
 		default:
-			return c.String(http.StatusExpectationFailed, "DisactiveOneUser ??")
+			return c.JSON(http.StatusExpectationFailed, "DisactiveOneUser ??")
 		}
 	case 1:
 		cret := user.ActiveOneUser(pmapi.Apidb)
 		switch cret {
 		case 0:
-			return c.String(http.StatusOK, "OK")
+			return c.JSON(http.StatusOK, "OK")
 		case 1:
-			return c.String(http.StatusExpectationFailed, "DisactiveOneUser Failed")
+			return c.JSON(http.StatusExpectationFailed, "DisactiveOneUser Failed")
 		case 2:
-			return c.String(http.StatusExpectationFailed, "User not exists")
+			return c.JSON(http.StatusExpectationFailed, "User not exists")
 		default:
-			return c.String(http.StatusExpectationFailed, "DisactiveOneUser ??")
+			return c.JSON(http.StatusExpectationFailed, "DisactiveOneUser ??")
 		}
 
 	default:
-		return c.String(http.StatusExpectationFailed, "active?")
+		return c.JSON(http.StatusExpectationFailed, "active?")
 	}
 
 }
@@ -241,13 +241,13 @@ func (pmapi *PMApi) UpdateOneUserDH(c echo.Context) error {
 	cret := user.UpdateOneUserDh(pmapi.Apidb)
 	switch cret {
 	case 0:
-		return c.String(http.StatusOK, "OK")
+		return c.JSON(http.StatusOK, "OK")
 	case 1:
-		return c.String(http.StatusExpectationFailed, "UpdateOneUser Hostgroup Failed")
+		return c.JSON(http.StatusExpectationFailed, "UpdateOneUser Hostgroup Failed")
 	case 2:
-		return c.String(http.StatusExpectationFailed, "User not exists")
+		return c.JSON(http.StatusExpectationFailed, "User not exists")
 	default:
-		return c.String(http.StatusExpectationFailed, "UpdateOneUserDH ???")
+		return c.JSON(http.StatusExpectationFailed, "UpdateOneUserDH ???")
 
 	}
 
@@ -271,13 +271,13 @@ func (pmapi *PMApi) UpdateOneUserDS(c echo.Context) error {
 	cret := user.UpdateOneUserDs(pmapi.Apidb)
 	switch cret {
 	case 0:
-		return c.String(http.StatusOK, "OK")
+		return c.JSON(http.StatusOK, "OK")
 	case 1:
-		return c.String(http.StatusExpectationFailed, "UpdateOneUserDS Failed")
+		return c.JSON(http.StatusExpectationFailed, "UpdateOneUserDS Failed")
 	case 2:
-		return c.String(http.StatusExpectationFailed, "User not exists")
+		return c.JSON(http.StatusExpectationFailed, "User not exists")
 	default:
-		return c.String(http.StatusExpectationFailed, "UpdateOneUserDS ???")
+		return c.JSON(http.StatusExpectationFailed, "UpdateOneUserDS ???")
 
 	}
 }
@@ -300,13 +300,13 @@ func (pmapi *PMApi) UpdateOneUserMC(c echo.Context) error {
 	cret := user.UpdateOneUserMc(pmapi.Apidb)
 	switch cret {
 	case 0:
-		return c.String(http.StatusOK, "OK")
+		return c.JSON(http.StatusOK, "OK")
 	case 1:
-		return c.String(http.StatusExpectationFailed, "UpdateOneUserMc Failed")
+		return c.JSON(http.StatusExpectationFailed, "UpdateOneUserMc Failed")
 	case 2:
-		return c.String(http.StatusExpectationFailed, "User not exists")
+		return c.JSON(http.StatusExpectationFailed, "User not exists")
 	default:
-		return c.String(http.StatusExpectationFailed, "UpdateOneUserMc ???")
+		return c.JSON(http.StatusExpectationFailed, "UpdateOneUserMc ???")
 
 	}
 }
@@ -367,13 +367,13 @@ func (pmapi *PMApi) CreateServer(c echo.Context) error {
 	cret := server.AddOneServers(pmapi.Apidb)
 	switch cret {
 	case 0:
-		return c.String(http.StatusOK, "OK")
+		return c.JSON(http.StatusOK, "OK")
 	case 1:
-		return c.String(http.StatusExpectationFailed, "CreateServer Failed")
+		return c.JSON(http.StatusExpectationFailed, "CreateServer Failed")
 	case 2:
-		return c.String(http.StatusExpectationFailed, "Server exists")
+		return c.JSON(http.StatusExpectationFailed, "Server exists")
 	default:
-		return c.String(http.StatusOK, "CreateServer ???")
+		return c.JSON(http.StatusOK, "CreateServer ???")
 
 	}
 }
@@ -403,42 +403,42 @@ func (pmapi *PMApi) UpdateOneServerStatus(c echo.Context) error {
 		cret := server.SoftDisactiveOneServer(pmapi.Apidb)
 		switch cret {
 		case 0:
-			return c.String(http.StatusOK, "OK")
+			return c.JSON(http.StatusOK, "OK")
 		case 1:
-			return c.String(http.StatusExpectationFailed, "SoftDisactiveOneServer Failed")
+			return c.JSON(http.StatusExpectationFailed, "SoftDisactiveOneServer Failed")
 		case 2:
-			return c.String(http.StatusExpectationFailed, "Server not exists")
+			return c.JSON(http.StatusExpectationFailed, "Server not exists")
 		default:
-			return c.String(http.StatusExpectationFailed, "SoftDisactiveOneServer other return value")
+			return c.JSON(http.StatusExpectationFailed, "SoftDisactiveOneServer other return value")
 		}
 
 	case "HARD_OFFLINE":
 		cret := server.HardDisactiveOneServer(pmapi.Apidb)
 		switch cret {
 		case 0:
-			return c.String(http.StatusOK, "OK")
+			return c.JSON(http.StatusOK, "OK")
 		case 1:
-			return c.String(http.StatusExpectationFailed, "HardDisactiveOneServer Failed")
+			return c.JSON(http.StatusExpectationFailed, "HardDisactiveOneServer Failed")
 		case 2:
-			return c.String(http.StatusExpectationFailed, "Server not exists")
+			return c.JSON(http.StatusExpectationFailed, "Server not exists")
 		default:
-			return c.String(http.StatusExpectationFailed, "HardDisactiveOneServer other return value")
+			return c.JSON(http.StatusExpectationFailed, "HardDisactiveOneServer other return value")
 		}
 
 	case "ONLINE":
 		cret := server.ActiveOneServer(pmapi.Apidb)
 		switch cret {
 		case 0:
-			return c.String(http.StatusOK, "OK")
+			return c.JSON(http.StatusOK, "OK")
 		case 1:
-			return c.String(http.StatusExpectationFailed, "ActiveOneServer Failed")
+			return c.JSON(http.StatusExpectationFailed, "ActiveOneServer Failed")
 		case 2:
-			return c.String(http.StatusExpectationFailed, "Server not exists")
+			return c.JSON(http.StatusExpectationFailed, "Server not exists")
 		default:
-			return c.String(http.StatusExpectationFailed, "ActiveOneServer other return value")
+			return c.JSON(http.StatusExpectationFailed, "ActiveOneServer other return value")
 		}
 	default:
-		return c.String(http.StatusOK, "UpdateOneServerStatus other status")
+		return c.JSON(http.StatusOK, "UpdateOneServerStatus other status")
 	}
 }
 
@@ -465,13 +465,13 @@ func (pmapi *PMApi) UpdateOneServerWeight(c echo.Context) error {
 	cret := server.UpdateOneServerWeight(pmapi.Apidb)
 	switch cret {
 	case 0:
-		return c.String(http.StatusOK, "OK")
+		return c.JSON(http.StatusOK, "OK")
 	case 1:
-		return c.String(http.StatusExpectationFailed, "UpdateOneServerWeight Failed")
+		return c.JSON(http.StatusExpectationFailed, "UpdateOneServerWeight Failed")
 	case 2:
-		return c.String(http.StatusExpectationFailed, "Server not exists")
+		return c.JSON(http.StatusExpectationFailed, "Server not exists")
 	default:
-		return c.String(http.StatusOK, "UpdateOneServerWeight ???")
+		return c.JSON(http.StatusOK, "UpdateOneServerWeight ???")
 	}
 }
 
@@ -498,13 +498,13 @@ func (pmapi *PMApi) UpdateOneServerMC(c echo.Context) error {
 	cret := server.UpdateOneServerMc(pmapi.Apidb)
 	switch cret {
 	case 0:
-		return c.String(http.StatusOK, "OK")
+		return c.JSON(http.StatusOK, "OK")
 	case 1:
-		return c.String(http.StatusExpectationFailed, "UpdateOneServerMc Failed")
+		return c.JSON(http.StatusExpectationFailed, "UpdateOneServerMc Failed")
 	case 2:
-		return c.String(http.StatusExpectationFailed, "Server not exists")
+		return c.JSON(http.StatusExpectationFailed, "Server not exists")
 	default:
-		return c.String(http.StatusOK, "UpdateOneServerMC ???")
+		return c.JSON(http.StatusOK, "UpdateOneServerMC ???")
 
 	}
 }
@@ -530,13 +530,13 @@ func (pmapi *PMApi) DeleteOneServers(c echo.Context) error {
 	cret := server.DeleteOneServers(pmapi.Apidb)
 	switch cret {
 	case 0:
-		return c.String(http.StatusOK, "OK")
+		return c.JSON(http.StatusOK, "OK")
 	case 1:
-		return c.String(http.StatusExpectationFailed, "DeleteOneServer Failed")
+		return c.JSON(http.StatusExpectationFailed, "DeleteOneServer Failed")
 	case 2:
-		return c.String(http.StatusExpectationFailed, "Server not exists")
+		return c.JSON(http.StatusExpectationFailed, "Server not exists")
 	default:
-		return c.String(http.StatusOK, "DeleteOneServers ???")
+		return c.JSON(http.StatusOK, "DeleteOneServers ???")
 
 	}
 }

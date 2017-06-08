@@ -208,7 +208,7 @@ func FindAllUserInfo(db *sql.DB, limit int64, skip int64) []Users {
 	}
 	defer rows.Close()
 	for rows.Next() {
-		//tmpusr = Users{}
+		tmpusr = Users{}
 		err = rows.Scan(
 			&tmpusr.Username,
 			&tmpusr.Password,

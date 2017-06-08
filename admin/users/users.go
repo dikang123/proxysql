@@ -14,7 +14,7 @@ package users
 import (
 	"database/sql"
 	"fmt"
-	"log"
+	//"log"
 	//	"os"
 )
 

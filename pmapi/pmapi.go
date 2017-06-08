@@ -9,6 +9,7 @@ import (
 	"log"
 	"net/http"
 	"proxysql-master/admin/servers"
+	"proxysql-master/admin/status"
 	"proxysql-master/admin/users"
 	"strconv"
 )
@@ -46,6 +47,9 @@ func (pmapi *PMApi) RegisterMiddleware() {
 }
 
 func (pmapi *PMApi) RegisterServices() {
+	/*Dashboard*/
+	pmapi.Echo.GET("/api/v1/status", pmapi.ListPStatus)
+
 	/*User Services*/
 	pmapi.Echo.GET("/api/v1/users", pmapi.ListAllUsers)
 	pmapi.Echo.GET("/api/v1/users/:username", pmapi.ListOneUser)
@@ -539,4 +543,10 @@ func (pmapi *PMApi) DeleteOneServers(c echo.Context) error {
 		return c.JSON(http.StatusOK, "DeleteOneServers ???")
 
 	}
+}
+
+func (pmapi *PMApi) ListPStatus(c echo.Context) error {
+	ps := new(status.PsStatus)
+
+	return c.JSON(http.StatusOK, ps.GetProxySqlStatus(pmapi.Apidb))
 }

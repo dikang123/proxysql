@@ -54,7 +54,7 @@ func (pmapi *PMApi) RegisterServices() {
 	pmapi.Echo.GET("/api/v1/users", pmapi.ListAllUsers)
 	pmapi.Echo.GET("/api/v1/users/:username", pmapi.ListOneUser)
 	pmapi.Echo.POST("/api/v1/users", pmapi.CreateUser)
-	pmapi.Echo.PUT("/api/v1/users/passwd", pmapi.UpdateOneUserStatus)
+	pmapi.Echo.PUT("/api/v1/users/passwd", pmapi.UpdateOneUserPass)
 	pmapi.Echo.PUT("/api/v1/users/status", pmapi.UpdateOneUserStatus)
 	pmapi.Echo.PUT("/api/v1/users/hostgroup", pmapi.UpdateOneUserDH)
 	pmapi.Echo.PUT("/api/v1/users/schema", pmapi.UpdateOneUserDS)

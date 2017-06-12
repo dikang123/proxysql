@@ -8,6 +8,7 @@ import (
 	mw "github.com/labstack/echo/middleware"
 	"log"
 	"net/http"
+	"os"
 	"proxysql-master/admin/servers"
 	"proxysql-master/admin/status"
 	"proxysql-master/admin/users"
@@ -15,13 +16,16 @@ import (
 )
 
 type PMApi struct {
-	PMuser  string
-	PMpass  string
-	PMhost  string
-	PMdb    string
-	PMdbi   string
-	Apidb   *sql.DB
-	ApiHost string
+	PMuser    string
+	PMpass    string
+	PMhost    string
+	PMdb      string
+	PMdbi     string
+	Apidb     *sql.DB
+	ApiHost   string
+	ApiLogfd  *os.File
+	ApiLogcwd string
+	ApiErr    error
 	*echo.Echo
 }
 

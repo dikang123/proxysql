@@ -169,7 +169,7 @@ func (ps *PsStatus) GetProxySqlStatus(db *sql.DB) PsStatus {
 		case "mysql_session_internal_bytes":
 			ps.Mysql_session_internal_bytes = tmp.Value
 		default:
-			//log.Fatal("GetProxySqlStatus()", err)
+			log.Print("GetProxySqlStatus()", err)
 			fmt.Println("??")
 		}
 	}

@@ -37,7 +37,7 @@ func (pmapi *PMApi) RegisterDBInterface() {
 	var err error
 	pmapi.Apidb, err = sql.Open("mysql", pmapi.PMdbi)
 	if err != nil {
-		log.Fatal("sql.Open()", err)
+		log.Print("sql.Open()", err)
 	}
 }
 

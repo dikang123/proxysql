@@ -29,7 +29,6 @@ func main() {
 		log.Fatal("Open Log File Failed", pmapiv1.ApiErr)
 	}
 	log.SetOutput(pmapiv1.ApiLogfd)
-	log.Printf("%s", "test")
 
 	pmapiv1.Echo = echo.New()
 	//e := pmapiv1.Echo

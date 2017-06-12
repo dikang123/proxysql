@@ -31,125 +31,125 @@ const (
 func ProxyReadOnly(db *sql.DB) {
 	_, err := db.Query(CmdProxyReadOnly)
 	if err != nil {
-		log.Fatal("ProxyReadOnly:", err)
+		log.Print("ProxyReadOnly:", err)
 	}
 }
 
 func ProxyReadWrite(db *sql.DB) {
 	_, err := db.Query(CmdProxyReadWrite)
 	if err != nil {
-		log.Fatal("ProxyReadWrite:", err)
+		log.Print("ProxyReadWrite:", err)
 	}
 }
 
 func ProxyStart(db *sql.DB) {
 	_, err := db.Query(CmdProxyStart)
 	if err != nil {
-		log.Fatal("ProxyStart:", err)
+		log.Print("ProxyStart:", err)
 	}
 }
 
 func ProxyRestart(db *sql.DB) {
 	_, err := db.Query(CmdProxyRestart)
 	if err != nil {
-		log.Fatal("ProxyRestart:", err)
+		log.Print("ProxyRestart:", err)
 	}
 }
 
 func ProxyStop(db *sql.DB) {
 	_, err := db.Query(CmdProxyStop)
 	if err != nil {
-		log.Fatal("ProxyStop:", err)
+		log.Print("ProxyStop:", err)
 	}
 }
 
 func ProxyPause(db *sql.DB) {
 	_, err := db.Query(CmdProxyPause)
 	if err != nil {
-		log.Fatal("ProxyPause:", err)
+		log.Print("ProxyPause:", err)
 	}
 }
 
 func ProxyResume(db *sql.DB) {
 	_, err := db.Query(CmdProxyResume)
 	if err != nil {
-		log.Fatal("ProxyResume:", err)
+		log.Print("ProxyResume:", err)
 	}
 }
 
 func ProxyShutdown(db *sql.DB) {
 	_, err := db.Query(CmdProxyShutdown)
 	if err != nil {
-		log.Fatal("ProxyShutdown:", err)
+		log.Print("ProxyShutdown:", err)
 	}
 }
 
 func ProxyFlushLogs(db *sql.DB) {
 	_, err := db.Query(CmdProxyFlushLogs)
 	if err != nil {
-		log.Fatal("ProxyFlushLogs:", err)
+		log.Print("ProxyFlushLogs:", err)
 	}
 }
 
 func ProxyKill(db *sql.DB) {
 	_, err := db.Query(CmdProxyKill)
 	if err != nil {
-		log.Fatal("ProxyKill:", err)
+		log.Print("ProxyKill:", err)
 	}
 }
 
 func LoadUserToRuntime(db *sql.DB) {
 	_, err := db.Query(CmdLoadUserToRuntime)
 	if err != nil {
-		log.Fatal("LoadUserToRuntime:", err)
+		log.Print("LoadUserToRuntime:", err)
 	}
 }
 
 func SaveUserToDisk(db *sql.DB) {
 	_, err := db.Query(CmdSaveUserToDisk)
 	if err != nil {
-		log.Fatal("SaveUserToDisk", err)
+		log.Print("SaveUserToDisk", err)
 	}
 }
 
 func LoadServerToRuntime(db *sql.DB) {
 	_, err := db.Query(CmdLoadServerToRuntime)
 	if err != nil {
-		log.Fatal("LoadServerToRuntime:", err)
+		log.Print("LoadServerToRuntime:", err)
 	}
 }
 
 func SaveServerToDisk(db *sql.DB) {
 	_, err := db.Query(CmdSaveServerToDisk)
 	if err != nil {
-		log.Fatal("SaveServerToDisk:", err)
+		log.Print("SaveServerToDisk:", err)
 	}
 }
 
 func LoadQueryRulesToRuntime(db *sql.DB) {
 	_, err := db.Query(CmdLoadQueryRulesToRuntime)
 	if err != nil {
-		log.Fatal("LoadQueryRulesToRuntime:", err)
+		log.Print("LoadQueryRulesToRuntime:", err)
 	}
 }
 
 func SaveQueryRulesToDisk(db *sql.DB) {
 	_, err := db.Query(CmdSaveQueryRulesToDisk)
 	if err != nil {
-		log.Fatal("SaveQueryRulesToDisk:", err)
+		log.Print("SaveQueryRulesToDisk:", err)
 	}
 }
 
 func LoadSchedulerToRuntime(db *sql.DB) {
 	_, err := db.Query(CmdLoadSchedulerToRuntime)
 	if err != nil {
-		log.Fatal("LoadSchedulerToRuntime:", err)
+		log.Print("LoadSchedulerToRuntime:", err)
 	}
 }
 
 func SaveSchedulerToDisk(db *sql.DB) {
 	_, err := db.Query(CmdSaveSchedulerToDisk)
 	if err != nil {
-		log.Fatal("SaveSchedulerToDisk:", err)
+		log.Print("SaveSchedulerToDisk:", err)
 	}
 }

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"log"
 	//"database/sql"
 	//"fmt"
 	//_ "github.com/go-sql-driver/mysql"
@@ -14,11 +15,21 @@ import (
 	//	"proxysql-master/admin/users"
 	//"os"
 	//"proxysql-master/admin/status"
+	"os"
+	"syscall"
 )
 
 func main() {
 	//var err error
 	pmapiv1 := new(pmapi.PMApi)
+
+	pmapiv1.ApiLogcwd = "/tmp/pm.log"
+	pmapiv1.ApiLogfd, pmapiv1.ApiErr = os.OpenFile(pmapiv1.ApiLogcwd, syscall.O_RDWR|syscall.O_CREAT|syscall.O_APPEND, 0755)
+	if pmapiv1.ApiErr != nil {
+		log.Fatal("Open Log File Failed", pmapiv1.ApiErr)
+	}
+	log.SetOutput(pmapiv1.ApiLogfd)
+	log.Printf("%s", "test")
 
 	pmapiv1.Echo = echo.New()
 	//e := pmapiv1.Echo

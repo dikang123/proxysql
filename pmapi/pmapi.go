@@ -319,7 +319,7 @@ func (pmapi *PMApi) UpdateOneUserMC(c echo.Context) error {
 func (pmapi *PMApi) UpdateOneUserPass(c echo.Context) error {
 	args := struct {
 		UserName string `json:"username"`
-		Password uint64 `json:"password"`
+		Password string `json:"password"`
 	}{}
 
 	user := new(users.Users)

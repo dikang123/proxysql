@@ -14,7 +14,7 @@ package users
 import (
 	"database/sql"
 	"fmt"
-	//"log"
+	"log"
 	//	"os"
 )
 
@@ -53,13 +53,13 @@ func (users *Users) UserExists(db *sql.DB) bool {
 	st := fmt.Sprintf(StmtUserExist, users.Username)
 	rows, err := db.Query(st)
 	if err != nil {
-		//log.Fatal("UserExists:", err)
+		log.Print("UserExists:", err)
 	}
 	var UserCount uint64
 	for rows.Next() {
 		err = rows.Scan(&UserCount)
 		if err != nil {
-			//log.Fatal("UserExists,Scan:", err)
+			log.Print("UserExists,Scan:", err)
 		}
 	}
 	if UserCount == 0 {
@@ -101,12 +101,12 @@ func (users *Users) ActiveOneUser(db *sql.DB) int {
 		st := fmt.Sprintf(StmtActiveOneUser, users.Username)
 		_, err := db.Query(st)
 		if err != nil {
-			//log.Fatal("ActiveOneUser:", err)
+			log.Print("ActiveOneUser:", err)
 			return 1
 		}
 		return 0
 	} else {
-		//log.Fatal("ActiveOneUser: User is not exists")
+		log.Print("ActiveOneUser: User is not exists")
 		return 2
 	}
 }
@@ -116,12 +116,12 @@ func (users *Users) DisactiveOneUser(db *sql.DB) int {
 		st := fmt.Sprintf(StmtDisactiveOneUser, users.Username)
 		_, err := db.Query(st)
 		if err != nil {
-			////log.Fatal("DisactiveOneUser:", err)
+			//log.Print("DisactiveOneUser:", err)
 			return 1
 		}
 		return 0
 	} else {
-		////log.Fatal("DisactiveOneUser: User is not exists")
+		//log.Print("DisactiveOneUser: User is not exists")
 		return 2
 	}
 }
@@ -131,12 +131,12 @@ func (users *Users) UpdateOneUserDh(db *sql.DB) int {
 		st := fmt.Sprintf(StmtUpdateOneUserDH, users.DefaultHostgroup, users.Username)
 		_, err := db.Query(st)
 		if err != nil {
-			//log.Fatal("UpdateOneUserDH()", err)
+			log.Print("UpdateOneUserDH()", err)
 			return 1
 		}
 		return 0
 	} else {
-		//log.Fatal("UpdateOneUserDH()", "User is not exists")
+		log.Print("UpdateOneUserDH()", "User is not exists")
 		return 2
 	}
 }
@@ -146,12 +146,12 @@ func (users *Users) UpdateOneUserPass(db *sql.DB) int {
 		st := fmt.Sprintf(StmtUpdateOneUserPass, users.Password, users.Username)
 		_, err := db.Query(st)
 		if err != nil {
-			//log.Fatal("UpdateOneUserPass()", err)
+			log.Print("UpdateOneUserPass()", err)
 			return 1
 		}
 		return 0
 	} else {
-		//log.Fatal("UpdateOneUserPass()", "User is not exists")
+		log.Print("UpdateOneUserPass()", "User is not exists")
 		return 2
 	}
 }
@@ -161,12 +161,12 @@ func (users *Users) UpdateOneUserDs(db *sql.DB) int {
 		st := fmt.Sprintf(StmtUpdateOneUserDs, users.DefaultSchema, users.Username)
 		_, err := db.Query(st)
 		if err != nil {
-			//log.Fatal("UpdateOneUserDs:", err)
+			log.Print("UpdateOneUserDs:", err)
 			return 1
 		}
 		return 0
 	} else {
-		//log.Fatal("UpdateOneUserDs: User is not exists")
+		log.Print("UpdateOneUserDs: User is not exists")
 		return 2
 	}
 }
@@ -176,12 +176,12 @@ func (users *Users) UpdateOneUserMc(db *sql.DB) int {
 		st := fmt.Sprintf(StmtUpdateOneUserMc, users.MaxConnections, users.Username)
 		_, err := db.Query(st)
 		if err != nil {
-			//log.Fatal("UpdateOneUserMc:", err)
+			log.Print("UpdateOneUserMc:", err)
 			return 1
 		}
 		return 0
 	} else {
-		//log.Fatal("UpdateOneUserMc: User is not exists")
+		log.Print("UpdateOneUserMc: User is not exists")
 		return 2
 	}
 }
@@ -191,7 +191,7 @@ func (users *Users) FindOneUserInfo(db *sql.DB) Users {
 		st := fmt.Sprintf(StmtFindOneUserInfo, users.Username)
 		rows, err := db.Query(st)
 		if err != nil {
-			//log.Fatal("UpdateOneUserMc:", err)
+			log.Print("UpdateOneUserMc:", err)
 		}
 		for rows.Next() {
 			err = rows.Scan(&users.Username,
@@ -208,7 +208,7 @@ func (users *Users) FindOneUserInfo(db *sql.DB) Users {
 				&users.MaxConnections)
 		}
 	} else {
-		//log.Fatal("UpdateOneUserMc: User is not exists")
+		log.Print("UpdateOneUserMc: User is not exists")
 	}
 	return *users
 }
@@ -220,7 +220,7 @@ func FindAllUserInfo(db *sql.DB, limit int64, skip int64) []Users {
 	QueryText = fmt.Sprintf(StmtFindAllUserInfo, limit, skip)
 	rows, err := db.Query(QueryText)
 	if err != nil {
-		//log.Fatal("FindAllUserInfo:", err)
+		log.Print("FindAllUserInfo:", err)
 	}
 	defer rows.Close()
 	for rows.Next() {

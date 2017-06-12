@@ -39,13 +39,13 @@ func (srvs *Servers) ServerExists(db *sql.DB) bool {
 	st := fmt.Sprintf(StmtServerExists, srvs.HostGroupId, srvs.HostName, srvs.Port)
 	rows, err := db.Query(st)
 	if err != nil {
-		log.Fatal("ServerExists:", err)
+		log.Print("ServerExists:", err)
 	}
 	var ServerCount uint64
 	for rows.Next() {
 		err = rows.Scan(&ServerCount)
 		if err != nil {
-			log.Fatal("ServerExists:", err)
+			log.Print("ServerExists:", err)
 		}
 	}
 	if ServerCount == 0 {
@@ -152,7 +152,7 @@ func (srvs *Servers) FindOneServersInfo(db *sql.DB) Servers {
 		st := fmt.Sprintf(StmtFindOneServer, srvs.HostGroupId, srvs.HostName, srvs.Port)
 		rows, err := db.Query(st)
 		if err != nil {
-			log.Fatal("FindOneServerInfo:", err)
+			log.Print("FindOneServerInfo:", err)
 		}
 		for rows.Next() {
 			err = rows.Scan(
@@ -170,7 +170,7 @@ func (srvs *Servers) FindOneServersInfo(db *sql.DB) Servers {
 			)
 		}
 	} else {
-		log.Fatal("FindOneServerInfo: Server not exists")
+		log.Print("FindOneServerInfo: Server not exists")
 	}
 	return *srvs
 }
@@ -181,7 +181,7 @@ func FindAllServerInfo(db *sql.DB) []Servers {
 
 	rows, err := db.Query(StmtFindAllServer)
 	if err != nil {
-		log.Fatal("FindAllServerInfo:", err)
+		log.Print("FindAllServerInfo:", err)
 	}
 
 	defer rows.Close()
@@ -213,7 +213,7 @@ func (srvs *Servers) FindServersInfoByHostgroup(db *sql.DB) []Servers {
 	st := fmt.Sprintf(StmtFindServersByHostgroup, srvs.HostGroupId)
 	rows, err := db.Query(st)
 	if err != nil {
-		log.Fatal("FindServersInfoByHostgroup:", err)
+		log.Print("FindServersInfoByHostgroup:", err)
 	}
 
 	defer rows.Close()

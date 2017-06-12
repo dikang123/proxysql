@@ -54,6 +54,7 @@ func (pmapi *PMApi) RegisterServices() {
 	pmapi.Echo.GET("/api/v1/users", pmapi.ListAllUsers)
 	pmapi.Echo.GET("/api/v1/users/:username", pmapi.ListOneUser)
 	pmapi.Echo.POST("/api/v1/users", pmapi.CreateUser)
+	pmapi.Echo.PUT("/api/v1/users/passwd", pmapi.UpdateOneUserStatus)
 	pmapi.Echo.PUT("/api/v1/users/status", pmapi.UpdateOneUserStatus)
 	pmapi.Echo.PUT("/api/v1/users/hostgroup", pmapi.UpdateOneUserDH)
 	pmapi.Echo.PUT("/api/v1/users/schema", pmapi.UpdateOneUserDS)
@@ -307,6 +308,35 @@ func (pmapi *PMApi) UpdateOneUserMC(c echo.Context) error {
 		return c.JSON(http.StatusOK, "OK")
 	case 1:
 		return c.JSON(http.StatusExpectationFailed, "UpdateOneUserMc Failed")
+	case 2:
+		return c.JSON(http.StatusExpectationFailed, "User not exists")
+	default:
+		return c.JSON(http.StatusExpectationFailed, "UpdateOneUserMc ???")
+
+	}
+}
+
+func (pmapi *PMApi) UpdateOneUserPass(c echo.Context) error {
+	args := struct {
+		UserName string `json:"username"`
+		Password uint64 `json:"password"`
+	}{}
+
+	user := new(users.Users)
+
+	if err := c.Bind(&args); err != nil {
+		return err
+	}
+
+	user.Username = args.UserName
+	user.Password = args.Password
+
+	cret := user.UpdateOneUserPass(pmapi.Apidb)
+	switch cret {
+	case 0:
+		return c.JSON(http.StatusOK, "OK")
+	case 1:
+		return c.JSON(http.StatusExpectationFailed, "UpdateOneUserPass Failed")
 	case 2:
 		return c.JSON(http.StatusExpectationFailed, "User not exists")
 	default:

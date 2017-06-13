@@ -108,6 +108,7 @@ func (ps *PsVariables) GetProxySqlVariables(db *sql.DB) PsVariables {
 	rows, err := db.Query(StmtGlobalVariables)
 	if err != nil {
 		log.Print("StmtGlobalVariables Msg:", err)
+		return PsVariables{}
 	}
 
 	for rows.Next() {
@@ -284,7 +285,7 @@ func (ps *PsVariables) GetProxySqlVariables(db *sql.DB) PsVariables {
 			log.Print("GetProxySqlVariables() ", tmp.VariablesName)
 		}
 	}
-	log.Print("GetProxySqlVariables tmp variables", *ps)
+	log.Printf("GetProxySqlVariables tmp variables =%#v", *ps)
 	return *ps
 
 }

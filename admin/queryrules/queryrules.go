@@ -96,7 +96,7 @@ func (qr *QueryRules) ActiveOneQr(db *sql.DB) int {
 //关闭一个查询规则
 func (qr *QueryRules) DisactiveOneQr(db *sql.DB) int {
 	st := fmt.Sprintf(StmtDisactiveOneQr, qr.Rule_id)
-	log.Print("DisactiveOneQr: ", err)
+	log.Print("DisactiveOneQr: ", st)
 	_, err := db.Query(st)
 	if err != nil {
 		log.Print("DisactiveOneQr: ", err)
@@ -133,7 +133,7 @@ func (qr *QueryRules) FindAllQr(db *sql.DB) int {
 
 //更新一个查询规则的用户名称
 func (qr *QueryRules) UpdateOneQrUn(db *sql.DB) int {
-	st := fmt.Sprintf(StmtUpdateOneUn, qr.Username, qr.Rule_id)
+	st := fmt.Sprintf(StmtUpdateOneQrUn, qr.Username, qr.Rule_id)
 	log.Print("UpdateOneQrUn: ", st)
 	_, err := db.Query(st)
 	if err != nil {

@@ -12,6 +12,7 @@ import (
 	"proxysql-master/admin/servers"
 	"proxysql-master/admin/status"
 	"proxysql-master/admin/users"
+	"proxysql-master/admin/variables"
 	"strconv"
 )
 
@@ -53,6 +54,7 @@ func (pmapi *PMApi) RegisterMiddleware() {
 func (pmapi *PMApi) RegisterServices() {
 	/*Dashboard*/
 	pmapi.Echo.GET("/api/v1/status", pmapi.ListPStatus)
+	pmapi.Echo.GET("/api/v1/variables", pmapi.ListPsVariables)
 
 	/*User Services*/
 	pmapi.Echo.GET("/api/v1/users", pmapi.ListAllUsers)
@@ -583,4 +585,10 @@ func (pmapi *PMApi) ListPStatus(c echo.Context) error {
 	ps := new(status.PsStatus)
 
 	return c.JSON(http.StatusOK, ps.GetProxySqlStatus(pmapi.Apidb))
+}
+
+func (pmapi *PMApi) ListPsVariables(c echo.Context) error {
+	ps := new(variables.PsVariables)
+
+	return c.JSON(http.StatusOK, ps.GetProxySqlVariables(pmapi.Apidb))
 }

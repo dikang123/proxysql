@@ -2,8 +2,8 @@ package status
 
 import (
 	"database/sql"
-	"fmt"
-	//	"log"
+	//"fmt"
+	"log"
 )
 
 type (
@@ -70,7 +70,7 @@ func (ps *PsStatus) GetProxySqlStatus(db *sql.DB) PsStatus {
 	var tmp Variables
 	rows, err := db.Query(StmtMySQLStatus)
 	if err != nil {
-		fmt.Println("???")
+		log.Print("db.Query", StmtMySQLStatus)
 	}
 	for rows.Next() {
 		tmp = Variables{}
@@ -169,8 +169,7 @@ func (ps *PsStatus) GetProxySqlStatus(db *sql.DB) PsStatus {
 		case "mysql_session_internal_bytes":
 			ps.Mysql_session_internal_bytes = tmp.Value
 		default:
-			log.Print("GetProxySqlStatus()", err)
-			fmt.Println("??")
+			log.Print("GetProxySqlStatus()", tmp.VariablesName)
 		}
 	}
 	return *ps

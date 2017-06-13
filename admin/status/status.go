@@ -75,6 +75,11 @@ func (ps *PsStatus) GetProxySqlStatus(db *sql.DB) PsStatus {
 	for rows.Next() {
 		tmp = Variables{}
 		err = rows.Scan(&tmp.VariablesName, &tmp.Value)
+		if err != nil {
+			log.Print("err = ", err)
+			return PsStatus{}
+		}
+
 		switch tmp.VariablesName {
 		case "Active_Transactions":
 			ps.Active_Transactions = tmp.Value
@@ -172,5 +177,6 @@ func (ps *PsStatus) GetProxySqlStatus(db *sql.DB) PsStatus {
 			log.Print("GetProxySqlStatus()", tmp.VariablesName)
 		}
 	}
+	log.Printf("GetProxySqlStatus = %#v", *ps)
 	return *ps
 }

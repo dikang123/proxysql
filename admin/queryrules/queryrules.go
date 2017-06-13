@@ -8,36 +8,37 @@ import (
 
 type (
 	QueryRules struct {
-		Rule_id               string `db:"Rule_id" json:"Rule_id"`
-		Active                string `db:"Active" json:"Active"`
-		Username              string `db:"Username" json:"Username"`
-		Schemaname            string `db:"Schemaname" json:"Schemaname"`
-		FlagIN                string `db:"FlagIN" json:"FlagIN"`
-		Client_addr           string `db:"Client_addr" json:"Client_addr"`
-		Proxy_addr            string `db:"Proxy_addr" json:"Proxy_addr"`
-		Proxy_port            string `db:"Proxy_port" json:"Proxy_port"`
-		Digest                string `db:"Digest" json:"Digest"`
-		Match_digest          string `db:"Match_digest" json:"Match_digest"`
-		Match_pattern         string `db:"Match_pattern" json:"Match_pattern"`
-		Negate_match_pattern  string `db:"Negate_match_pattern" json:"Negate_match_pattern"`
-		FlagOUT               string `db:"FlagOUT" json:"FlagOUT"`
-		Replace_pattern       string `db:"Replace_pattern" json:"Replace_pattern"`
-		Destination_hostgroup string `db:"Destination_hostgroup" json:"Destination_hostgroup"`
-		Cache_ttl             string `db:"Cache_ttl" json:"Cache_ttl"`
-		Reconnect             string `db:"Reconnect" json:"Reconnect"`
-		Timeout               string `db:"Timeout" json:"Timeout"`
-		Retries               string `db:"Retries" json:"Retries"`
-		Delay                 string `db:"Delay" json:"Delay"`
-		Mirror_flagOUT        string `db:"Mirror_flagOUT" json:"Mirror_flagOUT"`
-		Mirror_hostgroup      string `db:"Mirror_hostgroup" json:"Mirror_hostgroup"`
-		Error_msg             string `db:"Error_msg" json:"Error_msg"`
-		Log                   string `db:"Log" json:"Log"`
-		Apply                 string `db:"Apply" json:"Apply"`
-		Comment               string `db:"Comment" json:"Comment"`
+		Rule_id               int64  `db:"rule_id" json:"Rule_id"`
+		Active                int64  `db:"active" json:"Active"`
+		Username              string `db:"username" json:"Username"`
+		Schemaname            string `db:"schemaname" json:"Schemaname"`
+		FlagIN                string `db:"flagIN" json:"FlagIN"`
+		Client_addr           string `db:"client_addr" json:"Client_addr"`
+		Proxy_addr            string `db:"proxy_addr" json:"Proxy_addr"`
+		Proxy_port            string `db:"proxy_port" json:"Proxy_port"`
+		Digest                string `db:"digest" json:"Digest"`
+		Match_digest          string `db:"match_digest" json:"Match_digest"`
+		Match_pattern         string `db:"match_pattern" json:"Match_pattern"`
+		Negate_match_pattern  string `db:"negate_match_pattern" json:"Negate_match_pattern"`
+		FlagOUT               string `db:"flagOUT" json:"FlagOUT"`
+		Replace_pattern       string `db:"replace_pattern" json:"Replace_pattern"`
+		Destination_hostgroup int64  `db:"destination_hostgroup" json:"Destination_hostgroup"`
+		Cache_ttl             string `db:"cache_ttl" json:"Cache_ttl"`
+		Reconnect             string `db:"reconnect" json:"Reconnect"`
+		Timeout               string `db:"timeout" json:"Timeout"`
+		Retries               string `db:"retries" json:"Retries"`
+		Delay                 string `db:"delay" json:"Delay"`
+		Mirror_flagOUT        string `db:"mirror_flagOUT" json:"Mirror_flagOUT"`
+		Mirror_hostgroup      string `db:"mirror_hostgroup" json:"Mirror_hostgroup"`
+		Error_msg             string `db:"error_msg" json:"Error_msg"`
+		Log                   string `db:"log" json:"Log"`
+		Apply                 int64  `db:"apply" json:"Apply"`
+		Comment               string `db:"comment" json:"Comment"`
 	}
 )
 
 const (
+	StmtQrExists       = `SELECT COUNT(*) FROM mysql_query_rules WHERE rule_id = %d`
 	StmtAddOneQr       = `INSERT INTO mysql_query_rules(username) VALUES(%q)`
 	StmtDeleteOneQr    = `DELETE FROM mysql_query_rules WHERE rule_id = %d`
 	StmtActiveOneQr    = `UPDATE mysql_query_rules SET active =1 AND apply=1 WHERE rule_id=%d`
@@ -53,6 +54,29 @@ const (
 	StmtUpdateOneQrDh  = `UPDATE mysql_query_rules SET destination_hostgroup = %q WHERE rule_id = %d`
 	StmtUpdateOneQrEm  = `UPDATE mysql_query_rules SET error_msg = %q WHERE rule_id = %d`
 )
+
+//查询指定规则id是否存在
+func (qr *QueryRules) QrExists(db *sql.DB) int {
+	st := fmt.Sprintf(StmtQrExists, qr.Rule_id)
+	rows, err := db.Query(st)
+	if err != nil {
+		log.Print("QrExists: ", err)
+		return 2
+	}
+	var QrCount uint64
+	for rows.Next() {
+		err = rows.Scan(&QrCount)
+		if err != nil {
+			log.Print("QrExists rows.Next: ", err)
+			return 3
+		}
+	}
+	if QrCount == 0 {
+		return 0
+	} else {
+		return 1
+	}
+}
 
 //添加一个新的查询规则
 func (qr *QueryRules) AddOneQr(db *sql.DB) int {
@@ -107,28 +131,93 @@ func (qr *QueryRules) DisactiveOneQr(db *sql.DB) int {
 }
 
 //获取一个查询规则内容
-func (qr *QueryRules) FindOneQr(db *sql.DB) int {
+func (qr *QueryRules) FindOneQr(db *sql.DB) QueryRules {
+	var tmpqr QueryRules
 	st := fmt.Sprintf(StmtFindOneQr, qr.Rule_id)
 	log.Print("FindOneQr: ", st)
-	_, err := db.Query(st)
+	rows, err := db.Query(st)
 	if err != nil {
 		log.Print("FindOneQr: ", err)
-		return 1
 	}
 	log.Print("FindOneQr: Success")
-	return 0
+	for rows.Next() {
+		tmpqr = QueryRules{}
+		err = rows.Scan(
+			&tmpqr.Rule_id,
+			&tmpqr.Active,
+			&tmpqr.Username,
+			&tmpqr.Schemaname,
+			&tmpqr.FlagIN,
+			&tmpqr.Client_addr,
+			&tmpqr.Proxy_addr,
+			&tmpqr.Proxy_port,
+			&tmpqr.Digest,
+			&tmpqr.Match_digest,
+			&tmpqr.Match_pattern,
+			&tmpqr.Negate_match_pattern,
+			&tmpqr.FlagOUT,
+			&tmpqr.Replace_pattern,
+			&tmpqr.Destination_hostgroup,
+			&tmpqr.Cache_ttl,
+			&tmpqr.Reconnect,
+			&tmpqr.Timeout,
+			&tmpqr.Retries,
+			&tmpqr.Delay,
+			&tmpqr.Mirror_flagOUT,
+			&tmpqr.Mirror_hostgroup,
+			&tmpqr.Error_msg,
+			&tmpqr.Log,
+			&tmpqr.Apply,
+			&tmpqr.Comment,
+		)
+	}
+	log.Print("FindOneQr: Success")
+	return tmpqr
 }
 
 //获取所有查询规则的内容
-func (qr *QueryRules) FindAllQr(db *sql.DB) int {
+func (qr *QueryRules) FindAllQr(db *sql.DB) []QueryRules {
+	var AllQr []QueryRules
+	var tmpqr QueryRules
 	log.Print("FindAllQr:", StmtFindAllQr)
-	_, err := db.Query(StmtFindAllQr)
+	rows, err := db.Query(StmtFindAllQr)
 	if err != nil {
 		log.Print("FindAllQr: ", err)
-		return 1
 	}
 	log.Print("FindAllQr: Success")
-	return 0
+	for rows.Next() {
+		tmpqr = QueryRules{}
+		err = rows.Scan(
+			&tmpqr.Rule_id,
+			&tmpqr.Active,
+			&tmpqr.Username,
+			&tmpqr.Schemaname,
+			&tmpqr.FlagIN,
+			&tmpqr.Client_addr,
+			&tmpqr.Proxy_addr,
+			&tmpqr.Proxy_port,
+			&tmpqr.Digest,
+			&tmpqr.Match_digest,
+			&tmpqr.Match_pattern,
+			&tmpqr.Negate_match_pattern,
+			&tmpqr.FlagOUT,
+			&tmpqr.Replace_pattern,
+			&tmpqr.Destination_hostgroup,
+			&tmpqr.Cache_ttl,
+			&tmpqr.Reconnect,
+			&tmpqr.Timeout,
+			&tmpqr.Retries,
+			&tmpqr.Delay,
+			&tmpqr.Mirror_flagOUT,
+			&tmpqr.Mirror_hostgroup,
+			&tmpqr.Error_msg,
+			&tmpqr.Log,
+			&tmpqr.Apply,
+			&tmpqr.Comment,
+		)
+		AllQr = append(AllQr, tmpqr)
+	}
+	return AllQr
 }
 
 //更新一个查询规则的用户名称

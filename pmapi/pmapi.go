@@ -596,10 +596,18 @@ func (pmapi *PMApi) ListPsVariables(c echo.Context) error {
 
 //查询出所有查询规则
 func (pmapi *PMApi) ListAllQueryRules(c echo.Context) error {
-	return c.JSON(http.StatusOK, queryrules.FindAllQr(pmapi.Apidb))
+	qr := new(queryrules.QueryRules)
+	return c.JSON(http.StatusOK, qr.FindAllQr(pmapi.Apidb))
 }
 
-func (pmapi *PMApi) ListOneQueryRule(c echo.Context) error { return c.JSON(http.StatusOK, "OK") }
+func (pmapi *PMApi) ListOneQueryRule(c echo.Context) error {
+	qr := new(queryrules.QueryRules)
+	if err := c.Bind(qr); err != nil {
+		return err
+	}
+	qr.Rule_id, _ = strconv.ParseInt(c.Param("ruleid"), 10, 64)
+	return c.JSON(http.StatusOK, qr.FindOneQr(pmapi.Apidb))
+}
 func (pmapi *PMApi) CreateQueryRules(c echo.Context) error { return c.JSON(http.StatusOK, "OK") }
 func (pmapi *PMApi) UpdateOneQueryRulesStatus(c echo.Context) error {
 	return c.JSON(http.StatusOK, "OK")

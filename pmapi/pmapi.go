@@ -9,6 +9,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"proxysql-master/admin/queryrules"
 	"proxysql-master/admin/servers"
 	"proxysql-master/admin/status"
 	"proxysql-master/admin/users"
@@ -78,21 +79,19 @@ func (pmapi *PMApi) RegisterServices() {
 	pmapi.Echo.DELETE("/api/v1/servers", pmapi.DeleteOneServers)
 
 	/*Query Rules*/
-	/*
-		pmapi.Echo.GET("/api/v1/queryrules", pmapi.ListAllQueryRules)
-		pmapi.Echo.POST("/api/v1/queryrules", pmapi.CreateQueryRules)
-		pmapi.Echo.PUT("/api/v1/queryrules/status/:ruleid", pmapi.UpdateOneQueryRulesStatus)
-		pmapi.Echo.PUT("/api/v1/queryrules/username/:ruleid", pmapi.UpdateOneQueryRulesUser)
-		pmapi.Echo.PUT("/api/v1/queryrules/schemaname/:ruleid", pmapi.UpdateOneQueryRulesSchema)
-		pmapi.Echo.PUT("/api/v1/queryrules/clientaddr/:ruleid", pmapi.UpdateOneQueryRulesClient)
-		pmapi.Echo.PUT("/api/v1/queryrules/digest/:ruleid", pmapi.UpdateOneQueryRulesDigest)
-		pmapi.Echo.PUT("/api/v1/queryrules/matchdigest/:ruleid", pmapi.UpdateOneQueryRulesMatchDigest)
-		pmapi.Echo.PUT("/api/v1/queryrules/matchpattern/:ruleid", pmapi.UpdateOneQueryRulesMatchPattern)
-		pmapi.Echo.PUT("/api/v1/queryrules/replacepattern/:ruleid", pmapi.UpdateOneQueryRulesReplacePattern)
-		pmapi.Echo.PUT("/api/v1/queryrules/desthostgroup/:ruleid", pmapi.UpdateOneQueryRulesDestHostgroup)
-		pmapi.Echo.PUT("/api/v1/queryrules/errmsg/:ruleid", pmapi.UpdateOneQueryRulesErrmsg)
-		pmapi.Echo.DELETE("/api/v1/queryrules/:id", pmapi.DeleteOneQueryRules)
-	*/
+	pmapi.Echo.GET("/api/v1/queryrules", pmapi.ListAllQueryRules)
+	pmapi.Echo.GET("/api/v1/queryrules/:ruleid", pmapi.ListOneQueryRule)
+	pmapi.Echo.POST("/api/v1/queryrules", pmapi.CreateQueryRules)
+	pmapi.Echo.PUT("/api/v1/queryrules/status/:ruleid", pmapi.UpdateOneQueryRulesStatus)
+	pmapi.Echo.PUT("/api/v1/queryrules/username/:ruleid", pmapi.UpdateOneQueryRulesUser)
+	pmapi.Echo.PUT("/api/v1/queryrules/schemaname/:ruleid", pmapi.UpdateOneQueryRulesSchema)
+	pmapi.Echo.PUT("/api/v1/queryrules/clientaddr/:ruleid", pmapi.UpdateOneQueryRulesClient)
+	pmapi.Echo.PUT("/api/v1/queryrules/matchdigest/:ruleid", pmapi.UpdateOneQueryRulesMatchDigest)
+	pmapi.Echo.PUT("/api/v1/queryrules/matchpattern/:ruleid", pmapi.UpdateOneQueryRulesMatchPattern)
+	pmapi.Echo.PUT("/api/v1/queryrules/replacepattern/:ruleid", pmapi.UpdateOneQueryRulesReplacePattern)
+	pmapi.Echo.PUT("/api/v1/queryrules/desthostgroup/:ruleid", pmapi.UpdateOneQueryRulesDestHostgroup)
+	pmapi.Echo.PUT("/api/v1/queryrules/errmsg/:ruleid", pmapi.UpdateOneQueryRulesErrmsg)
+	pmapi.Echo.DELETE("/api/v1/queryrules/:id", pmapi.DeleteOneQueryRules)
 
 	/*Scheduler*/
 	/*
@@ -592,3 +591,5 @@ func (pmapi *PMApi) ListPsVariables(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, ps.GetProxySqlVariables(pmapi.Apidb))
 }
+
+func (pmapi *PMApi) AddOneQr() {}

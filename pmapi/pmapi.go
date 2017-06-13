@@ -580,16 +580,50 @@ func (pmapi *PMApi) DeleteOneServers(c echo.Context) error {
 	}
 }
 
+//查询出ProxySQL状态信息
 func (pmapi *PMApi) ListPStatus(c echo.Context) error {
 	ps := new(status.PsStatus)
 
 	return c.JSON(http.StatusOK, ps.GetProxySqlStatus(pmapi.Apidb))
 }
 
+//查询出所有变量的内容
 func (pmapi *PMApi) ListPsVariables(c echo.Context) error {
 	ps := new(variables.PsVariables)
 
 	return c.JSON(http.StatusOK, ps.GetProxySqlVariables(pmapi.Apidb))
 }
 
-func (pmapi *PMApi) AddOneQr() {}
+//查询出所有查询规则
+func (pmapi *PMApi) ListAllQueryRules(c echo.Context) error {
+	return c.JSON(http.StatusOK, queryrules.FindAllQr(pmapi.Apidb))
+}
+
+func (pmapi *PMApi) ListOneQueryRule(c echo.Context) error { return c.JSON(http.StatusOK, "OK") }
+func (pmapi *PMApi) CreateQueryRules(c echo.Context) error { return c.JSON(http.StatusOK, "OK") }
+func (pmapi *PMApi) UpdateOneQueryRulesStatus(c echo.Context) error {
+	return c.JSON(http.StatusOK, "OK")
+}
+func (pmapi *PMApi) UpdateOneQueryRulesUser(c echo.Context) error { return c.JSON(http.StatusOK, "OK") }
+func (pmapi *PMApi) UpdateOneQueryRulesSchema(c echo.Context) error {
+	return c.JSON(http.StatusOK, "OK")
+}
+func (pmapi *PMApi) UpdateOneQueryRulesClient(c echo.Context) error {
+	return c.JSON(http.StatusOK, "OK")
+}
+func (pmapi *PMApi) UpdateOneQueryRulesMatchDigest(c echo.Context) error {
+	return c.JSON(http.StatusOK, "OK")
+}
+func (pmapi *PMApi) UpdateOneQueryRulesMatchPattern(c echo.Context) error {
+	return c.JSON(http.StatusOK, "OK")
+}
+func (pmapi *PMApi) UpdateOneQueryRulesReplacePattern(c echo.Context) error {
+	return c.JSON(http.StatusOK, "OK")
+}
+func (pmapi *PMApi) UpdateOneQueryRulesDestHostgroup(c echo.Context) error {
+	return c.JSON(http.StatusOK, "OK")
+}
+func (pmapi *PMApi) UpdateOneQueryRulesErrmsg(c echo.Context) error {
+	return c.JSON(http.StatusOK, "OK")
+}
+func (pmapi *PMApi) DeleteOneQueryRules(c echo.Context) error { return c.JSON(http.StatusOK, "OK") }

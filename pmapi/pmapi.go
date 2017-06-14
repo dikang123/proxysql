@@ -597,18 +597,35 @@ func (pmapi *PMApi) ListPsVariables(c echo.Context) error {
 //查询出所有查询规则
 func (pmapi *PMApi) ListAllQueryRules(c echo.Context) error {
 	qr := new(queryrules.QueryRules)
-	return c.JSON(http.StatusOK, qr.FindAllQr(pmapi.Apidb))
+	ret, err := qr.FindAllQr(pmapi.Apidb)
+	if err != nil {
+		log.Print("ListAllQueryRules->qr.FindAllQr ", err)
+		return c.JSON(http.StatusExpectationFailed, "ListAllQueryRules ExpectationFailed")
+	}
+	return c.JSON(http.StatusOK, ret)
 }
 
+//查询出一个规则的内容
 func (pmapi *PMApi) ListOneQueryRule(c echo.Context) error {
 	qr := new(queryrules.QueryRules)
 	if err := c.Bind(qr); err != nil {
 		return err
 	}
 	qr.Rule_id, _ = strconv.ParseInt(c.Param("ruleid"), 10, 64)
-	return c.JSON(http.StatusOK, qr.FindOneQr(pmapi.Apidb))
+	log.Print("ListOneQueryRule->qr.Rule_id = ", qr.Rule_id)
+
+	ret, err := qr.FindOneQr(pmapi.Apidb)
+	if err != nil {
+		log.Print("ListOneQueryRules: ", err)
+		return c.JSON(http.StatusExpectationFailed, "QueryRuler Exec Error")
+	}
+
+	return c.JSON(http.StatusOK, ret)
 }
-func (pmapi *PMApi) CreateQueryRules(c echo.Context) error { return c.JSON(http.StatusOK, "OK") }
+
+func (pmapi *PMApi) CreateQueryRules(c echo.Context) error {
+	return c.JSON(http.StatusOK, "OK")
+}
 func (pmapi *PMApi) UpdateOneQueryRulesStatus(c echo.Context) error {
 	return c.JSON(http.StatusOK, "OK")
 }

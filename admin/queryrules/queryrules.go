@@ -2,6 +2,7 @@ package queryrules
 
 import (
 	"database/sql"
+	"errors"
 	"fmt"
 	"log"
 )
@@ -131,13 +132,22 @@ func (qr *QueryRules) DisactiveOneQr(db *sql.DB) int {
 }
 
 //获取一个查询规则内容
-func (qr *QueryRules) FindOneQr(db *sql.DB) QueryRules {
+func (qr *QueryRules) FindOneQr(db *sql.DB) (QueryRules, error) {
+	if qr.QrExists(db) == 2 {
+		log.Print("FindOneQr->QrExists == 2")
+		return QueryRules{}, errors.New("QueryRuler Exec Error")
+	}
+	if qr.QrExists(db) == 0 {
+		log.Print("FindOneQr->QrExists == 0")
+		return QueryRules{}, errors.New("Query Rules Not Exists")
+	}
 	var tmpqr QueryRules
 	st := fmt.Sprintf(StmtFindOneQr, qr.Rule_id)
 	log.Print("FindOneQr: ", st)
 	rows, err := db.Query(st)
 	if err != nil {
 		log.Print("FindOneQr: ", err)
+		return QueryRules{}, err
 	}
 	log.Print("FindOneQr: Success")
 	for rows.Next() {
@@ -172,17 +182,18 @@ func (qr *QueryRules) FindOneQr(db *sql.DB) QueryRules {
 		)
 	}
 	log.Print("FindOneQr: Success")
-	return tmpqr
+	return tmpqr, nil
 }
 
 //获取所有查询规则的内容
-func (qr *QueryRules) FindAllQr(db *sql.DB) []QueryRules {
+func (qr *QueryRules) FindAllQr(db *sql.DB) ([]QueryRules, error) {
 	var AllQr []QueryRules
 	var tmpqr QueryRules
 	log.Print("FindAllQr:", StmtFindAllQr)
 	rows, err := db.Query(StmtFindAllQr)
 	if err != nil {
 		log.Print("FindAllQr: ", err)
+		return []QueryRules{}, errors.New("FindAllQr db.Query Exec Error")
 	}
 	log.Print("FindAllQr: Success")
 	for rows.Next() {
@@ -217,7 +228,7 @@ func (qr *QueryRules) FindAllQr(db *sql.DB) []QueryRules {
 		)
 		AllQr = append(AllQr, tmpqr)
 	}
-	return AllQr
+	return AllQr, nil
 }
 
 //更新一个查询规则的用户名称

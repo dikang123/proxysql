@@ -742,19 +742,133 @@ func (pmapi *PMApi) UpdateOneQueryRulesClient(c echo.Context) error {
 	return c.JSON(http.StatusOK, "OK")
 }
 
+//更新查询规则的match_digest列
 func (pmapi *PMApi) UpdateOneQueryRulesMatchDigest(c echo.Context) error {
+	args := struct {
+		RuleId      int64  `json:"rule_id"`
+		MatchDigest string `json:"match_digest"`
+	}{}
+
+	qr := new(queryrules.QueryRules)
+	if err := c.Bind(&args); err != nil {
+		log.Print("UpdateOneQueryRulesMatchDigest->c.Bind :", err)
+		return err
+	}
+
+	qr.Rule_id = args.RuleId
+	qr.Match_digest = args.MatchDigest
+
+	qret := qr.UpdateOneQrMd(pmapi.Apidb)
+	if qret == 1 {
+		log.Print("UpdateOneQueryRulesMatchDigest->qr.UpdateOneQrMd Error")
+		return c.JSON(http.StatusExpectationFailed, "UpdateOneQueryRulesMatchDigest->qr.UpdateOneQrMd Error")
+	}
 	return c.JSON(http.StatusOK, "OK")
 }
+
+//更新规则匹配内容
 func (pmapi *PMApi) UpdateOneQueryRulesMatchPattern(c echo.Context) error {
+	args := struct {
+		RuleId       int64  `json:"rule_id"`
+		MatchPattern string `json:"match_pattern"`
+	}{}
+
+	qr := new(queryrules.QueryRules)
+	if err := c.Bind(&args); err != nil {
+		log.Print("UpdateOneQueryRulesMatchPattern->c.Bind ", err)
+		return err
+	}
+
+	qr.Rule_id = args.RuleId
+	qr.Match_pattern = args.MatchPattern
+
+	qret := qr.UpdateOneQrMp(pmapi.Apidb)
+	if qret == 1 {
+		log.Print("UpdateOneQueryRulesMatchPattern->qr.UpdateOneQrMp Error")
+		return c.JSON(http.StatusExpectationFailed, "UpdateOneQueryRulesMatchPattern->qr.UpdateOneQrMp Error")
+	}
 	return c.JSON(http.StatusOK, "OK")
 }
+
+//更新替换内容
 func (pmapi *PMApi) UpdateOneQueryRulesReplacePattern(c echo.Context) error {
+	args := struct {
+		RuleId         int64  `json:"rule_id"`
+		ReplacePattern string `json:"replace_pattern"`
+	}{}
+
+	qr := new(queryrules.QueryRules)
+	if err := c.Bind(&args); err != nil {
+		log.Print("UpdateOneQueryRulesReplacePattern->c.Bind ", err)
+		return err
+	}
+
+	qr.Rule_id = args.RuleId
+	qr.Replace_pattern = args.ReplacePattern
+
+	qret := qr.UpdateOneQrRp(pmapi.Apidb)
+	if qret == 1 {
+		log.Print("UpdateOneQueryRulesReplacePattern->qr.UpdateOneQrRp Error")
+		return c.JSON(http.StatusExpectationFailed, "UpdateOneQueryRulesReplacePattern->qr.UpdateOneQrRp Error")
+	}
 	return c.JSON(http.StatusOK, "OK")
 }
+
+//更新规则的默认主机组
 func (pmapi *PMApi) UpdateOneQueryRulesDestHostgroup(c echo.Context) error {
+	args := struct {
+		RuleId               int64 `json:"rule_id"`
+		DestinationHostgroup int64 `json:"destination_hostgroup"`
+	}{}
+
+	qr := new(queryrules.QueryRules)
+	if err := c.Bind(&args); err != nil {
+		log.Print("UpdateOneQueryRulesDestHostgroup->c.Bind ", err)
+		return err
+	}
+
+	qr.Rule_id = args.RuleId
+	qr.Destination_hostgroup = args.DestinationHostgroup
+
+	qret := qr.UpdateOneQrDh(pmapi.Apidb)
+	if qret == 1 {
+		log.Print("UpdateOneQueryRulesDestHostgroup->qr.UpdateOneQrDh Error")
+		return c.JSON(http.StatusExpectationFailed, "UpdateOneQueryRulesDestHostgroup->qr.UpdateOneQrDh  Error")
+	}
 	return c.JSON(http.StatusOK, "OK")
 }
+
+//更新一个规则的错误消息内容
 func (pmapi *PMApi) UpdateOneQueryRulesErrmsg(c echo.Context) error {
+	args := struct {
+		RuleId int64  `json:"rule_id"`
+		ErrMsg string `json:"error_msg"`
+	}{}
+
+	qr := new(queryrules.QueryRules)
+	if err := c.Bind(&args); err != nil {
+		log.Print("UpdateOneQueryRulesErrmsg->c.Bind ", err)
+		return err
+	}
+
+	qr.Rule_id = args.RuleId
+	qr.Error_msg = args.ErrMsg
+
+	qret := qr.UpdateOneQrEm(pmapi.Apidb)
+	if qret == 1 {
+		log.Print("UpdateOneQueryRulesErrmsg->qr.UpdateOneQrEm Error")
+		return c.JSON(http.StatusExpectationFailed, "UpdateOneQueryRulesErrmsg->qr.UpdateOneQrEm Error")
+	}
 	return c.JSON(http.StatusOK, "OK")
 }
-func (pmapi *PMApi) DeleteOneQueryRules(c echo.Context) error { return c.JSON(http.StatusOK, "OK") }
+
+func (pmapi *PMApi) DeleteOneQueryRules(c echo.Context) error {
+	qr := new(queryrules.QueryRules)
+	qr.Rule_id, _ = strconv.ParseInt(c.Param("ruleid"), 10, 64)
+	qret := qr.DeleteOneQr(pmqpi.Apidb)
+	if qret == 1 {
+		log.Print("DeleteOneQueryRules->qr.DeleteOneQr Error")
+		return c.JSON(http.StatusExpectationFailed, "DeleteOneQueryRules->qr.DeleteOneQr Error")
+	}
+	return c.JSON(http.StatusOK, "OK")
+}

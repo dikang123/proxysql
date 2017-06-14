@@ -718,9 +718,30 @@ func (pmapi *PMApi) UpdateOneQueryRulesSchema(c echo.Context) error {
 	return c.JSON(http.StatusOK, "OK")
 }
 
+//更新一个规则的客户端地址
 func (pmapi *PMApi) UpdateOneQueryRulesClient(c echo.Context) error {
+	args := struct {
+		RuleId     int64  `json:"rule_id"`
+		ClientAddr string `json:"client_addr"`
+	}{}
+
+	qr := new(queryrules.QueryRules)
+	if err := c.Bind(&args); err != nil {
+		log.Print("UpdateOneQueryRulesClient->c.Bind ", err)
+		return err
+	}
+
+	qr.Rule_id = args.RuleId
+	qr.Client_addr = args.ClientAddr
+
+	qret := qr.UpdateOneQrCa(pmapi.Apidb)
+	if qret == 1 {
+		log.Print("UpdateOneQueryRulesClient->UpdateOneQrCa Error")
+		return c.JSON(http.StatusExpectationFailed, "UpdateOneQueryRulesClient->qr.UpdateOneQrCa  Error")
+	}
 	return c.JSON(http.StatusOK, "OK")
 }
+
 func (pmapi *PMApi) UpdateOneQueryRulesMatchDigest(c echo.Context) error {
 	return c.JSON(http.StatusOK, "OK")
 }

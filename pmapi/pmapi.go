@@ -82,16 +82,16 @@ func (pmapi *PMApi) RegisterServices() {
 	pmapi.Echo.GET("/api/v1/queryrules", pmapi.ListAllQueryRules)
 	pmapi.Echo.GET("/api/v1/queryrules/:ruleid", pmapi.ListOneQueryRule)
 	pmapi.Echo.POST("/api/v1/queryrules", pmapi.CreateQueryRules)
-	pmapi.Echo.PUT("/api/v1/queryrules/status/:ruleid", pmapi.UpdateOneQueryRulesStatus)
-	pmapi.Echo.PUT("/api/v1/queryrules/username/:ruleid", pmapi.UpdateOneQueryRulesUser)
-	pmapi.Echo.PUT("/api/v1/queryrules/schemaname/:ruleid", pmapi.UpdateOneQueryRulesSchema)
-	pmapi.Echo.PUT("/api/v1/queryrules/clientaddr/:ruleid", pmapi.UpdateOneQueryRulesClient)
-	pmapi.Echo.PUT("/api/v1/queryrules/matchdigest/:ruleid", pmapi.UpdateOneQueryRulesMatchDigest)
-	pmapi.Echo.PUT("/api/v1/queryrules/matchpattern/:ruleid", pmapi.UpdateOneQueryRulesMatchPattern)
-	pmapi.Echo.PUT("/api/v1/queryrules/replacepattern/:ruleid", pmapi.UpdateOneQueryRulesReplacePattern)
-	pmapi.Echo.PUT("/api/v1/queryrules/desthostgroup/:ruleid", pmapi.UpdateOneQueryRulesDestHostgroup)
-	pmapi.Echo.PUT("/api/v1/queryrules/errmsg/:ruleid", pmapi.UpdateOneQueryRulesErrmsg)
-	pmapi.Echo.DELETE("/api/v1/queryrules/:id", pmapi.DeleteOneQueryRules)
+	pmapi.Echo.PUT("/api/v1/queryrules/status", pmapi.UpdateOneQueryRulesStatus)
+	pmapi.Echo.PUT("/api/v1/queryrules/username", pmapi.UpdateOneQueryRulesUser)
+	pmapi.Echo.PUT("/api/v1/queryrules/schemaname", pmapi.UpdateOneQueryRulesSchema)
+	pmapi.Echo.PUT("/api/v1/queryrules/clientaddr", pmapi.UpdateOneQueryRulesClient)
+	pmapi.Echo.PUT("/api/v1/queryrules/matchdigest", pmapi.UpdateOneQueryRulesMatchDigest)
+	pmapi.Echo.PUT("/api/v1/queryrules/matchpattern", pmapi.UpdateOneQueryRulesMatchPattern)
+	pmapi.Echo.PUT("/api/v1/queryrules/replacepattern", pmapi.UpdateOneQueryRulesReplacePattern)
+	pmapi.Echo.PUT("/api/v1/queryrules/desthostgroup", pmapi.UpdateOneQueryRulesDestHostgroup)
+	pmapi.Echo.PUT("/api/v1/queryrules/errmsg", pmapi.UpdateOneQueryRulesErrmsg)
+	pmapi.Echo.DELETE("/api/v1/queryrules/:ruleid", pmapi.DeleteOneQueryRules)
 
 	/*Scheduler*/
 	/*
@@ -624,11 +624,53 @@ func (pmapi *PMApi) ListOneQueryRule(c echo.Context) error {
 }
 
 func (pmapi *PMApi) CreateQueryRules(c echo.Context) error {
+
+	args := struct {
+		UserName string `json:"username"`
+	}{}
+
+	qr := new(queryrules.QueryRules)
+	if err := c.Bind(&args); err != nil {
+		return err
+	}
+
+	qr.Username = args.UserName
+	log.Print("CreateQueryRules: ", qr)
+
+	cret := qr.AddOneQr(pmapi.Apidb)
+	if cret == 1 {
+		return c.JSON(http.StatusExpectationFailed, "CreateQueryRules->AddOneQr->db.Query error")
+	}
 	return c.JSON(http.StatusOK, "OK")
 }
+
 func (pmapi *PMApi) UpdateOneQueryRulesStatus(c echo.Context) error {
-	return c.JSON(http.StatusOK, "OK")
+	args := struct {
+		RuleId int64 `json:"rule_id"`
+		Status int64 `json:"status"`
+	}{}
+
+	qr := new(queryrules.QueryRules)
+	if err := c.Bind(&args); err != nil {
+		log.Print("UpdateOneQueryRulesStatus->c.Bind ", err)
+		return err
+	}
+
+	qr.Rule_id = args.RuleId
+	if args.Status == 0 {
+		qret := qr.DisactiveOneQr(pmapi.Apidb)
+		if qret == 1 {
+			return c.JSON(http.StatusExpectationFailed, "UpdateOneQueryRulesStatus->DisactiveOneQr error")
+		}
+		return c.JSON(http.StatusOK, "Disactive OK")
+	}
+	qret := qr.ActiveOneQr(pmapi.Apidb)
+	if qret == 1 {
+		return c.JSON(http.StatusExpectationFailed, "UpdateOneQueryRulesStatus->ActiveOneQr error")
+	}
+	return c.JSON(http.StatusOK, "Active OK")
 }
+
 func (pmapi *PMApi) UpdateOneQueryRulesUser(c echo.Context) error { return c.JSON(http.StatusOK, "OK") }
 func (pmapi *PMApi) UpdateOneQueryRulesSchema(c echo.Context) error {
 	return c.JSON(http.StatusOK, "OK")

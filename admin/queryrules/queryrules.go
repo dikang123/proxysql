@@ -43,7 +43,7 @@ const (
 	StmtAddOneQr       = `INSERT INTO mysql_query_rules(username) VALUES(%q)`
 	StmtDeleteOneQr    = `DELETE FROM mysql_query_rules WHERE rule_id = %d`
 	StmtActiveOneQr    = `UPDATE mysql_query_rules SET active =1 AND apply=1 WHERE rule_id=%d`
-	StmtDisactiveOneQr = `UPDATE mysql_query_rules SET active 0 AND  apply=0 WHERE rule_id=%d`
+	StmtDisactiveOneQr = `UPDATE mysql_query_rules SET active =0 AND  apply=0 WHERE rule_id=%d`
 	StmtFindOneQr      = `SELECT * FROM mysql_query_rules WHERE rule_id = %d`
 	StmtFindAllQr      = `SELECT * FROM mysql_query_rules`
 	StmtUpdateOneQrUn  = `UPDATE mysql_query_rules SET username =%q WHERE rule_id = %d`

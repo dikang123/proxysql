@@ -671,7 +671,30 @@ func (pmapi *PMApi) UpdateOneQueryRulesStatus(c echo.Context) error {
 	return c.JSON(http.StatusOK, "Active OK")
 }
 
-func (pmapi *PMApi) UpdateOneQueryRulesUser(c echo.Context) error { return c.JSON(http.StatusOK, "OK") }
+//更新一个查询规则中的用户名
+func (pmapi *PMApi) UpdateOneQueryRulesUser(c echo.Context) error {
+	args := struct {
+		RuleId   int64  `json:"rule_id"`
+		Username string `json:"username"`
+	}{}
+
+	qr := new(queryrules.QueryRules)
+	if err := c.Bind(&args); err != nil {
+		log.Print("UpdateOneQueryRulesUser->c.Bind ", err)
+		return err
+	}
+
+	qr.Rule_id = args.RuleId
+	qr.Username = args.Username
+
+	qret := qr.UpdateOneQrUn(pmapi.Apidb)
+	if qret == 1 {
+		log.Print("UpdateOneQueryRulesUser->qr.UpdateOneQrUn err")
+		return c.JSON(http.StatusExpectationFailed, "UpdateOneQueryRulesUser Error")
+	}
+	return c.JSON(http.StatusOK, "OK")
+}
+
 func (pmapi *PMApi) UpdateOneQueryRulesSchema(c echo.Context) error {
 	return c.JSON(http.StatusOK, "OK")
 }

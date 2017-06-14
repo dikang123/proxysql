@@ -44,8 +44,8 @@ const (
 	StmtDeleteOneQr    = `DELETE FROM mysql_query_rules WHERE rule_id = %d`
 	StmtActiveOneQr    = `UPDATE mysql_query_rules SET active =1 AND apply=1 WHERE rule_id=%d`
 	StmtDisactiveOneQr = `UPDATE mysql_query_rules SET active =0 AND  apply=0 WHERE rule_id=%d`
-	StmtFindOneQr      = `SELECT * FROM mysql_query_rules WHERE rule_id = %d`
-	StmtFindAllQr      = `SELECT * FROM mysql_query_rules`
+	StmtFindOneQr      = `SELECT rule_id,active,username,schemaname,flagIN,client_addr,proxy_addr,proxy_port,digest,match_digest,match_pattern,negate_match_pattern,flagOUT,replace_pattern,destination_hostgroup,cache_ttl,reconnect,timeout,retries,delay,mirror_flagOUT,mirror_hostgroup,error_msg,log,apply,comment FROM mysql_query_rules WHERE rule_id = %d`
+	StmtFindAllQr      = `SELECT rule_id,active,username,schemaname,flagIN,client_addr,proxy_addr,proxy_port,digest,match_digest,match_pattern,negate_match_pattern,flagOUT,replace_pattern,destination_hostgroup,cache_ttl,reconnect,timeout,retries,delay,mirror_flagOUT,mirror_hostgroup,error_msg,log,apply,comment FROM mysql_query_rules`
 	StmtUpdateOneQrUn  = `UPDATE mysql_query_rules SET username =%q WHERE rule_id = %d`
 	StmtUpdateOneQrSn  = `UPDATE mysql_query_rules SET schemaname = %q WHERE rule_id = %d`
 	StmtUpdateOneQrCa  = `UPDATE mysql_query_rules SET client_addr = %q WHERE rule_id = %d`
@@ -226,6 +226,7 @@ func (qr *QueryRules) FindAllQr(db *sql.DB) ([]QueryRules, error) {
 			&tmpqr.Apply,
 			&tmpqr.Comment,
 		)
+		log.Printf("tmpqr = %#v", tmpqr)
 		AllQr = append(AllQr, tmpqr)
 	}
 	return AllQr, nil

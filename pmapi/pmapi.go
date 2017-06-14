@@ -696,8 +696,28 @@ func (pmapi *PMApi) UpdateOneQueryRulesUser(c echo.Context) error {
 }
 
 func (pmapi *PMApi) UpdateOneQueryRulesSchema(c echo.Context) error {
+	args := struct {
+		RuleId     int64  `json:"rule_id"`
+		Schemaname string `json:"schemaname"`
+	}{}
+
+	qr := new(queryrules.QueryRules)
+	if err := c.Bind(&args); err != nil {
+		log.Print("UpdateOneQueryRulesSchea->c.Bind", err)
+		return err
+	}
+
+	qr.Rule_id = args.RuleId
+	qr.Schemaname = args.Schemaname
+
+	qret := qr.UpdateOneQrSn(pmapi.Apidb)
+	if qret == 1 {
+		log.Print("UpdateOneQueryRules->UpdateOneQrSn Err")
+		return c.JSON(http.StatusExpectationFailed, "UPdateOneQueryRulesSchema Error")
+	}
 	return c.JSON(http.StatusOK, "OK")
 }
+
 func (pmapi *PMApi) UpdateOneQueryRulesClient(c echo.Context) error {
 	return c.JSON(http.StatusOK, "OK")
 }

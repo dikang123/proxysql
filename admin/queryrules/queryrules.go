@@ -246,7 +246,7 @@ func (qr *QueryRules) UpdateOneQrUn(db *sql.DB) int {
 
 //更新一个查询规则的默认模式名
 func (qr *QueryRules) UpdateOneQrSn(db *sql.DB) int {
-	st := fmt.Sprint(StmtUpdateOneQrSn, qr.Schemaname, qr.Rule_id)
+	st := fmt.Sprintf(StmtUpdateOneQrSn, qr.Schemaname, qr.Rule_id)
 	log.Print("UpdateOneQrSn: ", st)
 	_, err := db.Query(st)
 	if err != nil {

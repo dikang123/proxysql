@@ -865,7 +865,7 @@ func (pmapi *PMApi) UpdateOneQueryRulesErrmsg(c echo.Context) error {
 func (pmapi *PMApi) DeleteOneQueryRules(c echo.Context) error {
 	qr := new(queryrules.QueryRules)
 	qr.Rule_id, _ = strconv.ParseInt(c.Param("ruleid"), 10, 64)
-	qret := qr.DeleteOneQr(pmqpi.Apidb)
+	qret := qr.DeleteOneQr(pmapi.Apidb)
 	if qret == 1 {
 		log.Print("DeleteOneQueryRules->qr.DeleteOneQr Error")
 		return c.JSON(http.StatusExpectationFailed, "DeleteOneQueryRules->qr.DeleteOneQr Error")

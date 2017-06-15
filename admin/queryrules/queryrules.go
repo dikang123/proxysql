@@ -13,26 +13,26 @@ type (
 		Active                int64  `db:"active" json:"Active"`
 		Username              string `db:"username" json:"Username"`
 		Schemaname            string `db:"schemaname" json:"Schemaname"`
-		FlagIN                string `db:"flagIN" json:"FlagIN"`
+		FlagIN                int64  `db:"flagIN" json:"FlagIN"`
 		Client_addr           string `db:"client_addr" json:"Client_addr"`
 		Proxy_addr            string `db:"proxy_addr" json:"Proxy_addr"`
-		Proxy_port            string `db:"proxy_port" json:"Proxy_port"`
+		Proxy_port            int64  `db:"proxy_port" json:"Proxy_port"`
 		Digest                string `db:"digest" json:"Digest"`
 		Match_digest          string `db:"match_digest" json:"Match_digest"`
 		Match_pattern         string `db:"match_pattern" json:"Match_pattern"`
-		Negate_match_pattern  string `db:"negate_match_pattern" json:"Negate_match_pattern"`
-		FlagOUT               string `db:"flagOUT" json:"FlagOUT"`
+		Negate_match_pattern  int64  `db:"negate_match_pattern" json:"Negate_match_pattern"`
+		FlagOUT               int64  `db:"flagOUT" json:"FlagOUT"`
 		Replace_pattern       string `db:"replace_pattern" json:"Replace_pattern"`
 		Destination_hostgroup int64  `db:"destination_hostgroup" json:"Destination_hostgroup"`
-		Cache_ttl             string `db:"cache_ttl" json:"Cache_ttl"`
-		Reconnect             string `db:"reconnect" json:"Reconnect"`
-		Timeout               string `db:"timeout" json:"Timeout"`
-		Retries               string `db:"retries" json:"Retries"`
-		Delay                 string `db:"delay" json:"Delay"`
-		Mirror_flagOUT        string `db:"mirror_flagOUT" json:"Mirror_flagOUT"`
-		Mirror_hostgroup      string `db:"mirror_hostgroup" json:"Mirror_hostgroup"`
+		Cache_ttl             int64  `db:"cache_ttl" json:"Cache_ttl"`
+		Reconnect             int64  `db:"reconnect" json:"Reconnect"`
+		Timeout               int64  `db:"timeout" json:"Timeout"`
+		Retries               int64  `db:"retries" json:"Retries"`
+		Delay                 int64  `db:"delay" json:"Delay"`
+		Mirror_flagOUT        int64  `db:"mirror_flagOUT" json:"Mirror_flagOUT"`
+		Mirror_hostgroup      int64  `db:"mirror_hostgroup" json:"Mirror_hostgroup"`
 		Error_msg             string `db:"error_msg" json:"Error_msg"`
-		Log                   string `db:"log" json:"Log"`
+		Log                   int64  `db:"log" json:"Log"`
 		Apply                 int64  `db:"apply" json:"Apply"`
 		Comment               string `db:"comment" json:"Comment"`
 	}
@@ -44,8 +44,8 @@ const (
 	StmtDeleteOneQr    = `DELETE FROM mysql_query_rules WHERE rule_id = %d`
 	StmtActiveOneQr    = `UPDATE mysql_query_rules SET active =1 AND apply=1 WHERE rule_id=%d`
 	StmtDisactiveOneQr = `UPDATE mysql_query_rules SET active =0 AND  apply=0 WHERE rule_id=%d`
-	StmtFindOneQr      = `SELECT rule_id,active,username,schemaname,flagIN,client_addr,proxy_addr,proxy_port,digest,match_digest,match_pattern,negate_match_pattern,flagOUT,replace_pattern,destination_hostgroup,cache_ttl,reconnect,timeout,retries,delay,mirror_flagOUT,mirror_hostgroup,error_msg,log,apply,comment FROM mysql_query_rules WHERE rule_id = %d`
-	StmtFindAllQr      = `SELECT rule_id,active,username,schemaname,flagIN,client_addr,proxy_addr,proxy_port,digest,match_digest,match_pattern,negate_match_pattern,flagOUT,replace_pattern,destination_hostgroup,cache_ttl,reconnect,timeout,retries,delay,mirror_flagOUT,mirror_hostgroup,error_msg,log,apply,comment FROM mysql_query_rules`
+	StmtFindOneQr      = `select ifnull(rule_id,0),ifnull(active,0),ifnull(username,""),ifnull(schemaname,""),ifnull(flagIN,0),ifnull(client_addr,""),ifnull(proxy_addr,""),ifnull(proxy_port,0),ifnull(digest,""),ifnull(match_digest,""),ifnull(match_pattern,""),ifnull(negate_match_pattern,0),ifnull(flagOUT,0),ifnull(replace_pattern,""),ifnull(destination_hostgroup,0),ifnull(cache_ttl,0),ifnull(reconnect,0),ifnull(timeout,0),ifnull(retries,0),ifnull(delay,0),ifnull(mirror_flagOUT,0),ifnull(mirror_hostgroup,0),ifnull(error_msg,""),ifnull(log,0),ifnull(apply,0),ifnull(comment,"") from mysql_query_rules WHERE rule_id = %d`
+	StmtFindAllQr      = `select ifnull(rule_id,0),ifnull(active,0),ifnull(username,""),ifnull(schemaname,""),ifnull(flagIN,0),ifnull(client_addr,""),ifnull(proxy_addr,""),ifnull(proxy_port,0),ifnull(digest,""),ifnull(match_digest,""),ifnull(match_pattern,""),ifnull(negate_match_pattern,0),ifnull(flagOUT,0),ifnull(replace_pattern,""),ifnull(destination_hostgroup,0),ifnull(cache_ttl,0),ifnull(reconnect,0),ifnull(timeout,0),ifnull(retries,0),ifnull(delay,0),ifnull(mirror_flagOUT,0),ifnull(mirror_hostgroup,0),ifnull(error_msg,""),ifnull(log,0),ifnull(apply,0),ifnull(comment,"") from mysql_query_rules`
 	StmtUpdateOneQrUn  = `UPDATE mysql_query_rules SET username =%q WHERE rule_id = %d`
 	StmtUpdateOneQrSn  = `UPDATE mysql_query_rules SET schemaname = %q WHERE rule_id = %d`
 	StmtUpdateOneQrCa  = `UPDATE mysql_query_rules SET client_addr = %q WHERE rule_id = %d`
@@ -180,6 +180,97 @@ func (qr *QueryRules) FindOneQr(db *sql.DB) (QueryRules, error) {
 			&tmpqr.Apply,
 			&tmpqr.Comment,
 		)
+
+		if err != nil {
+			log.Print("FindAllQr err1 ", err.Error())
+			continue
+		}
+
+		/*
+				if tmpqr.Rule_id == nil {
+					tmpqr.Rule_id = 0
+				}
+				if tmpqr.Active == nil {
+					tmpqr.Active = 0
+				}
+				if tmpqr.Username == nil {
+					tmpqr.Username = ""
+				}
+			if tmpqr.Schemaname == nil {
+				tmpqr.Schemaname = ""
+			}
+				if tmpqr.FlagIN == nil {
+					tmpqr.FlagIN = 0
+				}
+				if tmpqr.Client_addr == nil {
+					tmpqr.Client_addr = ""
+				}
+				if tmpqr.Proxy_addr == nil {
+					tmpqr.Proxy_addr = ""
+				}
+				if tmpqr.Proxy_port == nil {
+					tmpqr.Proxy_port = 0
+				}
+				if tmpqr.Digest == nil {
+					tmpqr.Digest = ""
+				}
+				if tmpqr.Match_digest == nil {
+					tmpqr.Match_digest = ""
+				}
+				if tmpqr.Match_pattern == nil {
+					tmpqr.Match_pattern = ""
+				}
+				if tmpqr.Negate_match_pattern == nil {
+					tmpqr.Negate_match_pattern = 0
+				}
+				if tmpqr.FlagOUT == nil {
+					tmpqr.FlagOUT = 0
+				}
+				if tmpqr.Replace_pattern == nil {
+					tmpqr.Replace_pattern = ""
+				}
+				if tmpqr.Destination_hostgroup == nil {
+					tmpqr.Destination_hostgroup = 0
+				}
+				if tmpqr.Cache_ttl == nil {
+					tmpqr.Cache_ttl = 0
+				}
+				if tmpqr.Reconnect == nil {
+					tmpqr.Reconnect = 0
+				}
+				if tmpqr.Timeout == nil {
+					tmpqr.Timeout = 0
+				}
+				if tmpqr.Retries == nil {
+					tmpqr.Retries = 0
+				}
+				if tmpqr.Delay == nil {
+					tmpqr.Delay = 0
+				}
+				if tmpqr.Mirror_flagOUT == nil {
+					tmpqr.Mirror_flagOUT = 0
+				}
+				if tmpqr.Mirror_hostgroup == nil {
+					tmpqr.Mirror_hostgroup = 0
+				}
+				if tmpqr.Error_msg == nil {
+					tmpqr.Error_msg = ""
+				}
+				if tmpqr.Log == nil {
+					tmpqr.Log = 0
+				}
+				if tmpqr.Apply == nil {
+					tmpqr.Apply = 0
+				}
+				if tmpqr.Comment == nil {
+					tmpqr.Comment = 0
+				}
+		*/
+	}
+
+	err = rows.Err()
+	if err != nil {
+		log.Print("FindOneQr err 2:", err.Error())
 	}
 	log.Print("FindOneQr: Success")
 	return tmpqr, nil
@@ -188,7 +279,6 @@ func (qr *QueryRules) FindOneQr(db *sql.DB) (QueryRules, error) {
 //获取所有查询规则的内容
 func (qr *QueryRules) FindAllQr(db *sql.DB) ([]QueryRules, error) {
 	var AllQr []QueryRules
-	var tmpqr QueryRules
 	log.Print("FindAllQr:", StmtFindAllQr)
 	rows, err := db.Query(StmtFindAllQr)
 	if err != nil {
@@ -197,7 +287,7 @@ func (qr *QueryRules) FindAllQr(db *sql.DB) ([]QueryRules, error) {
 	}
 	log.Print("FindAllQr: Success")
 	for rows.Next() {
-		tmpqr = QueryRules{}
+		var tmpqr QueryRules = QueryRules{}
 		err = rows.Scan(
 			&tmpqr.Rule_id,
 			&tmpqr.Active,

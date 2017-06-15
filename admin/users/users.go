@@ -41,8 +41,8 @@ const (
 	StmtDeleteOneUser     = `DELETE FROM mysql_users WHERE username = %q`
 	StmtActiveOneUser     = `UPDATE mysql_users SET active = 1 WHERE username = %q`
 	StmtDisactiveOneUser  = `UPDATE mysql_users SET active = 0 WHERE username = %q`
-	StmtFindOneUserInfo   = `SELECT * FROM mysql_users WHERE username = %q`
-	StmtFindAllUserInfo   = `SELECT * FROM mysql_users limit %d offset %d`
+	StmtFindOneUserInfo   = `SELECT ifnull(username,""),ifnull(password,""),ifnull(active,0),ifnull(use_ssl,0),ifnull(default_hostgroup,0),ifnull(default_schema,""),ifnull(schema_locked,0),ifnull(transaction_persistent,0),ifnull(fast_forward,0),ifnull(backend,0),ifnull(frontend,0),ifnull(max_connections,0) FROM mysql_users WHERE username = %q`
+	StmtFindAllUserInfo   = `SELECT ifnull(username,""),ifnull(password,""),ifnull(active,0),ifnull(use_ssl,0),ifnull(default_hostgroup,0),ifnull(default_schema,""),ifnull(schema_locked,0),ifnull(transaction_persistent,0),ifnull(fast_forward,0),ifnull(backend,0),ifnull(frontend,0),ifnull(max_connections,0) FROM mysql_users limit %d offset %d`
 	StmtUpdateOneUserDs   = `UPDATE mysql_users SET default_schema=%q WHERE username = %q`
 	StmtUpdateOneUserMc   = `UPDATE mysql_users SET max_connections = %d WHERE username = %q`
 	StmtUpdateOneUserDH   = `UPDATE mysql_users SET default_hostgroup=%d WHERE username = %q`

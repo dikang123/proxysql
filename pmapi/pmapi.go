@@ -352,7 +352,19 @@ func (pmapi *PMApi) UpdateOneUserPass(c echo.Context) error {
 
 /*返回所有后端数据库服务器的信息*/
 func (pmapi *PMApi) ListAllServers(c echo.Context) error {
-	return c.JSON(http.StatusOK, servers.FindAllServerInfo(pmapi.Apidb))
+	limit, _ := strconv.ParseInt(c.QueryParam("limit"), 10, 64)
+	page, _ := strconv.ParseInt(c.QueryParam("page"), 10, 64)
+
+	if limit == 0 {
+		limit = 10
+	}
+
+	if page == 0 {
+		page = 1
+	}
+
+	skip := (page - 1) * limit
+	return c.JSON(http.StatusOK, servers.FindAllServerInfo(pmapi.Apidb, limit, skip))
 }
 
 /*查询指定主机组中主机的信息*/
@@ -597,7 +609,21 @@ func (pmapi *PMApi) ListPsVariables(c echo.Context) error {
 //查询出所有查询规则
 func (pmapi *PMApi) ListAllQueryRules(c echo.Context) error {
 	qr := new(queryrules.QueryRules)
-	ret, err := qr.FindAllQr(pmapi.Apidb)
+
+	limit, _ := strconv.ParseInt(c.QueryParam("limit"), 10, 64)
+	page, _ := strconv.ParseInt(c.QueryParam("page"), 10, 64)
+
+	if limit == 0 {
+		limit = 10
+	}
+
+	if page == 0 {
+		page = 1
+	}
+
+	skip := (page - 1) * limit
+
+	ret, err := qr.FindAllQr(pmapi.Apidb, limit, skip)
 	if err != nil {
 		log.Print("ListAllQueryRules->qr.FindAllQr ", err)
 		return c.JSON(http.StatusExpectationFailed, "ListAllQueryRules ExpectationFailed")

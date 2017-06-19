@@ -44,8 +44,8 @@ const (
 	StmtDeleteOneQr    = `DELETE FROM mysql_query_rules WHERE rule_id = %d`
 	StmtActiveOneQr    = `UPDATE mysql_query_rules SET active =1 AND apply=1 WHERE rule_id=%d`
 	StmtDisactiveOneQr = `UPDATE mysql_query_rules SET active =0 AND  apply=0 WHERE rule_id=%d`
-	StmtFindOneQr      = `select ifnull(rule_id,0),ifnull(active,0),ifnull(username,""),ifnull(schemaname,""),ifnull(flagIN,0),ifnull(client_addr,""),ifnull(proxy_addr,""),ifnull(proxy_port,0),ifnull(digest,""),ifnull(match_digest,""),ifnull(match_pattern,""),ifnull(negate_match_pattern,0),ifnull(flagOUT,0),ifnull(replace_pattern,""),ifnull(destination_hostgroup,0),ifnull(cache_ttl,0),ifnull(reconnect,0),ifnull(timeout,0),ifnull(retries,0),ifnull(delay,0),ifnull(mirror_flagOUT,0),ifnull(mirror_hostgroup,0),ifnull(error_msg,""),ifnull(log,0),ifnull(apply,0),ifnull(comment,"") from mysql_query_rules WHERE rule_id = %d`
-	StmtFindAllQr      = `select ifnull(rule_id,0),ifnull(active,0),ifnull(username,""),ifnull(schemaname,""),ifnull(flagIN,0),ifnull(client_addr,""),ifnull(proxy_addr,""),ifnull(proxy_port,0),ifnull(digest,""),ifnull(match_digest,""),ifnull(match_pattern,""),ifnull(negate_match_pattern,0),ifnull(flagOUT,0),ifnull(replace_pattern,""),ifnull(destination_hostgroup,0),ifnull(cache_ttl,0),ifnull(reconnect,0),ifnull(timeout,0),ifnull(retries,0),ifnull(delay,0),ifnull(mirror_flagOUT,0),ifnull(mirror_hostgroup,0),ifnull(error_msg,""),ifnull(log,0),ifnull(apply,0),ifnull(comment,"") from mysql_query_rules limit %d offset %d`
+	StmtFindOneQr      = `select ifnull(rule_id,0) as rule_id,ifnull(active,0) as active,ifnull(username,"") as username,ifnull(schemaname,"") as schemaname,ifnull(flagIN,0) as flagIN,ifnull(client_addr,"") as client_addr,ifnull(proxy_addr,"") as proxy_addr,ifnull(proxy_port,0) as proxy_port,ifnull(digest,"") as digest,ifnull(match_digest,"") as match_digest,ifnull(match_pattern,"") as match_pattern,ifnull(negate_match_pattern,0) as negate_match_pattern,ifnull(flagOUT,0) as flagOUT,ifnull(replace_pattern,"") as replace_pattern,ifnull(destination_hostgroup,0) as destination_hostgroup,ifnull(cache_ttl,0) as cache_ttl,ifnull(reconnect,0) as reconnect,ifnull(timeout,0) as timeout,ifnull(retries,0) as retries,ifnull(delay,0) as delay,ifnull(mirror_flagOUT,0) as mirror_flagOUT,ifnull(mirror_hostgroup,0) as mirror_hostgroup,ifnull(error_msg,"") as error_msg,ifnull(log,0) as log,ifnull(apply,0) as apply,ifnull(comment,"") as comment from mysql_query_rules WHERE rule_id = %d`
+	StmtFindAllQr      = `select ifnull(rule_id,0) as rule_id,ifnull(active,0) as active,ifnull(username,"") as username,ifnull(schemaname,"") as schemaname,ifnull(flagIN,0) as flagIN,ifnull(client_addr,"") as client_addr,ifnull(proxy_addr,"") as proxy_addr,ifnull(proxy_port,0) as proxy_port,ifnull(digest,"") as digest,ifnull(match_digest,"") as match_digest,ifnull(match_pattern,"") as match_pattern,ifnull(negate_match_pattern,0) as negate_match_pattern,ifnull(flagOUT,0) as flagOUT,ifnull(replace_pattern,"") as replace_pattern,ifnull(destination_hostgroup,0) as destination_hostgroup,ifnull(cache_ttl,0) as cache_ttl,ifnull(reconnect,0) as reconnect,ifnull(timeout,0) as timeout,ifnull(retries,0) as retries,ifnull(delay,0) as delay,ifnull(mirror_flagOUT,0) as mirror_flagOUT,ifnull(mirror_hostgroup,0) as mirror_hostgroup,ifnull(error_msg,"") as error_msg,ifnull(log,0) as log,ifnull(apply,0) as apply,ifnull(comment,"") as comment from mysql_query_rules limit %d offset %d`
 	StmtUpdateOneQrUn  = `UPDATE mysql_query_rules SET username =%q WHERE rule_id = %d`
 	StmtUpdateOneQrSn  = `UPDATE mysql_query_rules SET schemaname = %q WHERE rule_id = %d`
 	StmtUpdateOneQrCa  = `UPDATE mysql_query_rules SET client_addr = %q WHERE rule_id = %d`
@@ -199,8 +199,9 @@ func (qr *QueryRules) FindOneQr(db *sql.DB) (QueryRules, error) {
 //获取所有查询规则的内容
 func (qr *QueryRules) FindAllQr(db *sql.DB, limit int64, skip int64) ([]QueryRules, error) {
 	var AllQr []QueryRules
-	log.Print("FindAllQr:", StmtFindAllQr)
-	rows, err := db.Query(StmtFindAllQr, limit, skip)
+	log.Printf(StmtFindAllQr, limit, skip)
+	st := fmt.Sprintf(StmtFindAllQr, limit, skip)
+	rows, err := db.Query(st)
 	if err != nil {
 		log.Print("FindAllQr: ", err)
 		return []QueryRules{}, errors.New("FindAllQr db.Query Exec Error")

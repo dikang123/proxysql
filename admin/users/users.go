@@ -218,6 +218,7 @@ func FindAllUserInfo(db *sql.DB, limit int64, skip int64) []Users {
 	var tmpusr Users
 	var QueryText string
 	QueryText = fmt.Sprintf(StmtFindAllUserInfo, limit, skip)
+	log.Printf(StmtFindAllUserInfo, limit, skip)
 	rows, err := db.Query(QueryText)
 	if err != nil {
 		log.Print("FindAllUserInfo:", err)

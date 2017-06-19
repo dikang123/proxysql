@@ -30,9 +30,9 @@ const (
 	StmtUpdateOneServerWeight  = `UPDATE mysql_servers SET weight=%d WHERE hostgroup_id = %d AND hostname=%q AND port=%d`
 	StmtUpdateOneServerMc      = `UPDATE mysql_servers SET max_connections=%d WHERE hostgroup_id=%d AND hostname=%q AND port=%d`
 	StmtServerExists           = `SELECT count(*) FROM mysql_servers WHERE hostgroup_id=%d AND hostname=%q AND port=%d`
-	StmtFindOneServer          = `SELECT ifnull(hostgroup_id,0),ifnull(hostname,""),ifnull(port,0),ifnull(status,""),ifnull(weight,""),ifnull(compression,0),ifnull(max_connections,0),ifnull(max_replication_lag,0),ifnull(use_ssl,0),ifnull(max_latency_ms,0),ifnull(comment,"")  FROM mysql_servers WHERE hostgroup_id=%d AND hostname=%q AND port=%d`
-	StmtFindAllServer          = `SELECT ifnull(hostgroup_id,0),ifnull(hostname,""),ifnull(port,0),ifnull(status,""),ifnull(weight,""),ifnull(compression,0),ifnull(max_connections,0),ifnull(max_replication_lag,0),ifnull(use_ssl,0),ifnull(max_latency_ms,0),ifnull(comment,"") FROM mysql_servers limit %d offset %d`
-	StmtFindServersByHostgroup = `SELECT ifnull(hostgroup_id,0),ifnull(hostname,""),ifnull(port,0),ifnull(status,""),ifnull(weight,""),ifnull(compression,0),ifnull(max_connections,0),ifnull(max_replication_lag,0),ifnull(use_ssl,0),ifnull(max_latency_ms,0),ifnull(comment,"") FROM mysql_servers WHERE hostgroup_id=%d`
+	StmtFindOneServer          = `SELECT ifnull(hostgroup_id,0) as hostgroup_id,ifnull(hostname,"") as hostname,ifnull(port,0) as port,ifnull(status,"") as status,ifnull(weight,0) as weight,ifnull(compression,0) as compression,ifnull(max_connections,0) as max_connections,ifnull(max_replication_lag,0) as max_replication_lag,ifnull(use_ssl,0) as use_ssl,ifnull(max_latency_ms,0) as max_latency_ms,ifnull(comment,"") as comment FROM mysql_servers WHERE hostgroup_id=%d AND hostname=%q AND port=%d`
+	StmtFindAllServer          = `SELECT ifnull(hostgroup_id,0) as hostgroup_id,ifnull(hostname,"") as hostname,ifnull(port,0) as port,ifnull(status,"") as status,ifnull(weight,0) as weight,ifnull(compression,0) as compression,ifnull(max_connections,0) as max_connections,ifnull(max_replication_lag,0) as max_replication_lag,ifnull(use_ssl,0) as use_ssl,ifnull(max_latency_ms,0) as max_latency_ms,ifnull(comment,"") as comment FROM mysql_servers limit %d offset %d`
+	StmtFindServersByHostgroup = `SELECT ifnull(hostgroup_id,0) as hostgroup_id,ifnull(hostname,"") as hostname,ifnull(port,0) as port,ifnull(status,"") as status,ifnull(weight,0) as weight,ifnull(compression,0) as compression,ifnull(max_connections,0) as max_connections,ifnull(max_replication_lag,0) as max_replication_lag,ifnull(use_ssl,0) as use_ssl,ifnull(max_latency_ms,0) as max_latency_ms,ifnull(comment,"") as comment FROM mysql_servers WHERE hostgroup_id=%d`
 )
 
 func (srvs *Servers) ServerExists(db *sql.DB) bool {
@@ -178,8 +178,9 @@ func (srvs *Servers) FindOneServersInfo(db *sql.DB) Servers {
 func FindAllServerInfo(db *sql.DB, limit int64, skip int64) []Servers {
 	var allserver []Servers
 	var tmpserver Servers
-
-	rows, err := db.Query(StmtFindAllServer, limit, skip)
+	st := fmt.Sprintf(StmtFindAllServer, limit, skip)
+	rows, err := db.Query(st)
+	log.Printf(StmtFindAllServer, limit, skip)
 	if err != nil {
 		log.Print("FindAllServerInfo:", err)
 	}

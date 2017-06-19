@@ -8,7 +8,7 @@ import (
 )
 
 type Servers struct {
-	HostGroupId       uint64 `db:"hostgroup_id,omitempty" json:"hostname_id"`
+	HostGroupId       uint64 `db:"hostgroup_id,omitempty" json:"hostgroup_id"`
 	HostName          string `db:"hostname" json:"hostname"`
 	Port              uint64 `db:"port" json:"port"`
 	Status            string `db:"status" json:"status"`

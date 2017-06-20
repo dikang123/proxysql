@@ -9,32 +9,32 @@ import (
 
 type (
 	QueryRules struct {
-		Rule_id               int64  `db:"rule_id" json:"Rule_id"`
-		Active                int64  `db:"active" json:"Active"`
-		Username              string `db:"username" json:"Username"`
-		Schemaname            string `db:"schemaname" json:"Schemaname"`
-		FlagIN                int64  `db:"flagIN" json:"FlagIN"`
-		Client_addr           string `db:"client_addr" json:"Client_addr"`
-		Proxy_addr            string `db:"proxy_addr" json:"Proxy_addr"`
-		Proxy_port            int64  `db:"proxy_port" json:"Proxy_port"`
-		Digest                string `db:"digest" json:"Digest"`
-		Match_digest          string `db:"match_digest" json:"Match_digest"`
-		Match_pattern         string `db:"match_pattern" json:"Match_pattern"`
-		Negate_match_pattern  int64  `db:"negate_match_pattern" json:"Negate_match_pattern"`
-		FlagOUT               int64  `db:"flagOUT" json:"FlagOUT"`
-		Replace_pattern       string `db:"replace_pattern" json:"Replace_pattern"`
-		Destination_hostgroup int64  `db:"destination_hostgroup" json:"Destination_hostgroup"`
-		Cache_ttl             int64  `db:"cache_ttl" json:"Cache_ttl"`
-		Reconnect             int64  `db:"reconnect" json:"Reconnect"`
-		Timeout               int64  `db:"timeout" json:"Timeout"`
-		Retries               int64  `db:"retries" json:"Retries"`
-		Delay                 int64  `db:"delay" json:"Delay"`
-		Mirror_flagOUT        int64  `db:"mirror_flagOUT" json:"Mirror_flagOUT"`
-		Mirror_hostgroup      int64  `db:"mirror_hostgroup" json:"Mirror_hostgroup"`
-		Error_msg             string `db:"error_msg" json:"Error_msg"`
-		Log                   int64  `db:"log" json:"Log"`
-		Apply                 int64  `db:"apply" json:"Apply"`
-		Comment               string `db:"comment" json:"Comment"`
+		Rule_id               int64  `db:"rule_id" json:"rule_id"`
+		Active                int64  `db:"active" json:"active"`
+		Username              string `db:"username" json:"username"`
+		Schemaname            string `db:"schemaname" json:"schemaname"`
+		FlagIN                int64  `db:"flagIN" json:"flagIN"`
+		Client_addr           string `db:"client_addr" json:"client_addr"`
+		Proxy_addr            string `db:"proxy_addr" json:"proxy_addr"`
+		Proxy_port            int64  `db:"proxy_port" json:"proxy_port"`
+		Digest                string `db:"digest" json:"digest"`
+		Match_digest          string `db:"match_digest" json:"match_digest"`
+		Match_pattern         string `db:"match_pattern" json:"match_pattern"`
+		Negate_match_pattern  int64  `db:"negate_match_pattern" json:"negate_match_pattern"`
+		FlagOUT               int64  `db:"flagOUT" json:"flagOUT"`
+		Replace_pattern       string `db:"replace_pattern" json:"replace_pattern"`
+		Destination_hostgroup int64  `db:"destination_hostgroup" json:"destination_hostgroup"`
+		Cache_ttl             int64  `db:"cache_ttl" json:"cache_ttl"`
+		Reconnect             int64  `db:"reconnect" json:"reconnect"`
+		Timeout               int64  `db:"timeout" json:"timeout"`
+		Retries               int64  `db:"retries" json:"retries"`
+		Delay                 int64  `db:"delay" json:"delay"`
+		Mirror_flagOUT        int64  `db:"mirror_flagOUT" json:"mirror_flagOUT"`
+		Mirror_hostgroup      int64  `db:"mirror_hostgroup" json:"mirror_hostgroup"`
+		Error_msg             string `db:"error_msg" json:"error_msg"`
+		Log                   int64  `db:"log" json:"log"`
+		Apply                 int64  `db:"apply" json:"apply"`
+		Comment               string `db:"comment" json:"comment"`
 	}
 )
 

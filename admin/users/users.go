@@ -15,6 +15,7 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
+	"proxysql-master/admin/cmd"
 	//	"os"
 )
 
@@ -76,6 +77,8 @@ func (users *Users) AddOneUser(db *sql.DB) int {
 		if err != nil {
 			return 1 //add user failed
 		}
+		cmd.LoadUserToRuntime(db)
+		cmd.SaveUserToDisk(db)
 		return 0
 	} else {
 		return 2 //username exists
@@ -89,6 +92,8 @@ func (users *Users) DeleteOneUser(db *sql.DB) int {
 		if err != nil {
 			return 1 //delte failed
 		}
+		cmd.LoadUserToRuntime(db)
+		cmd.SaveUserToDisk(db)
 		return 0 //delete success
 
 	} else {
@@ -104,6 +109,8 @@ func (users *Users) ActiveOneUser(db *sql.DB) int {
 			log.Print("ActiveOneUser:", err)
 			return 1
 		}
+		cmd.LoadUserToRuntime(db)
+		cmd.SaveUserToDisk(db)
 		return 0
 	} else {
 		log.Print("ActiveOneUser: User is not exists")
@@ -119,6 +126,8 @@ func (users *Users) DisactiveOneUser(db *sql.DB) int {
 			//log.Print("DisactiveOneUser:", err)
 			return 1
 		}
+		cmd.LoadUserToRuntime(db)
+		cmd.SaveUserToDisk(db)
 		return 0
 	} else {
 		//log.Print("DisactiveOneUser: User is not exists")
@@ -134,6 +143,8 @@ func (users *Users) UpdateOneUserDh(db *sql.DB) int {
 			log.Print("UpdateOneUserDH()", err)
 			return 1
 		}
+		cmd.LoadUserToRuntime(db)
+		cmd.SaveUserToDisk(db)
 		return 0
 	} else {
 		log.Print("UpdateOneUserDH()", "User is not exists")
@@ -149,6 +160,8 @@ func (users *Users) UpdateOneUserPass(db *sql.DB) int {
 			log.Print("UpdateOneUserPass()", err)
 			return 1
 		}
+		cmd.LoadUserToRuntime(db)
+		cmd.SaveUserToDisk(db)
 		return 0
 	} else {
 		log.Print("UpdateOneUserPass()", "User is not exists")
@@ -164,6 +177,8 @@ func (users *Users) UpdateOneUserDs(db *sql.DB) int {
 			log.Print("UpdateOneUserDs:", err)
 			return 1
 		}
+		cmd.LoadUserToRuntime(db)
+		cmd.SaveUserToDisk(db)
 		return 0
 	} else {
 		log.Print("UpdateOneUserDs: User is not exists")
@@ -179,6 +194,8 @@ func (users *Users) UpdateOneUserMc(db *sql.DB) int {
 			log.Print("UpdateOneUserMc:", err)
 			return 1
 		}
+		cmd.LoadUserToRuntime(db)
+		cmd.SaveUserToDisk(db)
 		return 0
 	} else {
 		log.Print("UpdateOneUserMc: User is not exists")

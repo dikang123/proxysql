@@ -57,7 +57,6 @@ func main() {
 	log.SetOutput(pmapiv1.ApiLogfd)
 
 	pmapiv1.Echo = echo.New()
-	//e := pmapiv1.Echo
 	pmapiv1.PMuser = strings.Split(strings.Split(*apiSource, "@")[0], "/")[0]
 	pmapiv1.PMpass = strings.Split(strings.Split(*apiSource, "@")[0], "/")[1]
 	pmapiv1.PMhost = strings.Split(strings.Split(*apiSource, "@")[1], "/")[0]

@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
+	"proxysql-master/admin/cmd"
 	//"os"
 )
 
@@ -62,6 +63,8 @@ func (srvs *Servers) AddOneServers(db *sql.DB) int {
 		if err != nil {
 			return 1
 		}
+		cmd.LoadServerToRuntime(db)
+		cmd.SaveServerToDisk(db)
 		return 0
 	} else {
 		return 2
@@ -75,6 +78,8 @@ func (srvs *Servers) DeleteOneServers(db *sql.DB) int {
 		if err != nil {
 			return 1
 		}
+		cmd.LoadServerToRuntime(db)
+		cmd.SaveServerToDisk(db)
 		return 0
 	} else {
 		return 2
@@ -88,6 +93,8 @@ func (srvs *Servers) ActiveOneServer(db *sql.DB) int {
 		if err != nil {
 			return 1
 		}
+		cmd.LoadServerToRuntime(db)
+		cmd.SaveServerToDisk(db)
 		return 0
 	} else {
 		return 2
@@ -102,6 +109,8 @@ func (srvs *Servers) SoftDisactiveOneServer(db *sql.DB) int {
 			fmt.Println(err)
 			return 1
 		}
+		cmd.LoadServerToRuntime(db)
+		cmd.SaveServerToDisk(db)
 		return 0
 	} else {
 		return 2
@@ -115,6 +124,8 @@ func (srvs *Servers) HardDisactiveOneServer(db *sql.DB) int {
 		if err != nil {
 			return 1
 		}
+		cmd.LoadServerToRuntime(db)
+		cmd.SaveServerToDisk(db)
 		return 0
 	} else {
 		return 2
@@ -128,6 +139,8 @@ func (srvs *Servers) UpdateOneServerWeight(db *sql.DB) int {
 		if err != nil {
 			return 1
 		}
+		cmd.LoadServerToRuntime(db)
+		cmd.SaveServerToDisk(db)
 		return 0
 	} else {
 		return 2
@@ -141,6 +154,8 @@ func (srvs *Servers) UpdateOneServerMc(db *sql.DB) int {
 		if err != nil {
 			return 1
 		}
+		cmd.LoadServerToRuntime(db)
+		cmd.SaveServerToDisk(db)
 		return 0
 	} else {
 		return 2

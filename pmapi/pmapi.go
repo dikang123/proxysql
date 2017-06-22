@@ -87,6 +87,7 @@ func (pmapi *PMApi) RegisterServices() {
 	pmapi.Echo.PUT("/api/v1/queryrules/schemaname", pmapi.UpdateOneQueryRulesSchema)
 	pmapi.Echo.PUT("/api/v1/queryrules/clientaddr", pmapi.UpdateOneQueryRulesClient)
 	pmapi.Echo.PUT("/api/v1/queryrules/matchdigest", pmapi.UpdateOneQueryRulesMatchDigest)
+	pmapi.Echo.PUT("/api/v1/queryrules/digest", pmapi.UpdateOneQueryRulesDigest)
 	pmapi.Echo.PUT("/api/v1/queryrules/matchpattern", pmapi.UpdateOneQueryRulesMatchPattern)
 	pmapi.Echo.PUT("/api/v1/queryrules/replacepattern", pmapi.UpdateOneQueryRulesReplacePattern)
 	pmapi.Echo.PUT("/api/v1/queryrules/desthostgroup", pmapi.UpdateOneQueryRulesDestHostgroup)
@@ -764,6 +765,30 @@ func (pmapi *PMApi) UpdateOneQueryRulesClient(c echo.Context) error {
 	if qret == 1 {
 		log.Print("UpdateOneQueryRulesClient->UpdateOneQrCa Error")
 		return c.JSON(http.StatusExpectationFailed, "UpdateOneQueryRulesClient->qr.UpdateOneQrCa  Error")
+	}
+	return c.JSON(http.StatusOK, "OK")
+}
+
+//更新查询规则的digest列
+func (pmapi *PMApi) UpdateOneQueryRulesDigest(c echo.Context) error {
+	args := struct {
+		RuleId int64  `json:"rule_id"`
+		Digest string `json:"digest"`
+	}{}
+
+	qr := new(queryrules.QueryRules)
+	if err := c.Bind(&args); err != nil {
+		log.Print("UpdateOneQueryRulesDigest->c.Bind :", err)
+		return err
+	}
+
+	qr.Rule_id = args.RuleId
+	qr.Digest = args.Digest
+
+	qret := qr.UpdateOneQrDg(pmapi.Apidb)
+	if qret == 1 {
+		log.Print("UpdateOneQueryRulesDigest->qr.UpdateOneQrDg Error")
+		return c.JSON(http.StatusExpectationFailed, "UpdateOneQueryRulesDigest->qr.UpdateOneQrDg Error")
 	}
 	return c.JSON(http.StatusOK, "OK")
 }

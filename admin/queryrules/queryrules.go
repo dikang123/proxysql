@@ -50,6 +50,7 @@ const (
 	StmtUpdateOneQrSn  = `UPDATE mysql_query_rules SET schemaname = %q WHERE rule_id = %d`
 	StmtUpdateOneQrCa  = `UPDATE mysql_query_rules SET client_addr = %q WHERE rule_id = %d`
 	StmtUpdateOneQrMd  = `UPDATE mysql_query_rules SET match_digest = %q WHERE rule_id = %d`
+	StmtUpdateOneQrDg  = `UPDATE mysql_query_rules SET digest = %q WHERE rule_id = %d`
 	StmtUpdateOneQrMp  = `UPDATE mysql_query_rules SET match_pattern = %q WHERE rule_id = %d`
 	StmtUpdateOneQrRp  = `UPDATE mysql_query_rules SET replace_pattern = %q WHERE rule_id = %d`
 	StmtUpdateOneQrDh  = `UPDATE mysql_query_rules SET destination_hostgroup = %d WHERE rule_id = %d`
@@ -279,6 +280,19 @@ func (qr *QueryRules) UpdateOneQrCa(db *sql.DB) int {
 		return 1
 	}
 	log.Print("UpdateOneQrCa: Success")
+	return 0
+}
+
+//更新一个查询规则的digest号
+func (qr *QueryRules) UpdateOneQrDg(db *sql.DB) int {
+	st := fmt.Sprintf(StmtUpdateOneQrDg, qr.Digest, qr.Rule_id)
+	log.Print("UpdateOneQrDg: ", st)
+	_, err := db.Query(st)
+	if err != nil {
+		log.Print("UpdateOneQrDg: ", err)
+		return 1
+	}
+	log.Print("UpdateOneQrDg: Success")
 	return 0
 }
 

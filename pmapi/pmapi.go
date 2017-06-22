@@ -107,7 +107,7 @@ func (pmapi *PMApi) RegisterServices() {
 }
 
 func (pmapi *PMApi) RunApiService() {
-	pmapi.Echo.Logger.Fatal(pmapi.Echo.Start(":3333"))
+	pmapi.Echo.Logger.Fatal(pmapi.Echo.Start(pmapi.ApiHost))
 }
 
 func (pmapi *PMApi) DeleteOneUser(c echo.Context) error {

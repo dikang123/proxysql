@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"log"
+	"proxysql-master/admin/cmd"
 )
 
 type (
@@ -90,6 +91,8 @@ func (qr *QueryRules) AddOneQr(db *sql.DB) int {
 		return 1
 	}
 	log.Print("AddOneQr: Add Success")
+	cmd.LoadQueryRulesToRuntime(db)
+	cmd.SaveQueryRulesToDisk(db)
 	return 0
 }
 
@@ -103,6 +106,8 @@ func (qr *QueryRules) DeleteOneQr(db *sql.DB) int {
 		return 1
 	}
 	log.Print("DeleteOneQr: Delete Success")
+	cmd.LoadQueryRulesToRuntime(db)
+	cmd.SaveQueryRulesToDisk(db)
 	return 0
 }
 
@@ -116,6 +121,8 @@ func (qr *QueryRules) ActiveOneQr(db *sql.DB) int {
 		return 1
 	}
 	log.Print("ActiveOneQr: ActiveOneQr Success")
+	cmd.LoadQueryRulesToRuntime(db)
+	cmd.SaveQueryRulesToDisk(db)
 	return 0
 }
 
@@ -129,6 +136,8 @@ func (qr *QueryRules) DisactiveOneQr(db *sql.DB) int {
 		return 1
 	}
 	log.Print("DisactiveOneQr: Success")
+	cmd.LoadQueryRulesToRuntime(db)
+	cmd.SaveQueryRulesToDisk(db)
 	return 0
 }
 
@@ -254,6 +263,8 @@ func (qr *QueryRules) UpdateOneQrUn(db *sql.DB) int {
 		return 1
 	}
 	log.Print("UpdateOneQrUn: Success")
+	cmd.LoadQueryRulesToRuntime(db)
+	cmd.SaveQueryRulesToDisk(db)
 	return 0
 }
 
@@ -267,6 +278,8 @@ func (qr *QueryRules) UpdateOneQrSn(db *sql.DB) int {
 		return 1
 	}
 	log.Print("UpdateOneQrSn: Success")
+	cmd.LoadQueryRulesToRuntime(db)
+	cmd.SaveQueryRulesToDisk(db)
 	return 0
 }
 
@@ -280,6 +293,8 @@ func (qr *QueryRules) UpdateOneQrCa(db *sql.DB) int {
 		return 1
 	}
 	log.Print("UpdateOneQrCa: Success")
+	cmd.LoadQueryRulesToRuntime(db)
+	cmd.SaveQueryRulesToDisk(db)
 	return 0
 }
 
@@ -293,6 +308,8 @@ func (qr *QueryRules) UpdateOneQrDg(db *sql.DB) int {
 		return 1
 	}
 	log.Print("UpdateOneQrDg: Success")
+	cmd.LoadQueryRulesToRuntime(db)
+	cmd.SaveQueryRulesToDisk(db)
 	return 0
 }
 
@@ -306,6 +323,8 @@ func (qr *QueryRules) UpdateOneQrMd(db *sql.DB) int {
 		return 1
 	}
 	log.Print("UpdateOneQrMd: Success")
+	cmd.LoadQueryRulesToRuntime(db)
+	cmd.SaveQueryRulesToDisk(db)
 	return 0
 }
 
@@ -319,6 +338,8 @@ func (qr *QueryRules) UpdateOneQrMp(db *sql.DB) int {
 		return 1
 	}
 	log.Print("UpdateOneQrMp: Success")
+	cmd.LoadQueryRulesToRuntime(db)
+	cmd.SaveQueryRulesToDisk(db)
 	return 0
 }
 
@@ -332,6 +353,8 @@ func (qr *QueryRules) UpdateOneQrRp(db *sql.DB) int {
 		return 1
 	}
 	log.Print("UpdateOneQrRp: Success")
+	cmd.LoadQueryRulesToRuntime(db)
+	cmd.SaveQueryRulesToDisk(db)
 	return 0
 }
 
@@ -345,6 +368,8 @@ func (qr *QueryRules) UpdateOneQrDh(db *sql.DB) int {
 		return 1
 	}
 	log.Print("UpdateOneQrDh: Success")
+	cmd.LoadQueryRulesToRuntime(db)
+	cmd.SaveQueryRulesToDisk(db)
 	return 0
 }
 
@@ -358,5 +383,7 @@ func (qr *QueryRules) UpdateOneQrEm(db *sql.DB) int {
 		return 1
 	}
 	log.Print("UpdateOneQrEm: Success")
+	cmd.LoadQueryRulesToRuntime(db)
+	cmd.SaveQueryRulesToDisk(db)
 	return 0
 }

@@ -687,7 +687,7 @@ func (pmapi *PMApi) CreateQueryRules(c echo.Context) error {
 func (pmapi *PMApi) UpdateOneQueryRulesStatus(c echo.Context) error {
 	args := struct {
 		RuleId int64 `json:"rule_id"`
-		Status int64 `json:"status"`
+		Status int64 `json:"active"`
 	}{}
 
 	qr := new(queryrules.QueryRules)
@@ -697,6 +697,8 @@ func (pmapi *PMApi) UpdateOneQueryRulesStatus(c echo.Context) error {
 	}
 
 	qr.Rule_id = args.RuleId
+	log.Print("UpdateOneQueryRulesStatus->args.Status:", args.Status)
+
 	if args.Status == 0 {
 		qret := qr.DisactiveOneQr(pmapi.Apidb)
 		if qret == 1 {

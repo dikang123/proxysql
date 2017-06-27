@@ -9,6 +9,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"proxysql-master/admin/cmd"
 	"proxysql-master/admin/queryrules"
 	"proxysql-master/admin/servers"
 	"proxysql-master/admin/status"
@@ -104,10 +105,22 @@ func (pmapi *PMApi) RegisterServices() {
 		pmapi.Echo.DELETE("/api/v1/scheduler/:id", pmapi.DeleteOneScheduler)
 	*/
 
+	/*ProxySQL admin API*/
+	pmapi.Echo.GET("/api/v1/cmd/readonly", pmapi.SetProxySQLReadonly)
+	pmapi.Echo.GET("/api/v1/cmd/readwrite", pmapi.SetProxySQLReadwrite)
+	pmapi.Echo.GET("/api/v1/cmd/start", pmapi.SetProxySQLStart)
+	pmapi.Echo.GET("/api/v1/cmd/restart", pmapi.SetProxySQLRestart)
+	pmapi.Echo.GET("/api/v1/cmd/stop", pmapi.SetProxySQLStop)
+	pmapi.Echo.GET("/api/v1/cmd/pause", pmapi.SetProxySQLPause)
+	pmapi.Echo.GET("/api/v1/cmd/resume", pmapi.SetProxySQLResume)
+	pmapi.Echo.GET("/api/v1/cmd/shutdown", pmapi.SetProxySQLShutdown)
+	pmapi.Echo.GET("/api/v1/cmd/flushlogs", pmapi.SetProxySQLFlogs)
+	pmapi.Echo.GET("/api/v1/cmd/kill", pmapi.SetProxySQLKill)
+
 }
 
 func (pmapi *PMApi) RunApiService() {
-	pmapi.Echo.Logger.Fatal(pmapi.Echo.Start(":3333"))
+	pmapi.Echo.Logger.Fatal(pmapi.Echo.Start(pmapi.ApiHost))
 }
 
 func (pmapi *PMApi) DeleteOneUser(c echo.Context) error {
@@ -674,7 +687,7 @@ func (pmapi *PMApi) CreateQueryRules(c echo.Context) error {
 func (pmapi *PMApi) UpdateOneQueryRulesStatus(c echo.Context) error {
 	args := struct {
 		RuleId int64 `json:"rule_id"`
-		Status int64 `json:"status"`
+		Status int64 `json:"active"`
 	}{}
 
 	qr := new(queryrules.QueryRules)
@@ -684,6 +697,8 @@ func (pmapi *PMApi) UpdateOneQueryRulesStatus(c echo.Context) error {
 	}
 
 	qr.Rule_id = args.RuleId
+	log.Print("UpdateOneQueryRulesStatus->args.Status:", args.Status)
+
 	if args.Status == 0 {
 		qret := qr.DisactiveOneQr(pmapi.Apidb)
 		if qret == 1 {
@@ -922,4 +937,84 @@ func (pmapi *PMApi) DeleteOneQueryRules(c echo.Context) error {
 		return c.JSON(http.StatusExpectationFailed, "DeleteOneQueryRules->qr.DeleteOneQr Error")
 	}
 	return c.JSON(http.StatusOK, "OK")
+}
+
+func (pmapi *PMApi) SetProxySQLReadonly(c echo.Context) error {
+	cret := cmd.ProxyReadOnly(pmapi.Apidb)
+	if cret == 0 {
+		return c.JSON(http.StatusOK, "OK")
+	}
+	return c.JSON(http.StatusExpectationFailed, "Failed")
+}
+
+func (pmapi *PMApi) SetProxySQLReadwrite(c echo.Context) error {
+	cret := cmd.ProxyReadWrite(pmapi.Apidb)
+	if cret == 0 {
+		return c.JSON(http.StatusOK, "OK")
+	}
+	return c.JSON(http.StatusExpectationFailed, "Failed")
+}
+
+func (pmapi *PMApi) SetProxySQLStart(c echo.Context) error {
+	cret := cmd.ProxyStart(pmapi.Apidb)
+	if cret == 0 {
+		return c.JSON(http.StatusOK, "OK")
+	}
+	return c.JSON(http.StatusExpectationFailed, "Failed")
+}
+
+func (pmapi *PMApi) SetProxySQLRestart(c echo.Context) error {
+	cret := cmd.ProxyRestart(pmapi.Apidb)
+	if cret == 0 {
+		return c.JSON(http.StatusOK, "OK")
+	}
+	return c.JSON(http.StatusExpectationFailed, "Failed")
+}
+
+func (pmapi *PMApi) SetProxySQLStop(c echo.Context) error {
+	cret := cmd.ProxyStop(pmapi.Apidb)
+	if cret == 0 {
+		return c.JSON(http.StatusOK, "OK")
+	}
+	return c.JSON(http.StatusExpectationFailed, "Failed")
+}
+
+func (pmapi *PMApi) SetProxySQLPause(c echo.Context) error {
+	cret := cmd.ProxyPause(pmapi.Apidb)
+	if cret == 0 {
+		return c.JSON(http.StatusOK, "OK")
+	}
+	return c.JSON(http.StatusExpectationFailed, "Failed")
+}
+
+func (pmapi *PMApi) SetProxySQLResume(c echo.Context) error {
+	cret := cmd.ProxyResume(pmapi.Apidb)
+	if cret == 0 {
+		return c.JSON(http.StatusOK, "OK")
+	}
+	return c.JSON(http.StatusExpectationFailed, "Failed")
+}
+
+func (pmapi *PMApi) SetProxySQLShutdown(c echo.Context) error {
+	cret := cmd.ProxyShutdown(pmapi.Apidb)
+	if cret == 0 {
+		return c.JSON(http.StatusOK, "OK")
+	}
+	return c.JSON(http.StatusExpectationFailed, "Failed")
+}
+
+func (pmapi *PMApi) SetProxySQLFlogs(c echo.Context) error {
+	cret := cmd.ProxyFlushLogs(pmapi.Apidb)
+	if cret == 0 {
+		return c.JSON(http.StatusOK, "OK")
+	}
+	return c.JSON(http.StatusExpectationFailed, "Failed")
+}
+
+func (pmapi *PMApi) SetProxySQLKill(c echo.Context) error {
+	cret := cmd.ProxyKill(pmapi.Apidb)
+	if cret == 0 {
+		return c.JSON(http.StatusOK, "OK")
+	}
+	return c.JSON(http.StatusExpectationFailed, "Failed")
 }

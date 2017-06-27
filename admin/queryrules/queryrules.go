@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"log"
+	"proxysql-master/admin/cmd"
 )
 
 type (
@@ -42,8 +43,8 @@ const (
 	StmtQrExists       = `SELECT COUNT(*) FROM mysql_query_rules WHERE rule_id = %d`
 	StmtAddOneQr       = `INSERT INTO mysql_query_rules(username) VALUES(%q)`
 	StmtDeleteOneQr    = `DELETE FROM mysql_query_rules WHERE rule_id = %d`
-	StmtActiveOneQr    = `UPDATE mysql_query_rules SET active =1 AND apply=1 WHERE rule_id=%d`
-	StmtDisactiveOneQr = `UPDATE mysql_query_rules SET active =0 AND  apply=0 WHERE rule_id=%d`
+	StmtActiveOneQr    = `UPDATE mysql_query_rules SET active =1 ,apply=1 WHERE rule_id=%d`
+	StmtDisactiveOneQr = `UPDATE mysql_query_rules SET active =0 ,apply=0 WHERE rule_id=%d`
 	StmtFindOneQr      = `select ifnull(rule_id,0) as rule_id,ifnull(active,0) as active,ifnull(username,"") as username,ifnull(schemaname,"") as schemaname,ifnull(flagIN,0) as flagIN,ifnull(client_addr,"") as client_addr,ifnull(proxy_addr,"") as proxy_addr,ifnull(proxy_port,0) as proxy_port,ifnull(digest,"") as digest,ifnull(match_digest,"") as match_digest,ifnull(match_pattern,"") as match_pattern,ifnull(negate_match_pattern,0) as negate_match_pattern,ifnull(flagOUT,0) as flagOUT,ifnull(replace_pattern,"") as replace_pattern,ifnull(destination_hostgroup,0) as destination_hostgroup,ifnull(cache_ttl,0) as cache_ttl,ifnull(reconnect,0) as reconnect,ifnull(timeout,0) as timeout,ifnull(retries,0) as retries,ifnull(delay,0) as delay,ifnull(mirror_flagOUT,0) as mirror_flagOUT,ifnull(mirror_hostgroup,0) as mirror_hostgroup,ifnull(error_msg,"") as error_msg,ifnull(log,0) as log,ifnull(apply,0) as apply,ifnull(comment,"") as comment from mysql_query_rules WHERE rule_id = %d`
 	StmtFindAllQr      = `select ifnull(rule_id,0) as rule_id,ifnull(active,0) as active,ifnull(username,"") as username,ifnull(schemaname,"") as schemaname,ifnull(flagIN,0) as flagIN,ifnull(client_addr,"") as client_addr,ifnull(proxy_addr,"") as proxy_addr,ifnull(proxy_port,0) as proxy_port,ifnull(digest,"") as digest,ifnull(match_digest,"") as match_digest,ifnull(match_pattern,"") as match_pattern,ifnull(negate_match_pattern,0) as negate_match_pattern,ifnull(flagOUT,0) as flagOUT,ifnull(replace_pattern,"") as replace_pattern,ifnull(destination_hostgroup,0) as destination_hostgroup,ifnull(cache_ttl,0) as cache_ttl,ifnull(reconnect,0) as reconnect,ifnull(timeout,0) as timeout,ifnull(retries,0) as retries,ifnull(delay,0) as delay,ifnull(mirror_flagOUT,0) as mirror_flagOUT,ifnull(mirror_hostgroup,0) as mirror_hostgroup,ifnull(error_msg,"") as error_msg,ifnull(log,0) as log,ifnull(apply,0) as apply,ifnull(comment,"") as comment from mysql_query_rules limit %d offset %d`
 	StmtUpdateOneQrUn  = `UPDATE mysql_query_rules SET username =%q WHERE rule_id = %d`
@@ -90,6 +91,8 @@ func (qr *QueryRules) AddOneQr(db *sql.DB) int {
 		return 1
 	}
 	log.Print("AddOneQr: Add Success")
+	cmd.LoadQueryRulesToRuntime(db)
+	cmd.SaveQueryRulesToDisk(db)
 	return 0
 }
 
@@ -103,6 +106,8 @@ func (qr *QueryRules) DeleteOneQr(db *sql.DB) int {
 		return 1
 	}
 	log.Print("DeleteOneQr: Delete Success")
+	cmd.LoadQueryRulesToRuntime(db)
+	cmd.SaveQueryRulesToDisk(db)
 	return 0
 }
 
@@ -116,6 +121,8 @@ func (qr *QueryRules) ActiveOneQr(db *sql.DB) int {
 		return 1
 	}
 	log.Print("ActiveOneQr: ActiveOneQr Success")
+	cmd.LoadQueryRulesToRuntime(db)
+	cmd.SaveQueryRulesToDisk(db)
 	return 0
 }
 
@@ -129,6 +136,8 @@ func (qr *QueryRules) DisactiveOneQr(db *sql.DB) int {
 		return 1
 	}
 	log.Print("DisactiveOneQr: Success")
+	cmd.LoadQueryRulesToRuntime(db)
+	cmd.SaveQueryRulesToDisk(db)
 	return 0
 }
 
@@ -254,6 +263,8 @@ func (qr *QueryRules) UpdateOneQrUn(db *sql.DB) int {
 		return 1
 	}
 	log.Print("UpdateOneQrUn: Success")
+	cmd.LoadQueryRulesToRuntime(db)
+	cmd.SaveQueryRulesToDisk(db)
 	return 0
 }
 
@@ -267,6 +278,8 @@ func (qr *QueryRules) UpdateOneQrSn(db *sql.DB) int {
 		return 1
 	}
 	log.Print("UpdateOneQrSn: Success")
+	cmd.LoadQueryRulesToRuntime(db)
+	cmd.SaveQueryRulesToDisk(db)
 	return 0
 }
 
@@ -280,6 +293,8 @@ func (qr *QueryRules) UpdateOneQrCa(db *sql.DB) int {
 		return 1
 	}
 	log.Print("UpdateOneQrCa: Success")
+	cmd.LoadQueryRulesToRuntime(db)
+	cmd.SaveQueryRulesToDisk(db)
 	return 0
 }
 
@@ -293,6 +308,8 @@ func (qr *QueryRules) UpdateOneQrDg(db *sql.DB) int {
 		return 1
 	}
 	log.Print("UpdateOneQrDg: Success")
+	cmd.LoadQueryRulesToRuntime(db)
+	cmd.SaveQueryRulesToDisk(db)
 	return 0
 }
 
@@ -306,6 +323,8 @@ func (qr *QueryRules) UpdateOneQrMd(db *sql.DB) int {
 		return 1
 	}
 	log.Print("UpdateOneQrMd: Success")
+	cmd.LoadQueryRulesToRuntime(db)
+	cmd.SaveQueryRulesToDisk(db)
 	return 0
 }
 
@@ -319,6 +338,8 @@ func (qr *QueryRules) UpdateOneQrMp(db *sql.DB) int {
 		return 1
 	}
 	log.Print("UpdateOneQrMp: Success")
+	cmd.LoadQueryRulesToRuntime(db)
+	cmd.SaveQueryRulesToDisk(db)
 	return 0
 }
 
@@ -332,6 +353,8 @@ func (qr *QueryRules) UpdateOneQrRp(db *sql.DB) int {
 		return 1
 	}
 	log.Print("UpdateOneQrRp: Success")
+	cmd.LoadQueryRulesToRuntime(db)
+	cmd.SaveQueryRulesToDisk(db)
 	return 0
 }
 
@@ -345,6 +368,8 @@ func (qr *QueryRules) UpdateOneQrDh(db *sql.DB) int {
 		return 1
 	}
 	log.Print("UpdateOneQrDh: Success")
+	cmd.LoadQueryRulesToRuntime(db)
+	cmd.SaveQueryRulesToDisk(db)
 	return 0
 }
 
@@ -358,5 +383,7 @@ func (qr *QueryRules) UpdateOneQrEm(db *sql.DB) int {
 		return 1
 	}
 	log.Print("UpdateOneQrEm: Success")
+	cmd.LoadQueryRulesToRuntime(db)
+	cmd.SaveQueryRulesToDisk(db)
 	return 0
 }

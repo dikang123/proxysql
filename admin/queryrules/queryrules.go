@@ -57,6 +57,7 @@ const (
 	StmtUpdateOneQrDh  = `UPDATE mysql_query_rules SET destination_hostgroup = %d WHERE rule_id = %d`
 	StmtUpdateOneQrEm  = `UPDATE mysql_query_rules SET error_msg = %q WHERE rule_id = %d`
 	StmtUpdateOneQr    = `UPDATE mysql_query_rules SET active=%d,username=%q,schemaname=%q,client_addr=%q,digest=%q,match_digest=%q,match_pattern=%q,replace_pattern=%q,destination_hostgroup=%d,cache_ttl=%d,error_msg=%q,apply=%d WHERE rule_id=%d`
+	StmtUpdateOneQrNoCache    = `UPDATE mysql_query_rules SET active=%d,username=%q,schemaname=%q,client_addr=%q,digest=%q,match_digest=%q,match_pattern=%q,replace_pattern=%q,destination_hostgroup=%d,error_msg=%q,apply=%d WHERE rule_id=%d`
 )
 
 //查询指定规则id是否存在
@@ -391,7 +392,15 @@ func (qr *QueryRules) UpdateOneQrEm(db *sql.DB) int {
 
 //添加一个Patch方法更新查询规则信息
 func (qr *QueryRules) UpdateOneQrInfo(db *sql.DB) int {
-	st := fmt.Sprintf(StmtUpdateOneQr, qr.Active, qr.Username, qr.Schemaname, qr.Client_addr, qr.Digest, qr.Match_digest, qr.Match_pattern, qr.Replace_pattern, qr.Destination_hostgroup, qr.Cache_ttl, qr.Error_msg, qr.Apply, qr.Rule_id)
+	var st string 
+	if qr.Cache_ttl == 0 {
+		log.Print("qr.Cache=0")
+	st = fmt.Sprintf(StmtUpdateOneQrNoCache, qr.Active, qr.Username, qr.Schemaname, qr.Client_addr, qr.Digest, qr.Match_digest, qr.Match_pattern, qr.Replace_pattern, qr.Destination_hostgroup,  qr.Error_msg, qr.Apply, qr.Rule_id)
+}else{
+		log.Print("qr.Cache!=0")
+	st = fmt.Sprintf(StmtUpdateOneQr, qr.Active, qr.Username, qr.Schemaname, qr.Client_addr, qr.Digest, qr.Match_digest, qr.Match_pattern, qr.Replace_pattern, qr.Destination_hostgroup, qr.Cache_ttl, qr.Error_msg, qr.Apply, qr.Rule_id)
+
+}
 	log.Print("queryrules->UpdateOneQrInfo->st: ", st)
 	_, err := db.Query(st)
 	if err != nil {

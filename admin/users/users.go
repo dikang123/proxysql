@@ -48,7 +48,6 @@ const (
 	StmtUpdateOneUserMc   = `UPDATE mysql_users SET max_connections = %d WHERE username = %q`
 	StmtUpdateOneUserDH   = `UPDATE mysql_users SET default_hostgroup=%d WHERE username = %q`
 	StmtUpdateOneUserPass = `UPDATE mysql_users SET password=%q WHERE username = %q`
-	StmtUpdateOneUser     = `UPDATE mysql_users SET username=%q,password=%q,active=%d,use_ssl=%d,default_hostgroup=%d,default_schema=%q,schema_locked=%d,transaction_persistent=%d,fast_forward=%d,backend=%d,frontend=%d,max_connections=%d WHERE username = %q`
 )
 
 func (users *Users) UserExists(db *sql.DB) bool {
@@ -136,22 +135,31 @@ func (users *Users) DisactiveOneUser(db *sql.DB) int {
 	}
 }
 
-// 更新一个用户所有信息，使用PUT方法
+// 更新一个用户所有信息，使用PATCH方法
 func (users *Users) UpdateOneUserInfo(db *sql.DB) int {
-	if isexist := users.UserExists(db); isexist == true {
-		st := fmt.Sprintf(StmtUpdateOneUser, users.Password, users.Active, users.UseSsl, users.DefaultHostgroup, users.DefaultSchema, users.SchemaLocked, users.TransactionPersistent, users.FastForward, users.Backend, users.Frontend, users.MaxConnections, users.Username)
-		_, err := db.Query(st)
-		if err != nil {
-			log.Print("UpdateOneUserInfo:", err)
-			return 1
+	var usr Users
+	usr = users.FindOneUserInfo(db)
+	if users.Active != usr.Active {
+		if users.Active == 0 {
+			users.DisactiveOneUser(db)
 		}
-		cmd.LoadUserToRuntime(db)
-		cmd.SaveUserToDisk(db)
-		return 0
-	} else {
-		log.Print("UpdateOneUserInfo: User is not exists")
-		return 2
+		if users.Active == 1 {
+			users.ActiveOneUser(db)
+		}
 	}
+	if users.Password != usr.Password {
+		users.UpdateOneUserPass(db)
+	}
+	if users.DefaultHostgroup != usr.DefaultHostgroup {
+		users.UpdateOneUserDh(db)
+	}
+	if users.DefaultSchema != usr.DefaultSchema {
+		users.UpdateOneUserDs(db)
+	}
+	if users.MaxConnections != usr.MaxConnections {
+		users.UpdateOneUserMc(db)
+	}
+	return 0
 }
 
 func (users *Users) UpdateOneUserDh(db *sql.DB) int {

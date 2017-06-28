@@ -387,3 +387,46 @@ func (qr *QueryRules) UpdateOneQrEm(db *sql.DB) int {
 	cmd.SaveQueryRulesToDisk(db)
 	return 0
 }
+
+//添加一个Patch方法更新查询规则信息
+func (qr *QueryRules) UpdateOneQrInfo(db *sql.DB) int {
+	var qr_tmp QueryRules
+	qr_tmp, _ = qr.FindOneQr(db)
+	if qr.Active != qr_tmp.Active {
+		if qr.Active == 0 {
+			qr.DisactiveOneQr(db)
+		}
+		if qr.Active == 1 {
+			qr.ActiveOneQr(db)
+		}
+	}
+	if qr.Username != qr_tmp.Username {
+		qr.UpdateOneQrUn(db)
+	}
+	if qr.Schemaname != qr_tmp.Schemaname {
+		qr.UpdateOneQrSn(db)
+	}
+	if qr.Client_addr != qr_tmp.Client_addr {
+		qr.UpdateOneQrCa(db)
+	}
+	if qr.Digest != qr_tmp.Digest {
+		qr.UpdateOneQrDg(db)
+	}
+	if qr.Match_digest != qr_tmp.Match_digest {
+		qr.UpdateOneQrMd(db)
+	}
+	if qr.Match_pattern != qr_tmp.Match_pattern {
+		qr.UpdateOneQrMp(db)
+	}
+	if qr.Replace_pattern != qr_tmp.Replace_pattern {
+		qr.UpdateOneQrRp(db)
+	}
+	if qr.Destination_hostgroup != qr_tmp.Destination_hostgroup {
+		qr.UpdateOneQrDh(db)
+	}
+	if qr.Error_msg != qr_tmp.Error_msg {
+		qr.UpdateOneQrEm(db)
+	}
+	return 0
+
+}

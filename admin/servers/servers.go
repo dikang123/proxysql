@@ -162,6 +162,30 @@ func (srvs *Servers) UpdateOneServerMc(db *sql.DB) int {
 	}
 }
 
+//更新后端服务全部信息
+func (srvs *Servers) UpdateOneServerInfo(db *sql.DB) int {
+	var srv_tmp Servers
+	srv_tmp = srvs.FindOneServersInfo(db)
+	if srvs.Status != srv_tmp.Status {
+		if srvs.Status == "ONLINE" {
+			srvs.ActiveOneServer(db)
+		}
+		if srvs.Status == "OFFLINE_SOFT" {
+			srvs.SoftDisactiveOneServer(db)
+		}
+		if srvs.Status == "OFFLINE_HARD" {
+			srvs.HardDisactiveOneServer(db)
+		}
+	}
+	if srvs.Weight == srv_tmp.Weight {
+		srvs.UpdateOneServerWeight(db)
+	}
+	if srvs.MaxConnections == srv_tmp.MaxConnections {
+		srvs.UpdateOneServerMc(db)
+	}
+	return 0
+}
+
 func (srvs *Servers) FindOneServersInfo(db *sql.DB) Servers {
 	if isexist := srvs.ServerExists(db); isexist == true {
 		st := fmt.Sprintf(StmtFindOneServer, srvs.HostGroupId, srvs.HostName, srvs.Port)

@@ -56,6 +56,7 @@ const (
 	StmtUpdateOneQrRp  = `UPDATE mysql_query_rules SET replace_pattern = %q WHERE rule_id = %d`
 	StmtUpdateOneQrDh  = `UPDATE mysql_query_rules SET destination_hostgroup = %d WHERE rule_id = %d`
 	StmtUpdateOneQrEm  = `UPDATE mysql_query_rules SET error_msg = %q WHERE rule_id = %d`
+	StmtUpdateOneQr    = `UPDATE mysql_query_rules SET active=%d,username=%q,schemaname=%q,flagIN=%d,client_addr=%q,proxy_addr=%q,proxy_port=%d,digest=%q,match_digest=%q,match_pattern=%q,negate_match_pattern=%d,flagOUT=%d,replace_pattern=%q,destination_hostgroup=%d,cache_ttl=%d,reconnect=%d,timeout=%d,retries=%d,delay=%d,mirror_flagOUT=%d,mirror_hostgroup=%d,error_msg=%q,log=%d,apply=%d WHERE rule_id=%d`
 )
 
 //查询指定规则id是否存在
@@ -390,43 +391,15 @@ func (qr *QueryRules) UpdateOneQrEm(db *sql.DB) int {
 
 //添加一个Patch方法更新查询规则信息
 func (qr *QueryRules) UpdateOneQrInfo(db *sql.DB) int {
-	var qr_tmp QueryRules
-	qr_tmp, _ = qr.FindOneQr(db)
-	if qr.Active != qr_tmp.Active {
-		if qr.Active == 0 {
-			qr.DisactiveOneQr(db)
-		}
-		if qr.Active == 1 {
-			qr.ActiveOneQr(db)
-		}
+	st := fmt.Sprintf(StmtUpdateOneQr, qr.Active, qr.Username, qr.Schemaname, qr.FlagIN, qr.Client_addr, qr.Proxy_addr, qr.Proxy_port, qr.Digest, qr.Match_digest, qr.Match_pattern, qr.Negate_match_pattern, qr.FlagOUT, qr.Replace_pattern, qr.Destination_hostgroup, qr.Cache_ttl, qr.Reconnect, qr.Timeout, qr.Retries, qr.Delay, qr.Mirror_flagOUT, qr.Mirror_hostgroup, qr.Error_msg, qr.Log, qr.Apply, qr.Rule_id)
+	log.Print("queryrules->UpdateOneQrInfo->st: ", st)
+	_, err := db.Query(st)
+	if err != nil {
+		log.Print("queryrules->UpdateOneQrInfo->err :", err)
+		return 1
 	}
-	if qr.Username != qr_tmp.Username {
-		qr.UpdateOneQrUn(db)
-	}
-	if qr.Schemaname != qr_tmp.Schemaname {
-		qr.UpdateOneQrSn(db)
-	}
-	if qr.Client_addr != qr_tmp.Client_addr {
-		qr.UpdateOneQrCa(db)
-	}
-	if qr.Digest != qr_tmp.Digest {
-		qr.UpdateOneQrDg(db)
-	}
-	if qr.Match_digest != qr_tmp.Match_digest {
-		qr.UpdateOneQrMd(db)
-	}
-	if qr.Match_pattern != qr_tmp.Match_pattern {
-		qr.UpdateOneQrMp(db)
-	}
-	if qr.Replace_pattern != qr_tmp.Replace_pattern {
-		qr.UpdateOneQrRp(db)
-	}
-	if qr.Destination_hostgroup != qr_tmp.Destination_hostgroup {
-		qr.UpdateOneQrDh(db)
-	}
-	if qr.Error_msg != qr_tmp.Error_msg {
-		qr.UpdateOneQrEm(db)
-	}
+	log.Print("queryrules->UpdateOneQrInfo-> Success")
+	cmd.LoadQueryRulesToRuntime(db)
+	cmd.SaveQueryRulesToDisk(db)
 	return 0
-
 }

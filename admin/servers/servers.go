@@ -30,6 +30,7 @@ const (
 	StmtHardDisactiveOneServer = `UPDATE mysql_servers SET status='OFFLINE_HARD' WHERE hostgroup_id=%d AND hostname=%q AND port=%d`
 	StmtUpdateOneServerWeight  = `UPDATE mysql_servers SET weight=%d WHERE hostgroup_id = %d AND hostname=%q AND port=%d`
 	StmtUpdateOneServerMc      = `UPDATE mysql_servers SET max_connections=%d WHERE hostgroup_id=%d AND hostname=%q AND port=%d`
+	StmtUpdateOneServer        = `UPDATE mysql_servers SET status=%q,weight=%d,compression=%d,max_connections=%d,max_replication_lag=%d,use_ssl=%d,max_latency_ms=%d,comment=%q WHERE hostgroup_id=%d AND host=%q AND port=%d`
 	StmtServerExists           = `SELECT count(*) FROM mysql_servers WHERE hostgroup_id=%d AND hostname=%q AND port=%d`
 	StmtFindOneServer          = `SELECT ifnull(hostgroup_id,0) as hostgroup_id,ifnull(hostname,"") as hostname,ifnull(port,0) as port,ifnull(status,"") as status,ifnull(weight,0) as weight,ifnull(compression,0) as compression,ifnull(max_connections,0) as max_connections,ifnull(max_replication_lag,0) as max_replication_lag,ifnull(use_ssl,0) as use_ssl,ifnull(max_latency_ms,0) as max_latency_ms,ifnull(comment,"") as comment FROM mysql_servers WHERE hostgroup_id=%d AND hostname=%q AND port=%d`
 	StmtFindAllServer          = `SELECT ifnull(hostgroup_id,0) as hostgroup_id,ifnull(hostname,"") as hostname,ifnull(port,0) as port,ifnull(status,"") as status,ifnull(weight,0) as weight,ifnull(compression,0) as compression,ifnull(max_connections,0) as max_connections,ifnull(max_replication_lag,0) as max_replication_lag,ifnull(use_ssl,0) as use_ssl,ifnull(max_latency_ms,0) as max_latency_ms,ifnull(comment,"") as comment FROM mysql_servers limit %d offset %d`
@@ -164,26 +165,19 @@ func (srvs *Servers) UpdateOneServerMc(db *sql.DB) int {
 
 //更新后端服务全部信息
 func (srvs *Servers) UpdateOneServerInfo(db *sql.DB) int {
-	var srv_tmp Servers
-	srv_tmp = srvs.FindOneServersInfo(db)
-	if srvs.Status != srv_tmp.Status {
-		if srvs.Status == "ONLINE" {
-			srvs.ActiveOneServer(db)
+	if isexist := srvs.ServerExists(db); isexist == true {
+		st := fmt.Sprintf(StmtUpdateOneServer, srvs.Status, srvs.Weight, srvs.Compression, srvs.MaxConnections, srvs.MaxReplicationLag, srvs.UseSsl, srvs.MaxLatencyMs, srvs.Comment, srvs.HostGroupId, srvs.HostName, srvs.Port)
+		log.Print("servers->UpdateOneServerInfo->st: ", st)
+		_, err := db.Query(st)
+		if err != nil {
+			return 1
 		}
-		if srvs.Status == "OFFLINE_SOFT" {
-			srvs.SoftDisactiveOneServer(db)
-		}
-		if srvs.Status == "OFFLINE_HARD" {
-			srvs.HardDisactiveOneServer(db)
-		}
+		cmd.LoadServerToRuntime(db)
+		cmd.SaveServerToDisk(db)
+		return 0
+	} else {
+		return 2
 	}
-	if srvs.Weight == srv_tmp.Weight {
-		srvs.UpdateOneServerWeight(db)
-	}
-	if srvs.MaxConnections == srv_tmp.MaxConnections {
-		srvs.UpdateOneServerMc(db)
-	}
-	return 0
 }
 
 func (srvs *Servers) FindOneServersInfo(db *sql.DB) Servers {

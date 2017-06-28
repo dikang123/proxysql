@@ -405,6 +405,8 @@ func (pmapi *PMApi) UpdateOneUserInfo(c echo.Context) error {
 	user.Frontend = args.Frontend
 	user.MaxConnections = args.MaxConnections
 
+	log.Print("pmapi->UpdateOneUserInfo->user :", user)
+
 	user.UpdateOneUserInfo(pmapi.Apidb)
 	return c.JSON(http.StatusOK, "OK")
 }

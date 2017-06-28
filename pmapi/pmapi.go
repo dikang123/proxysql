@@ -708,6 +708,45 @@ func (pmapi *PMApi) ListOneQueryRule(c echo.Context) error {
 	return c.JSON(http.StatusOK, ret)
 }
 
+/*更新服务信息的patch函数*/
+func (pmapi *PMApi) UpdateOneServerInfo(c echo.Context) error {
+	args := struct {
+		HostGroupId       uint64 `json:"hostgroup_id"`
+		HostName          string `json:"hostname"`
+		Port              uint64 `json:"port"`
+		Status            string `json:"status"`
+		Weight            uint64 `json:"weight"`
+		Compression       uint64 `json:"compression"`
+		MaxConnections    uint64 `json:"max_connections"`
+		MaxReplicationLag uint64 `json:"max_replication_lag"`
+		UseSsl            uint64 `json:"use_ssl"`
+		MaxLatencyMs      uint64 `json:"max_latency_ms"`
+		Comment           string `json:"comment"`
+	}{}
+
+	server := new(servers.Servers)
+
+	if err := c.Bind(&args); err != nil {
+		return err
+	}
+
+	server.HostGroupId = args.HostGroupId
+	server.HostName = args.HostName
+	server.Port = args.Port
+	server.Status = args.Status
+	server.Weight = args.Weight
+	server.Compression = args.Compression
+	server.MaxConnections = args.MaxConnections
+	server.MaxReplicationLag = args.MaxReplicationLag
+	server.UseSsl = args.UseSsl
+	server.MaxLatencyMs = args.MaxLatencyMs
+	server.Comment = args.Comment
+
+	server.UpdateOneServerInfo(pmapi.Apidb)
+
+	return c.JSON(http.StatusOK, "OK")
+}
+
 func (pmapi *PMApi) CreateQueryRules(c echo.Context) error {
 
 	args := struct {
@@ -970,6 +1009,74 @@ func (pmapi *PMApi) UpdateOneQueryRulesErrmsg(c echo.Context) error {
 		log.Print("UpdateOneQueryRulesErrmsg->qr.UpdateOneQrEm Error")
 		return c.JSON(http.StatusExpectationFailed, "UpdateOneQueryRulesErrmsg->qr.UpdateOneQrEm Error")
 	}
+	return c.JSON(http.StatusOK, "OK")
+}
+
+/*Patch方法的查询规则更新函数*/
+func (pmapi *PMApi) UpdateOneQueryRulesInfo(c echo.Context) error {
+	args := struct {
+		RuleId                int64  `json:"rule_id"`
+		Active                int64  `db:"active" json:"active"`
+		Username              string `db:"username" json:"username"`
+		Schemaname            string `db:"schemaname" json:"schemaname"`
+		FlagIN                int64  `db:"flagIN" json:"flagIN"`
+		Client_addr           string `db:"client_addr" json:"client_addr"`
+		Proxy_addr            string `db:"proxy_addr" json:"proxy_addr"`
+		Proxy_port            int64  `db:"proxy_port" json:"proxy_port"`
+		Digest                string `db:"digest" json:"digest"`
+		Match_digest          string `db:"match_digest" json:"match_digest"`
+		Match_pattern         string `db:"match_pattern" json:"match_pattern"`
+		Negate_match_pattern  int64  `db:"negate_match_pattern" json:"negate_match_pattern"`
+		FlagOUT               int64  `db:"flagOUT" json:"flagOUT"`
+		Replace_pattern       string `db:"replace_pattern" json:"replace_pattern"`
+		Destination_hostgroup int64  `db:"destination_hostgroup" json:"destination_hostgroup"`
+		Cache_ttl             int64  `db:"cache_ttl" json:"cache_ttl"`
+		Reconnect             int64  `db:"reconnect" json:"reconnect"`
+		Timeout               int64  `db:"timeout" json:"timeout"`
+		Retries               int64  `db:"retries" json:"retries"`
+		Delay                 int64  `db:"delay" json:"delay"`
+		Mirror_flagOUT        int64  `db:"mirror_flagOUT" json:"mirror_flagOUT"`
+		Mirror_hostgroup      int64  `db:"mirror_hostgroup" json:"mirror_hostgroup"`
+		Error_msg             string `db:"error_msg" json:"error_msg"`
+		Log                   int64  `db:"log" json:"log"`
+		Apply                 int64  `db:"apply" json:"apply"`
+		Comment               string `db:"comment" json:"comment"`
+	}{}
+
+	qr := new(queryrules.QueryRules)
+	if err := c.Bind(&args); err != nil {
+		log.Print("UpdateOneQueryRulesErrmsg->c.Bind ", err)
+		return err
+	}
+
+	qr.Rule_id = args.RuleId
+	qr.Active = args.Active
+	qr.Username = args.Username
+	qr.Schemaname = args.Schemaname
+	qr.FlagIN = args.FlagIN
+	qr.Client_addr = args.Client_addr
+	qr.Proxy_addr = args.Proxy_addr
+	qr.Proxy_port = args.Proxy_port
+	qr.Digest = args.Digest
+	qr.Match_digest = args.Match_digest
+	qr.Match_pattern = args.Match_pattern
+	qr.Negate_match_pattern = args.Negate_match_pattern
+	qr.FlagOUT = args.FlagOUT
+	qr.Replace_pattern = args.Replace_pattern
+	qr.Destination_hostgroup = args.Destination_hostgroup
+	qr.Cache_ttl = args.Cache_ttl
+	qr.Reconnect = args.Reconnect
+	qr.Timeout = args.Timeout
+	qr.Retries = args.Retries
+	qr.Delay = args.Delay
+	qr.Mirror_flagOUT = args.Mirror_flagOUT
+	qr.Mirror_hostgroup = args.Mirror_hostgroup
+	qr.Error_msg = args.Error_msg
+	qr.Log = args.Log
+	qr.Apply = args.Apply
+	qr.Comment = args.Comment
+
+	qr.UpdateOneQrInfo(pmapi.Apidb)
 	return c.JSON(http.StatusOK, "OK")
 }
 

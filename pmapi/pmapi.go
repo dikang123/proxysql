@@ -3,9 +3,6 @@ package pmapi
 import (
 	"database/sql"
 	"fmt"
-	_ "github.com/go-sql-driver/mysql"
-	"github.com/labstack/echo"
-	mw "github.com/labstack/echo/middleware"
 	"log"
 	"net/http"
 	"os"
@@ -16,6 +13,10 @@ import (
 	"proxysql-master/admin/users"
 	"proxysql-master/admin/variables"
 	"strconv"
+
+	_ "github.com/go-sql-driver/mysql"
+	"github.com/labstack/echo"
+	mw "github.com/labstack/echo/middleware"
 )
 
 type PMApi struct {
@@ -67,6 +68,7 @@ func (pmapi *PMApi) RegisterServices() {
 	pmapi.Echo.PUT("/api/v1/users/hostgroup", pmapi.UpdateOneUserDH)
 	pmapi.Echo.PUT("/api/v1/users/schema", pmapi.UpdateOneUserDS)
 	pmapi.Echo.PUT("/api/v1/users/maxconnection", pmapi.UpdateOneUserMC)
+	pmapi.Echo.PATCH("/api/v1/users", pmapi.UpdateOneUserInfo)
 	pmapi.Echo.DELETE("/api/v1/users/:username", pmapi.DeleteOneUser)
 
 	/*Server Services*/
@@ -77,6 +79,7 @@ func (pmapi *PMApi) RegisterServices() {
 	pmapi.Echo.PUT("/api/v1/servers/status", pmapi.UpdateOneServerStatus)
 	pmapi.Echo.PUT("/api/v1/servers/weight", pmapi.UpdateOneServerWeight)
 	pmapi.Echo.PUT("/api/v1/servers/maxconnection", pmapi.UpdateOneServerMC)
+	pmapi.Echo.PATCH("/api/v1/servers", pmapi.UpdateOneServerInfo)
 	pmapi.Echo.DELETE("/api/v1/servers", pmapi.DeleteOneServers)
 
 	/*Query Rules*/
@@ -93,6 +96,7 @@ func (pmapi *PMApi) RegisterServices() {
 	pmapi.Echo.PUT("/api/v1/queryrules/replacepattern", pmapi.UpdateOneQueryRulesReplacePattern)
 	pmapi.Echo.PUT("/api/v1/queryrules/desthostgroup", pmapi.UpdateOneQueryRulesDestHostgroup)
 	pmapi.Echo.PUT("/api/v1/queryrules/errmsg", pmapi.UpdateOneQueryRulesErrmsg)
+	pmapi.Echo.PATCH("/api/v1/queryrules", pmapi.UpdateOneQueryRulesInfo)
 	pmapi.Echo.DELETE("/api/v1/queryrules/:ruleid", pmapi.DeleteOneQueryRules)
 
 	/*Scheduler*/
@@ -362,6 +366,47 @@ func (pmapi *PMApi) UpdateOneUserPass(c echo.Context) error {
 		return c.JSON(http.StatusExpectationFailed, "UpdateOneUserMc ???")
 
 	}
+}
+
+/*更新用户信息的patch方法*/
+func (pmapi *PMApi) UpdateOneUserInfo(c echo.Context) error {
+
+	args := struct {
+		UserName              string `json:"username"`
+		Password              string `json:"password"`
+		Active                uint64 `json:"active"`
+		UseSsl                uint64 `json:"use_ssl"`
+		DefaultHostgroup      uint64 `json:"default_hostgroup"`
+		DefaultSchema         string `json:"default_schema"`
+		SchemaLocked          uint64 `json:"schema_locked"`
+		TransactionPersistent uint64 `json:"transaction_persistent"`
+		FastForward           uint64 `json:"fast_forward"`
+		Backend               uint64 `json:"backend"`
+		Frontend              uint64 `json:"frontend"`
+		MaxConnections        uint64 `json:"max_connections"`
+	}{}
+
+	user := new(users.Users)
+
+	if err := c.Bind(&args); err != nil {
+		return err
+	}
+
+	user.Username = args.UserName
+	user.Password = args.Password
+	user.Active = args.Active
+	user.UseSsl = args.UseSsl
+	user.DefaultHostgroup = args.DefaultHostgroup
+	user.DefaultSchema = args.DefaultSchema
+	user.SchemaLocked = args.SchemaLocked
+	user.TransactionPersistent = args.TransactionPersistent
+	user.FastForward = args.FastForward
+	user.Backend = args.Backend
+	user.Frontend = args.Frontend
+	user.MaxConnections = args.MaxConnections
+
+	user.UpdateOneUserInfo(pmapi.Apidb)
+	return c.JSON(http.StatusOK, "OK")
 }
 
 /*返回所有后端数据库服务器的信息*/

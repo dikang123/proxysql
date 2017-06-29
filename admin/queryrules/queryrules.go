@@ -40,24 +40,24 @@ type (
 )
 
 const (
-	StmtQrExists       = `SELECT COUNT(*) FROM mysql_query_rules WHERE rule_id = %d`
-	StmtAddOneQr       = `INSERT INTO mysql_query_rules(username) VALUES(%q)`
-	StmtDeleteOneQr    = `DELETE FROM mysql_query_rules WHERE rule_id = %d`
-	StmtActiveOneQr    = `UPDATE mysql_query_rules SET active =1 ,apply=1 WHERE rule_id=%d`
-	StmtDisactiveOneQr = `UPDATE mysql_query_rules SET active =0 ,apply=0 WHERE rule_id=%d`
-	StmtFindOneQr      = `select ifnull(rule_id,0) as rule_id,ifnull(active,0) as active,ifnull(username,"") as username,ifnull(schemaname,"") as schemaname,ifnull(flagIN,0) as flagIN,ifnull(client_addr,"") as client_addr,ifnull(proxy_addr,"") as proxy_addr,ifnull(proxy_port,0) as proxy_port,ifnull(digest,"") as digest,ifnull(match_digest,"") as match_digest,ifnull(match_pattern,"") as match_pattern,ifnull(negate_match_pattern,0) as negate_match_pattern,ifnull(flagOUT,0) as flagOUT,ifnull(replace_pattern,"") as replace_pattern,ifnull(destination_hostgroup,0) as destination_hostgroup,ifnull(cache_ttl,0) as cache_ttl,ifnull(reconnect,0) as reconnect,ifnull(timeout,0) as timeout,ifnull(retries,0) as retries,ifnull(delay,0) as delay,ifnull(mirror_flagOUT,0) as mirror_flagOUT,ifnull(mirror_hostgroup,0) as mirror_hostgroup,ifnull(error_msg,"") as error_msg,ifnull(log,0) as log,ifnull(apply,0) as apply,ifnull(comment,"") as comment from mysql_query_rules WHERE rule_id = %d`
-	StmtFindAllQr      = `select ifnull(rule_id,0) as rule_id,ifnull(active,0) as active,ifnull(username,"") as username,ifnull(schemaname,"") as schemaname,ifnull(flagIN,0) as flagIN,ifnull(client_addr,"") as client_addr,ifnull(proxy_addr,"") as proxy_addr,ifnull(proxy_port,0) as proxy_port,ifnull(digest,"") as digest,ifnull(match_digest,"") as match_digest,ifnull(match_pattern,"") as match_pattern,ifnull(negate_match_pattern,0) as negate_match_pattern,ifnull(flagOUT,0) as flagOUT,ifnull(replace_pattern,"") as replace_pattern,ifnull(destination_hostgroup,0) as destination_hostgroup,ifnull(cache_ttl,0) as cache_ttl,ifnull(reconnect,0) as reconnect,ifnull(timeout,0) as timeout,ifnull(retries,0) as retries,ifnull(delay,0) as delay,ifnull(mirror_flagOUT,0) as mirror_flagOUT,ifnull(mirror_hostgroup,0) as mirror_hostgroup,ifnull(error_msg,"") as error_msg,ifnull(log,0) as log,ifnull(apply,0) as apply,ifnull(comment,"") as comment from mysql_query_rules limit %d offset %d`
-	StmtUpdateOneQrUn  = `UPDATE mysql_query_rules SET username =%q WHERE rule_id = %d`
-	StmtUpdateOneQrSn  = `UPDATE mysql_query_rules SET schemaname = %q WHERE rule_id = %d`
-	StmtUpdateOneQrCa  = `UPDATE mysql_query_rules SET client_addr = %q WHERE rule_id = %d`
-	StmtUpdateOneQrMd  = `UPDATE mysql_query_rules SET match_digest = %q WHERE rule_id = %d`
-	StmtUpdateOneQrDg  = `UPDATE mysql_query_rules SET digest = %q WHERE rule_id = %d`
-	StmtUpdateOneQrMp  = `UPDATE mysql_query_rules SET match_pattern = %q WHERE rule_id = %d`
-	StmtUpdateOneQrRp  = `UPDATE mysql_query_rules SET replace_pattern = %q WHERE rule_id = %d`
-	StmtUpdateOneQrDh  = `UPDATE mysql_query_rules SET destination_hostgroup = %d WHERE rule_id = %d`
-	StmtUpdateOneQrEm  = `UPDATE mysql_query_rules SET error_msg = %q WHERE rule_id = %d`
-	StmtUpdateOneQr    = `UPDATE mysql_query_rules SET active=%d,username=%q,schemaname=%q,client_addr=%q,digest=%q,match_digest=%q,match_pattern=%q,replace_pattern=%q,destination_hostgroup=%d,cache_ttl=%d,error_msg=%q,apply=%d WHERE rule_id=%d`
-	StmtUpdateOneQrNoCache    = `UPDATE mysql_query_rules SET active=%d,username=%q,schemaname=%q,client_addr=%q,digest=%q,match_digest=%q,match_pattern=%q,replace_pattern=%q,destination_hostgroup=%d,error_msg=%q,apply=%d WHERE rule_id=%d`
+	StmtQrExists           = `SELECT COUNT(*) FROM mysql_query_rules WHERE rule_id = %d`
+	StmtAddOneQr           = `INSERT INTO mysql_query_rules(username) VALUES(%q)`
+	StmtDeleteOneQr        = `DELETE FROM mysql_query_rules WHERE rule_id = %d`
+	StmtActiveOneQr        = `UPDATE mysql_query_rules SET active =1 ,apply=1 WHERE rule_id=%d`
+	StmtDisactiveOneQr     = `UPDATE mysql_query_rules SET active =0 ,apply=0 WHERE rule_id=%d`
+	StmtFindOneQr          = `select ifnull(rule_id,0) as rule_id,ifnull(active,0) as active,ifnull(username,"") as username,ifnull(schemaname,"") as schemaname,ifnull(flagIN,0) as flagIN,ifnull(client_addr,"") as client_addr,ifnull(proxy_addr,"") as proxy_addr,ifnull(proxy_port,0) as proxy_port,ifnull(digest,"") as digest,ifnull(match_digest,"") as match_digest,ifnull(match_pattern,"") as match_pattern,ifnull(negate_match_pattern,0) as negate_match_pattern,ifnull(flagOUT,0) as flagOUT,ifnull(replace_pattern,"") as replace_pattern,ifnull(destination_hostgroup,0) as destination_hostgroup,ifnull(cache_ttl,0) as cache_ttl,ifnull(reconnect,0) as reconnect,ifnull(timeout,0) as timeout,ifnull(retries,0) as retries,ifnull(delay,0) as delay,ifnull(mirror_flagOUT,0) as mirror_flagOUT,ifnull(mirror_hostgroup,0) as mirror_hostgroup,ifnull(error_msg,"") as error_msg,ifnull(log,0) as log,ifnull(apply,0) as apply,ifnull(comment,"") as comment from mysql_query_rules WHERE rule_id = %d`
+	StmtFindAllQr          = `select ifnull(rule_id,0) as rule_id,ifnull(active,0) as active,ifnull(username,"") as username,ifnull(schemaname,"") as schemaname,ifnull(flagIN,0) as flagIN,ifnull(client_addr,"") as client_addr,ifnull(proxy_addr,"") as proxy_addr,ifnull(proxy_port,0) as proxy_port,ifnull(digest,"") as digest,ifnull(match_digest,"") as match_digest,ifnull(match_pattern,"") as match_pattern,ifnull(negate_match_pattern,0) as negate_match_pattern,ifnull(flagOUT,0) as flagOUT,ifnull(replace_pattern,"") as replace_pattern,ifnull(destination_hostgroup,0) as destination_hostgroup,ifnull(cache_ttl,0) as cache_ttl,ifnull(reconnect,0) as reconnect,ifnull(timeout,0) as timeout,ifnull(retries,0) as retries,ifnull(delay,0) as delay,ifnull(mirror_flagOUT,0) as mirror_flagOUT,ifnull(mirror_hostgroup,0) as mirror_hostgroup,ifnull(error_msg,"") as error_msg,ifnull(log,0) as log,ifnull(apply,0) as apply,ifnull(comment,"") as comment from mysql_query_rules limit %d offset %d`
+	StmtUpdateOneQrUn      = `UPDATE mysql_query_rules SET username =%q WHERE rule_id = %d`
+	StmtUpdateOneQrSn      = `UPDATE mysql_query_rules SET schemaname = %q WHERE rule_id = %d`
+	StmtUpdateOneQrCa      = `UPDATE mysql_query_rules SET client_addr = %q WHERE rule_id = %d`
+	StmtUpdateOneQrMd      = `UPDATE mysql_query_rules SET match_digest = %q WHERE rule_id = %d`
+	StmtUpdateOneQrDg      = `UPDATE mysql_query_rules SET digest = %q WHERE rule_id = %d`
+	StmtUpdateOneQrMp      = `UPDATE mysql_query_rules SET match_pattern = %q WHERE rule_id = %d`
+	StmtUpdateOneQrRp      = `UPDATE mysql_query_rules SET replace_pattern = %q WHERE rule_id = %d`
+	StmtUpdateOneQrDh      = `UPDATE mysql_query_rules SET destination_hostgroup = %d WHERE rule_id = %d`
+	StmtUpdateOneQrEm      = `UPDATE mysql_query_rules SET error_msg = %q WHERE rule_id = %d`
+	StmtUpdateOneQr        = `UPDATE mysql_query_rules SET active=%d,username=%q,schemaname=%q,client_addr=%q,digest=%q,match_digest=%q,match_pattern=%q,replace_pattern=%q,destination_hostgroup=%d,cache_ttl=%d,error_msg=%q,apply=%d WHERE rule_id=%d`
+	StmtUpdateOneQrNoCache = `UPDATE mysql_query_rules SET active=%d,username=%q,schemaname=%q,client_addr=%q,digest=%q,match_digest=%q,match_pattern=%q,replace_pattern=%q,destination_hostgroup=%d,error_msg=%q,apply=%d WHERE rule_id=%d`
 )
 
 //查询指定规则id是否存在
@@ -392,15 +392,15 @@ func (qr *QueryRules) UpdateOneQrEm(db *sql.DB) int {
 
 //添加一个Patch方法更新查询规则信息
 func (qr *QueryRules) UpdateOneQrInfo(db *sql.DB) int {
-	var st string 
+	var st string
 	if qr.Cache_ttl == 0 {
 		log.Print("qr.Cache=0")
-	st = fmt.Sprintf(StmtUpdateOneQrNoCache, qr.Active, qr.Username, qr.Schemaname, qr.Client_addr, qr.Digest, qr.Match_digest, qr.Match_pattern, qr.Replace_pattern, qr.Destination_hostgroup,  qr.Error_msg, qr.Apply, qr.Rule_id)
-}else{
+		st = fmt.Sprintf(StmtUpdateOneQrNoCache, qr.Active, qr.Username, qr.Schemaname, qr.Client_addr, qr.Digest, qr.Match_digest, qr.Match_pattern, qr.Replace_pattern, qr.Destination_hostgroup, qr.Error_msg, qr.Apply, qr.Rule_id)
+	} else {
 		log.Print("qr.Cache!=0")
-	st = fmt.Sprintf(StmtUpdateOneQr, qr.Active, qr.Username, qr.Schemaname, qr.Client_addr, qr.Digest, qr.Match_digest, qr.Match_pattern, qr.Replace_pattern, qr.Destination_hostgroup, qr.Cache_ttl, qr.Error_msg, qr.Apply, qr.Rule_id)
+		st = fmt.Sprintf(StmtUpdateOneQr, qr.Active, qr.Username, qr.Schemaname, qr.Client_addr, qr.Digest, qr.Match_digest, qr.Match_pattern, qr.Replace_pattern, qr.Destination_hostgroup, qr.Cache_ttl, qr.Error_msg, qr.Apply, qr.Rule_id)
 
-}
+	}
 	log.Print("queryrules->UpdateOneQrInfo->st: ", st)
 	_, err := db.Query(st)
 	if err != nil {

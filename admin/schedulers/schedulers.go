@@ -28,7 +28,7 @@ const (
 )
 
 //查找出所有定时器
-func FindAllSchedulerInfo(db *sql.DB, limit int64, skip int64) []Schedulers {
+func FindAllSchedulerInfo(db *sql.DB, limit int64, skip int64) ([]Schedulers, error) {
 	var allscheduler []Schedulers
 	var tmpscheduler Schedulers
 	st := fmt.Sprintf(StmtFindAllScheduler, limit, skip)
@@ -36,6 +36,7 @@ func FindAllSchedulerInfo(db *sql.DB, limit int64, skip int64) []Schedulers {
 	rows, err := db.Query(st)
 	if err != nil {
 		log.Print("scheduler.go->FindAllSchedulerInfo->err: ", err)
+		return []Schedulers{}, err
 	}
 	defer rows.Close()
 
@@ -54,7 +55,7 @@ func FindAllSchedulerInfo(db *sql.DB, limit int64, skip int64) []Schedulers {
 		)
 		allscheduler = append(allscheduler, tmpscheduler)
 	}
-	return allscheduler
+	return allscheduler, nil
 }
 
 //添加一个新调度器

@@ -1172,7 +1172,6 @@ func (pmapi *PMApi) SetProxySQLKill(c echo.Context) error {
 
 /*与调取器相关的api函数*/
 func (pmapi *PMApi) ListAllScheduler(c echo.Context) error {
-	schld := new(schedulers.Schedulers)
 
 	limit, _ := strconv.ParseInt(c.QueryParam("limit"), 10, 64)
 	page, _ := strconv.ParseInt(c.QueryParam("page"), 10, 64)

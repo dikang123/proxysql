@@ -21,7 +21,7 @@ type Schedulers struct {
 }
 
 const (
-	StmtAddOneScheduler    = `INSERT INTO scheduler(filename,interval_ms) values(%d,%q)`
+	StmtAddOneScheduler    = `INSERT INTO scheduler(filename,interval_ms) values(%q,%d)`
 	StmtDeleteOneScheduler = `DELETE FROM scheduler WHERE id = %d`
 	StmtUpdateOneScheduler = `UPDATE scheduler SET active = %d,interval_ms=%d,filename = %q,arg1 = %q,arg2=%q,arg3=%q,arg4=%q,arg5=%q,comment=%q WHERE id = %d`
 	StmtFindAllScheduler   = `SELECT id,active,interval_ms,filename,ifnull(arg1,""),ifnull(arg2,""),ifnull(arg3,""),ifnull(arg4,""),ifnull(arg5,""),comment FROM scheduler limit %d offset %d`
@@ -55,6 +55,7 @@ func FindAllSchedulerInfo(db *sql.DB, limit int64, skip int64) ([]Schedulers, er
 		)
 		allscheduler = append(allscheduler, tmpscheduler)
 	}
+	log.Print("scheduler.go->FindAllSchedulerInfo->allscheduler= ", allscheduler)
 	return allscheduler, nil
 }
 

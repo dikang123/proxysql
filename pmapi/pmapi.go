@@ -1191,6 +1191,7 @@ func (pmapi *PMApi) ListAllScheduler(c echo.Context) error {
 		log.Print("ListAllScheduler->qr.FindAllSchdulerInfo ", err)
 		return c.JSON(http.StatusExpectationFailed, "ListAllSchduler ExpectationFailed")
 	}
+	log.Print("ret=", ret)
 	return c.JSON(http.StatusOK, ret)
 }
 

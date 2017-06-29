@@ -9,7 +9,7 @@ import (
 
 type Schedulers struct {
 	Id         int64  `json:"id" db:"id"`
-	Active     int64  `json:"id" db:"id"`
+	Active     int64  `json:"active" db:"active"`
 	IntervalMs int64  `json:"interval_ms" db:"interval_ms"`
 	FileName   string `json:"filename" db:"filename"`
 	Arg1       string `json:"arg1" db:"arg1"`

@@ -1232,7 +1232,7 @@ func (pmapi *PMApi) DeleteOneScheduler(c echo.Context) error {
 func (pmapi *PMApi) UpdateOneScheduler(c echo.Context) error {
 	args := struct {
 		Id         int64  `json:"id" db:"id"`
-		Active     int64  `json:"id" db:"id"`
+		Active     int64  `json:"active" db:"active"`
 		IntervalMs int64  `json:"interval_ms" db:"interval_ms"`
 		FileName   string `json:"filename" db:"filename"`
 		Arg1       string `json:"arg1" db:"arg1"`
@@ -1259,6 +1259,8 @@ func (pmapi *PMApi) UpdateOneScheduler(c echo.Context) error {
 	schld.Arg4 = args.Arg4
 	schld.Arg5 = args.Arg5
 	schld.Comment = args.Comment
+
+	log.Print("pmapi->UpdateOneScheduler->schld: ",schld)
 
 	sret := schld.UpdateOneSchedulerInfo(pmapi.Apidb)
 	if sret != 0 {

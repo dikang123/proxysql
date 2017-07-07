@@ -58,7 +58,10 @@ func (pmapi *PMApi) RegisterMiddleware() {
 func (pmapi *PMApi) RegisterServices() {
 	/*Dashboard*/
 	pmapi.Echo.GET("/api/v1/status", pmapi.ListPStatus)
+
+	/*Variables*/
 	pmapi.Echo.GET("/api/v1/variables", pmapi.ListPsVariables)
+	pmapi.Echo.PUT("/api/v1/variables", pmapi.UpdateOneVariables)
 
 	/*User Services*/
 	pmapi.Echo.GET("/api/v1/users", pmapi.ListAllUsers)
@@ -664,6 +667,27 @@ func (pmapi *PMApi) ListPsVariables(c echo.Context) error {
 	return c.JSON(http.StatusOK, ps.GetProxySqlVariables(pmapi.Apidb))
 }
 
+func (pmapi *PMApi) UpdateOneVariables(c echo.Context) error {
+	args := struct {
+		VariableName  string `json:"variable_name"`
+		VariableValue string `json:"variable_value"`
+	}{}
+	if err := c.Bind(&args); err != nil {
+		return err
+	}
+
+	psv := new(variables.Variables)
+
+	psv.VariablesName = args.VariableName
+	psv.Value = args.VariableValue
+
+	pret, _ := psv.UpdateOneVariable(pmapi.Apidb)
+	if pret == 1 {
+		return c.JSON(http.StatusExpectationFailed, "UpdateOneVariable Failed")
+	}
+	return c.JSON(http.StatusOK, "OK")
+}
+
 //查询出所有查询规则
 func (pmapi *PMApi) ListAllQueryRules(c echo.Context) error {
 	qr := new(queryrules.QueryRules)
@@ -1260,7 +1284,7 @@ func (pmapi *PMApi) UpdateOneScheduler(c echo.Context) error {
 	schld.Arg5 = args.Arg5
 	schld.Comment = args.Comment
 
-	log.Print("pmapi->UpdateOneScheduler->schld: ",schld)
+	log.Print("pmapi->UpdateOneScheduler->schld: ", schld)
 
 	sret := schld.UpdateOneSchedulerInfo(pmapi.Apidb)
 	if sret != 0 {

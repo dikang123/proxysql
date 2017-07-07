@@ -5,6 +5,7 @@ import (
 	"fmt"
 	//"fmt"
 	"log"
+	"proxysql-master/admin/cmd"
 )
 
 type (
@@ -112,6 +113,10 @@ func (vars *Variables) UpdateOneVariable(db *sql.DB) (int, error) {
 		log.Print("UpdateOneVariable->db.Query: ", err)
 		return 1, err
 	}
+	cmd.LoadMySQlVariablesToRuntime(db)
+	cmd.LoadAdminVariablesToRuntime(db)
+	cmd.SaveMySQLVariablesToDisk(db)
+	cmd.SaveAdminVariablesToDisk(db)
 	return 0, nil
 }
 

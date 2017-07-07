@@ -8,24 +8,28 @@ import (
 )
 
 const (
-	CmdProxyReadOnly           = `PROXYSQL READONLY`
-	CmdProxyReadWrite          = `PROXYSQL READWRITE`
-	CmdProxyStart              = `PROXYSQL START`
-	CmdProxyRestart            = `PROXYSQL RESTART`
-	CmdProxyStop               = `PROXYSQL STOP`
-	CmdProxyPause              = `PROXYSQL PAUSE`
-	CmdProxyResume             = `PROXYSQL RESUME`
-	CmdProxyShutdown           = `PROXYSQL SHUTDOWN`
-	CmdProxyFlushLogs          = `PROXYSQL FLUSH LOGS`
-	CmdProxyKill               = `PROXYSQL KILL`
-	CmdLoadUserToRuntime       = `LOAD MYSQL USERS TO RUNTIME`
-	CmdSaveUserToDisk          = `SAVE MYSQL USERS TO DISK`
-	CmdLoadServerToRuntime     = `LOAD MYSQL SERVERS TO RUNTIME`
-	CmdSaveServerToDisk        = `SAVE MYSQL SERVERS TO DISK`
-	CmdLoadQueryRulesToRuntime = `LOAD MYSQL QUERY RULES TO RUNTIME`
-	CmdSaveQueryRulesToDisk    = `SAVE MYSQL QUERY RULES TO DISK`
-	CmdLoadSchedulerToRuntime  = `LOAD SCHEDULER TO RUNTIME`
-	CmdSaveSchedulerToDisk     = `SAVE SCHEDULER TO DISK`
+	CmdProxyReadOnly               = `PROXYSQL READONLY`
+	CmdProxyReadWrite              = `PROXYSQL READWRITE`
+	CmdProxyStart                  = `PROXYSQL START`
+	CmdProxyRestart                = `PROXYSQL RESTART`
+	CmdProxyStop                   = `PROXYSQL STOP`
+	CmdProxyPause                  = `PROXYSQL PAUSE`
+	CmdProxyResume                 = `PROXYSQL RESUME`
+	CmdProxyShutdown               = `PROXYSQL SHUTDOWN`
+	CmdProxyFlushLogs              = `PROXYSQL FLUSH LOGS`
+	CmdProxyKill                   = `PROXYSQL KILL`
+	CmdLoadUserToRuntime           = `LOAD MYSQL USERS TO RUNTIME`
+	CmdSaveUserToDisk              = `SAVE MYSQL USERS TO DISK`
+	CmdLoadServerToRuntime         = `LOAD MYSQL SERVERS TO RUNTIME`
+	CmdSaveServerToDisk            = `SAVE MYSQL SERVERS TO DISK`
+	CmdLoadQueryRulesToRuntime     = `LOAD MYSQL QUERY RULES TO RUNTIME`
+	CmdSaveQueryRulesToDisk        = `SAVE MYSQL QUERY RULES TO DISK`
+	CmdLoadSchedulerToRuntime      = `LOAD SCHEDULER TO RUNTIME`
+	CmdSaveSchedulerToDisk         = `SAVE SCHEDULER TO DISK`
+	CmdLoadMySQLVariablesToRuntime = `LOAD MYSQL VARIABLES TO RUNTIME`
+	CmdSaveMySQLVariablesToDisk    = `SAVE MYSQL VARIABLES TO DISK`
+	CmdLoadAdminVariablesToRuntime = `LOAD ADMIN VARIABLES TO RUNTIME`
+	CmdSaveAdminVariablesToDisk    = `SAVE ADMIN VARIABLES TO DISK`
 )
 
 func ProxyReadOnly(db *sql.DB) int {
@@ -223,5 +227,49 @@ func SaveSchedulerToDisk(db *sql.DB) int {
 		return 1
 	}
 	log.Print("SaveSchedulerToDisk: Success")
+	return 0
+}
+
+func LoadMySQlVariablesToRuntime(db *sql.DB) int {
+	log.Print("LoadMySQLVariablesToRunTime: ", CmdLoadMySQLVariablesToRuntime)
+	_, err := db.Query(CmdLoadMySQLVariablesToRuntime)
+	if err != nil {
+		log.Print("LoadMySQlVariablesToRunTime: ", err)
+		return 1
+	}
+	log.Print("LoadMySQlVariablesToRunTime: Success")
+	return 0
+}
+
+func LoadAdminVariablesToRuntime(db *sql.DB) int {
+	log.Print("LoadAdminVariablesToRunTime: ", CmdLoadAdminVariablesToRuntime)
+	_, err := db.Query(CmdLoadAdminVariablesToRuntime)
+	if err != nil {
+		log.Print("LoadAdminVariablesToRunTime: ", err)
+		return 1
+	}
+	log.Print("LoadAdminVariablesToRunTime: Success")
+	return 0
+}
+
+func SaveMySQLVariablesToDisk(db *sql.DB) int {
+	log.Print("SaveMySQLVariablesToDisk: ", CmdSaveMySQLVariablesToDisk)
+	_, err := db.Query(CmdSaveMySQLVariablesToDisk)
+	if err != nil {
+		log.Print("SaveMySQLVariablesToDisk:", err)
+		return 1
+	}
+	log.Print("SaveMySQLVariablesToDisk: Success")
+	return 0
+}
+
+func SaveAdminVariablesToDisk(db *sql.DB) int {
+	log.Print("SaveAdminVariablesToDisk: ", CmdSaveAdminVariablesToDisk)
+	_, err := db.Query(CmdSaveAdminVariablesToDisk)
+	if err != nil {
+		log.Print("SaveAdminVariablesToDisk:", err)
+		return 1
+	}
+	log.Print("SaveAdminVariablesToDisk: Success")
 	return 0
 }

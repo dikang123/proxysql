@@ -2,6 +2,7 @@ package variables
 
 import (
 	"database/sql"
+	"fmt"
 	//"fmt"
 	"log"
 )
@@ -99,8 +100,20 @@ type (
 )
 
 const (
-	StmtGlobalVariables = `SHOW GLOBAL VARIABLES`
+	StmtGlobalVariables   = `SHOW GLOBAL VARIABLES`
+	StmtUpdateOneVariable = `UPDATE global_variables SET variable_value=%q WHERE variable_name = %q`
 )
+
+func (vars *Variables) UpdateOneVariable(db *sql.DB) (int, error) {
+	st := fmt.Sprintf(StmtUpdateOneVariable, vars.Value, vars.VariablesName)
+	log.Print("variables.go->UpdateOneVariable->st:", st)
+	_, err := db.Query(st)
+	if err != nil {
+		log.Print("UpdateOneVariable->db.Query: ", err)
+		return 1, err
+	}
+	return 0, nil
+}
 
 func (ps *PsVariables) GetProxySqlVariables(db *sql.DB) PsVariables {
 	var tmp Variables

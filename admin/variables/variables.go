@@ -95,8 +95,8 @@ type (
 		Mysql_wait_timeout                     string `db:"mysql_wait_timeout" json:"mysql-wait_timeout"`
 	}
 	Variables struct {
-		VariablesName string `db:"Variable_name" json:"Variable_name"`
-		Value         string `db:"Value" json:"Value"`
+		VariablesName string `db:"Variable_name" json:"variable_name"`
+		Value         string `db:"Value" json:"variable_value"`
 	}
 )
 
@@ -120,190 +120,22 @@ func (vars *Variables) UpdateOneVariable(db *sql.DB) (int, error) {
 	return 0, nil
 }
 
-func (ps *PsVariables) GetProxySqlVariables(db *sql.DB) PsVariables {
+func GetProxySqlVariables(db *sql.DB) []Variables {
+	var tmparray []Variables
 	var tmp Variables
 	log.Print("Execution: ", StmtGlobalVariables)
 	rows, err := db.Query(StmtGlobalVariables)
 	if err != nil {
 		log.Print("StmtGlobalVariables Msg:", err)
-		return PsVariables{}
+		return []Variables{}
 	}
 
 	for rows.Next() {
 		tmp = Variables{}
 		err = rows.Scan(&tmp.VariablesName, &tmp.Value)
-		switch tmp.VariablesName {
-		case "admin-admin_credentials":
-			ps.Admin_admin_credentials = tmp.Value
-		case "admin-hash_passwords":
-			ps.Admin_hash_passwords = tmp.Value
-		case "admin-mysql_ifaces":
-			ps.Admin_mysql_ifaces = tmp.Value
-		case "admin-read_only":
-			ps.Admin_read_only = tmp.Value
-		case "admin-refresh_interval":
-			ps.Admin_refresh_interval = tmp.Value
-		case "admin-stats_credentials":
-			ps.Admin_stats_credentials = tmp.Value
-		case "admin-telnet_admin_ifaces":
-			ps.Admin_telnet_admin_ifaces = tmp.Value
-		case "admin-telnet_stats_ifaces":
-			ps.Admin_telnet_stats_ifaces = tmp.Value
-		case "admin-version":
-			ps.Admin_version = tmp.Value
-		case "mysql-client_found_rows":
-			ps.Mysql_client_found_rows = tmp.Value
-		case "mysql-commands_stats":
-			ps.Mysql_commands_stats = tmp.Value
-		case "mysql-connect_retries_delay":
-			ps.Mysql_connect_retries_delay = tmp.Value
-		case "mysql-connect_retries_on_failure":
-			ps.Mysql_connect_retries_on_failure = tmp.Value
-		case "mysql-connect_timeout_server":
-			ps.Mysql_connect_timeout_server = tmp.Value
-		case "mysql-connect_timeout_server_max":
-			ps.Mysql_connect_timeout_server_max = tmp.Value
-		case "mysql-connection_max_age_ms":
-			ps.Mysql_connection_max_age_ms = tmp.Value
-		case "mysql-default_charset":
-			ps.Mysql_default_charset = tmp.Value
-		case "mysql-default_max_latency_ms":
-			ps.Mysql_default_max_latency_ms = tmp.Value
-		case "mysql-default_query_delay":
-			ps.Mysql_default_query_delay = tmp.Value
-		case "mysql-default_query_timeout":
-			ps.Mysql_default_query_timeout = tmp.Value
-		case "mysql-default_reconnect":
-			ps.Mysql_default_reconnect = tmp.Value
-		case "mysql-default_schema":
-			ps.Mysql_default_schema = tmp.Value
-		case "mysql-default_sql_mode":
-			ps.Mysql_default_sql_mode = tmp.Value
-		case "mysql-default_time_zone":
-			ps.Mysql_default_time_zone = tmp.Value
-		case "mysql-enforce_autocommit_on_reads":
-			ps.Mysql_enforce_autocommit_on_reads = tmp.Value
-		case "mysql-eventslog_filename":
-			ps.Mysql_eventslog_filename = tmp.Value
-		case "mysql-eventslog_filesize":
-			ps.Mysql_eventslog_filesize = tmp.Value
-		case "mysql-free_connections_pct":
-			ps.Mysql_free_connections_pct = tmp.Value
-		case "mysql-have_compress":
-			ps.Mysql_have_compress = tmp.Value
-		case "mysql-init_connect":
-			ps.Mysql_init_connect = tmp.Value
-		case "mysql-interfaces":
-			ps.Mysql_interfaces = tmp.Value
-		case "mysql-long_query_time":
-			ps.Mysql_long_query_time = tmp.Value
-		case "mysql-max_allowed_packet":
-			ps.Mysql_max_allowed_packet = tmp.Value
-		case "mysql-max_connections":
-			ps.Mysql_max_connections = tmp.Value
-		case "mysql-max_stmts_cache":
-			ps.Mysql_max_stmts_cache = tmp.Value
-		case "mysql-max_stmts_per_connection":
-			ps.Mysql_max_stmts_per_connection = tmp.Value
-		case "mysql-max_transaction_time":
-			ps.Mysql_max_transaction_time = tmp.Value
-		case "mysql-monitor_connect_interval":
-			ps.Mysql_monitor_connect_interval = tmp.Value
-		case "mysql-monitor_connect_timeout":
-			ps.Mysql_monitor_connect_timeout = tmp.Value
-		case "mysql-monitor_enabled":
-			ps.Mysql_monitor_enabled = tmp.Value
-		case "mysql-monitor_history":
-			ps.Mysql_monitor_history = tmp.Value
-		case "mysql-monitor_password":
-			ps.Mysql_monitor_password = tmp.Value
-		case "mysql-monitor_ping_interval":
-			ps.Mysql_monitor_ping_interval = tmp.Value
-		case "mysql-monitor_ping_max_failures":
-			ps.Mysql_monitor_ping_max_failures = tmp.Value
-		case "mysql-monitor_ping_timeout":
-			ps.Mysql_monitor_ping_timeout = tmp.Value
-		case "mysql-monitor_query_interval":
-			ps.Mysql_monitor_query_interval = tmp.Value
-		case "mysql-monitor_query_timeout":
-			ps.Mysql_monitor_query_timeout = tmp.Value
-		case "mysql-monitor_read_only_interval":
-			ps.Mysql_monitor_read_only_interval = tmp.Value
-		case "mysql-monitor_read_only_timeout":
-			ps.Mysql_monitor_read_only_timeout = tmp.Value
-		case "mysql-monitor_replication_lag_interval":
-			ps.Mysql_monitor_replication_lag_interval = tmp.Value
-		case "mysql-monitor_replication_lag_timeout":
-			ps.Mysql_monitor_replication_lag_timeout = tmp.Value
-		case "mysql-monitor_slave_lag_when_null":
-			ps.Mysql_monitor_slave_lag_when_null = tmp.Value
-		case "mysql-monitor_username":
-			ps.Mysql_monitor_username = tmp.Value
-		case "mysql-monitor_writer_is_also_reader":
-			ps.Mysql_monitor_writer_is_also_reader = tmp.Value
-		case "mysql-multiplexing":
-			ps.Mysql_multiplexing = tmp.Value
-		case "mysql-ping_interval_server_msec":
-			ps.Mysql_ping_interval_server_msec = tmp.Value
-		case "mysql-ping_timeout_server":
-			ps.Mysql_ping_timeout_server = tmp.Value
-		case "mysql-poll_timeout":
-			ps.Mysql_poll_timeout = tmp.Value
-		case "mysql-poll_timeout_on_failure":
-			ps.Mysql_poll_timeout_on_failure = tmp.Value
-		case "mysql-query_cache_size_MB":
-			ps.Mysql_query_cache_size_MB = tmp.Value
-		case "mysql-query_digests":
-			ps.Mysql_query_digests = tmp.Value
-		case "mysql-query_digests_lowercase":
-			ps.Mysql_query_digests_lowercase = tmp.Value
-		case "mysql-query_digests_max_digest_length":
-			ps.Mysql_query_digests_max_digest_length = tmp.Value
-		case "mysql-query_digests_max_query_length":
-			ps.Mysql_query_digests_max_query_length = tmp.Value
-		case "mysql-query_processor_iterations":
-			ps.Mysql_query_processor_iterations = tmp.Value
-		case "mysql-query_retries_on_failure":
-			ps.Mysql_query_retries_on_failure = tmp.Value
-		case "mysql-server_capabilities":
-			ps.Mysql_server_capabilities = tmp.Value
-		case "mysql-server_version":
-			ps.Mysql_server_version = tmp.Value
-		case "mysql-servers_stats":
-			ps.Mysql_servers_stats = tmp.Value
-		case "mysql-session_idle_ms":
-			ps.Mysql_session_idle_ms = tmp.Value
-		case "mysql-session_idle_show_processlist":
-			ps.Mysql_session_idle_show_processlist = tmp.Value
-		case "mysql-sessions_sort":
-			ps.Mysql_sessions_sort = tmp.Value
-		case "mysql-shun_on_failures":
-			ps.Mysql_shun_on_failures = tmp.Value
-		case "mysql-shun_recovery_time_sec":
-			ps.Mysql_shun_recovery_time_sec = tmp.Value
-		case "mysql-ssl_p2s_ca":
-			ps.Mysql_ssl_p2s_ca = tmp.Value
-		case "mysql-ssl_p2s_cert":
-			ps.Mysql_ssl_p2s_cert = tmp.Value
-		case "mysql-ssl_p2s_cipher":
-			ps.Mysql_ssl_p2s_cipher = tmp.Value
-		case "mysql-ssl_p2s_key":
-			ps.Mysql_ssl_p2s_key = tmp.Value
-		case "mysql-stacksize":
-			ps.Mysql_stacksize = tmp.Value
-		case "mysql-threads":
-			ps.Mysql_threads = tmp.Value
-		case "mysql-threshold_query_length":
-			ps.Mysql_threshold_query_length = tmp.Value
-		case "mysql-threshold_resultset_size":
-			ps.Mysql_threshold_resultset_size = tmp.Value
-		case "mysql-wait_timeout":
-			ps.Mysql_wait_timeout = tmp.Value
-		default:
-			log.Print("GetProxySqlVariables() ", tmp.VariablesName)
-		}
+		tmparray = append(tmparray, tmp)
 	}
-	log.Printf("GetProxySqlVariables tmp variables =%#v", *ps)
-	return *ps
+	log.Printf("GetProxySqlVariables tmp variables =%#v", tmparray)
+	return tmparray
 
 }

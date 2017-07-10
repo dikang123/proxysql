@@ -662,9 +662,8 @@ func (pmapi *PMApi) ListPStatus(c echo.Context) error {
 
 //查询出所有变量的内容
 func (pmapi *PMApi) ListPsVariables(c echo.Context) error {
-	ps := new(variables.PsVariables)
 
-	return c.JSON(http.StatusOK, ps.GetProxySqlVariables(pmapi.Apidb))
+	return c.JSON(http.StatusOK, variables.GetProxySqlVariables(pmapi.Apidb))
 }
 
 func (pmapi *PMApi) UpdateOneVariables(c echo.Context) error {
@@ -672,11 +671,13 @@ func (pmapi *PMApi) UpdateOneVariables(c echo.Context) error {
 		VariableName  string `json:"variable_name"`
 		VariableValue string `json:"variable_value"`
 	}{}
+
 	if err := c.Bind(&args); err != nil {
 		return err
 	}
 
 	psv := new(variables.Variables)
+	log.Print("UpdateOneVariables",args)
 
 	psv.VariablesName = args.VariableName
 	psv.Value = args.VariableValue

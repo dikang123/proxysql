@@ -1,6 +1,11 @@
 package pmapi
 
+import (
+	"net/http"
+	"proxysql-master/admin/status"
 
+	"github.com/labstack/echo"
+)
 
 //查询出ProxySQL状态信息
 func (pmapi *PMApi) ListPStatus(c echo.Context) error {

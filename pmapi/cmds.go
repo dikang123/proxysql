@@ -1,5 +1,11 @@
 package pmapi
 
+import (
+	"net/http"
+	"proxysql-master/admin/cmd"
+
+	"github.com/labstack/echo"
+)
 
 func (pmapi *PMApi) SetProxySQLReadonly(c echo.Context) error {
 	cret := cmd.ProxyReadOnly(pmapi.Apidb)

@@ -4,13 +4,12 @@ import (
 	"log"
 	"net/http"
 	"proxysql-master/admin/queryrules"
-	"proxysql-master/admin/variables"
 	"strconv"
 
-	"github.com/labstack/echo"
+	"github.com/gin-gonic/gin"
 )
 
-func (pmapi *PMApi) CreateQueryRules(c echo.Context) error {
+func (pmapi *PMApi) CreateOneQueryRules(c *gin.Context) {
 
 	args := struct {
 		UserName string `json:"username"`
@@ -18,7 +17,7 @@ func (pmapi *PMApi) CreateQueryRules(c echo.Context) error {
 
 	qr := new(queryrules.QueryRules)
 	if err := c.Bind(&args); err != nil {
-		return err
+		c.JSON(http.StatusExpectationFailed, gin.H{"result": err})
 	}
 
 	qr.Username = args.UserName
@@ -26,257 +25,13 @@ func (pmapi *PMApi) CreateQueryRules(c echo.Context) error {
 
 	cret := qr.AddOneQr(pmapi.Apidb)
 	if cret == 1 {
-		return c.JSON(http.StatusExpectationFailed, "CreateQueryRules->AddOneQr->db.Query error")
+		c.JSON(http.StatusExpectationFailed, "CreateQueryRules->AddOneQr->db.Query error")
 	}
-	return c.JSON(http.StatusOK, "OK")
-}
-
-func (pmapi *PMApi) UpdateOneQueryRulesStatus(c echo.Context) error {
-	args := struct {
-		RuleId int64 `json:"rule_id"`
-		Status int64 `json:"active"`
-	}{}
-
-	qr := new(queryrules.QueryRules)
-	if err := c.Bind(&args); err != nil {
-		log.Print("UpdateOneQueryRulesStatus->c.Bind ", err)
-		return err
-	}
-
-	qr.Rule_id = args.RuleId
-	log.Print("UpdateOneQueryRulesStatus->args.Status:", args.Status)
-
-	if args.Status == 0 {
-		qret := qr.DisactiveOneQr(pmapi.Apidb)
-		if qret == 1 {
-			return c.JSON(http.StatusExpectationFailed, "UpdateOneQueryRulesStatus->DisactiveOneQr error")
-		}
-		return c.JSON(http.StatusOK, "Disactive OK")
-	}
-	qret := qr.ActiveOneQr(pmapi.Apidb)
-	if qret == 1 {
-		return c.JSON(http.StatusExpectationFailed, "UpdateOneQueryRulesStatus->ActiveOneQr error")
-	}
-	return c.JSON(http.StatusOK, "Active OK")
-}
-
-//更新一个查询规则中的用户名
-func (pmapi *PMApi) UpdateOneQueryRulesUser(c echo.Context) error {
-	args := struct {
-		RuleId   int64  `json:"rule_id"`
-		Username string `json:"username"`
-	}{}
-
-	qr := new(queryrules.QueryRules)
-	if err := c.Bind(&args); err != nil {
-		log.Print("UpdateOneQueryRulesUser->c.Bind ", err)
-		return err
-	}
-
-	qr.Rule_id = args.RuleId
-	qr.Username = args.Username
-
-	qret := qr.UpdateOneQrUn(pmapi.Apidb)
-	if qret == 1 {
-		log.Print("UpdateOneQueryRulesUser->qr.UpdateOneQrUn err")
-		return c.JSON(http.StatusExpectationFailed, "UpdateOneQueryRulesUser Error")
-	}
-	return c.JSON(http.StatusOK, "OK")
-}
-
-func (pmapi *PMApi) UpdateOneQueryRulesSchema(c echo.Context) error {
-	args := struct {
-		RuleId     int64  `json:"rule_id"`
-		Schemaname string `json:"schemaname"`
-	}{}
-
-	qr := new(queryrules.QueryRules)
-	if err := c.Bind(&args); err != nil {
-		log.Print("UpdateOneQueryRulesSchea->c.Bind", err)
-		return err
-	}
-
-	qr.Rule_id = args.RuleId
-	qr.Schemaname = args.Schemaname
-
-	qret := qr.UpdateOneQrSn(pmapi.Apidb)
-	if qret == 1 {
-		log.Print("UpdateOneQueryRules->UpdateOneQrSn Err")
-		return c.JSON(http.StatusExpectationFailed, "UPdateOneQueryRulesSchema Error")
-	}
-	return c.JSON(http.StatusOK, "OK")
-}
-
-//更新一个规则的客户端地址
-func (pmapi *PMApi) UpdateOneQueryRulesClient(c echo.Context) error {
-	args := struct {
-		RuleId     int64  `json:"rule_id"`
-		ClientAddr string `json:"client_addr"`
-	}{}
-
-	qr := new(queryrules.QueryRules)
-	if err := c.Bind(&args); err != nil {
-		log.Print("UpdateOneQueryRulesClient->c.Bind ", err)
-		return err
-	}
-
-	qr.Rule_id = args.RuleId
-	qr.Client_addr = args.ClientAddr
-
-	qret := qr.UpdateOneQrCa(pmapi.Apidb)
-	if qret == 1 {
-		log.Print("UpdateOneQueryRulesClient->UpdateOneQrCa Error")
-		return c.JSON(http.StatusExpectationFailed, "UpdateOneQueryRulesClient->qr.UpdateOneQrCa  Error")
-	}
-	return c.JSON(http.StatusOK, "OK")
-}
-
-//更新查询规则的digest列
-func (pmapi *PMApi) UpdateOneQueryRulesDigest(c echo.Context) error {
-	args := struct {
-		RuleId int64  `json:"rule_id"`
-		Digest string `json:"digest"`
-	}{}
-
-	qr := new(queryrules.QueryRules)
-	if err := c.Bind(&args); err != nil {
-		log.Print("UpdateOneQueryRulesDigest->c.Bind :", err)
-		return err
-	}
-
-	qr.Rule_id = args.RuleId
-	qr.Digest = args.Digest
-
-	qret := qr.UpdateOneQrDg(pmapi.Apidb)
-	if qret == 1 {
-		log.Print("UpdateOneQueryRulesDigest->qr.UpdateOneQrDg Error")
-		return c.JSON(http.StatusExpectationFailed, "UpdateOneQueryRulesDigest->qr.UpdateOneQrDg Error")
-	}
-	return c.JSON(http.StatusOK, "OK")
-}
-
-//更新查询规则的match_digest列
-func (pmapi *PMApi) UpdateOneQueryRulesMatchDigest(c echo.Context) error {
-	args := struct {
-		RuleId      int64  `json:"rule_id"`
-		MatchDigest string `json:"match_digest"`
-	}{}
-
-	qr := new(queryrules.QueryRules)
-	if err := c.Bind(&args); err != nil {
-		log.Print("UpdateOneQueryRulesMatchDigest->c.Bind :", err)
-		return err
-	}
-
-	qr.Rule_id = args.RuleId
-	qr.Match_digest = args.MatchDigest
-
-	qret := qr.UpdateOneQrMd(pmapi.Apidb)
-	if qret == 1 {
-		log.Print("UpdateOneQueryRulesMatchDigest->qr.UpdateOneQrMd Error")
-		return c.JSON(http.StatusExpectationFailed, "UpdateOneQueryRulesMatchDigest->qr.UpdateOneQrMd Error")
-	}
-	return c.JSON(http.StatusOK, "OK")
-}
-
-//更新规则匹配内容
-func (pmapi *PMApi) UpdateOneQueryRulesMatchPattern(c echo.Context) error {
-	args := struct {
-		RuleId       int64  `json:"rule_id"`
-		MatchPattern string `json:"match_pattern"`
-	}{}
-
-	qr := new(queryrules.QueryRules)
-	if err := c.Bind(&args); err != nil {
-		log.Print("UpdateOneQueryRulesMatchPattern->c.Bind ", err)
-		return err
-	}
-
-	qr.Rule_id = args.RuleId
-	qr.Match_pattern = args.MatchPattern
-
-	qret := qr.UpdateOneQrMp(pmapi.Apidb)
-	if qret == 1 {
-		log.Print("UpdateOneQueryRulesMatchPattern->qr.UpdateOneQrMp Error")
-		return c.JSON(http.StatusExpectationFailed, "UpdateOneQueryRulesMatchPattern->qr.UpdateOneQrMp Error")
-	}
-	return c.JSON(http.StatusOK, "OK")
-}
-
-//更新替换内容
-func (pmapi *PMApi) UpdateOneQueryRulesReplacePattern(c echo.Context) error {
-	args := struct {
-		RuleId         int64  `json:"rule_id"`
-		ReplacePattern string `json:"replace_pattern"`
-	}{}
-
-	qr := new(queryrules.QueryRules)
-	if err := c.Bind(&args); err != nil {
-		log.Print("UpdateOneQueryRulesReplacePattern->c.Bind ", err)
-		return err
-	}
-
-	qr.Rule_id = args.RuleId
-	qr.Replace_pattern = args.ReplacePattern
-
-	qret := qr.UpdateOneQrRp(pmapi.Apidb)
-	if qret == 1 {
-		log.Print("UpdateOneQueryRulesReplacePattern->qr.UpdateOneQrRp Error")
-		return c.JSON(http.StatusExpectationFailed, "UpdateOneQueryRulesReplacePattern->qr.UpdateOneQrRp Error")
-	}
-	return c.JSON(http.StatusOK, "OK")
-}
-
-//更新规则的默认主机组
-func (pmapi *PMApi) UpdateOneQueryRulesDestHostgroup(c echo.Context) error {
-	args := struct {
-		RuleId               int64 `json:"rule_id"`
-		DestinationHostgroup int64 `json:"destination_hostgroup"`
-	}{}
-
-	qr := new(queryrules.QueryRules)
-	if err := c.Bind(&args); err != nil {
-		log.Print("UpdateOneQueryRulesDestHostgroup->c.Bind ", err)
-		return err
-	}
-
-	qr.Rule_id = args.RuleId
-	qr.Destination_hostgroup = args.DestinationHostgroup
-
-	qret := qr.UpdateOneQrDh(pmapi.Apidb)
-	if qret == 1 {
-		log.Print("UpdateOneQueryRulesDestHostgroup->qr.UpdateOneQrDh Error")
-		return c.JSON(http.StatusExpectationFailed, "UpdateOneQueryRulesDestHostgroup->qr.UpdateOneQrDh  Error")
-	}
-	return c.JSON(http.StatusOK, "OK")
-}
-
-//更新一个规则的错误消息内容
-func (pmapi *PMApi) UpdateOneQueryRulesErrmsg(c echo.Context) error {
-	args := struct {
-		RuleId int64  `json:"rule_id"`
-		ErrMsg string `json:"error_msg"`
-	}{}
-
-	qr := new(queryrules.QueryRules)
-	if err := c.Bind(&args); err != nil {
-		log.Print("UpdateOneQueryRulesErrmsg->c.Bind ", err)
-		return err
-	}
-
-	qr.Rule_id = args.RuleId
-	qr.Error_msg = args.ErrMsg
-
-	qret := qr.UpdateOneQrEm(pmapi.Apidb)
-	if qret == 1 {
-		log.Print("UpdateOneQueryRulesErrmsg->qr.UpdateOneQrEm Error")
-		return c.JSON(http.StatusExpectationFailed, "UpdateOneQueryRulesErrmsg->qr.UpdateOneQrEm Error")
-	}
-	return c.JSON(http.StatusOK, "OK")
+	c.JSON(http.StatusOK, "OK")
 }
 
 /*Patch方法的查询规则更新函数*/
-func (pmapi *PMApi) UpdateOneQueryRulesInfo(c echo.Context) error {
+func (pmapi *PMApi) UpdateOneQueryRules(c *gin.Context) {
 	args := struct {
 		RuleId                int64  `json:"rule_id"`
 		Active                int64  `db:"active" json:"active"`
@@ -309,7 +64,7 @@ func (pmapi *PMApi) UpdateOneQueryRulesInfo(c echo.Context) error {
 	qr := new(queryrules.QueryRules)
 	if err := c.Bind(&args); err != nil {
 		log.Print("UpdateOneQueryRulesErrmsg->c.Bind ", err)
-		return err
+		c.JSON(http.StatusExpectationFailed, gin.H{"result": err})
 	}
 
 	qr.Rule_id = args.RuleId
@@ -340,48 +95,26 @@ func (pmapi *PMApi) UpdateOneQueryRulesInfo(c echo.Context) error {
 	qr.Comment = args.Comment
 
 	qr.UpdateOneQrInfo(pmapi.Apidb)
-	return c.JSON(http.StatusOK, "OK")
+	c.JSON(http.StatusOK, "OK")
 }
 
-func (pmapi *PMApi) DeleteOneQueryRules(c echo.Context) error {
+func (pmapi *PMApi) DeleteOneQueryRules(c *gin.Context) {
 	qr := new(queryrules.QueryRules)
 	qr.Rule_id, _ = strconv.ParseInt(c.Param("ruleid"), 10, 64)
 	qret := qr.DeleteOneQr(pmapi.Apidb)
 	if qret == 1 {
 		log.Print("DeleteOneQueryRules->qr.DeleteOneQr Error")
-		return c.JSON(http.StatusExpectationFailed, "DeleteOneQueryRules->qr.DeleteOneQr Error")
+		c.JSON(http.StatusExpectationFailed, "DeleteOneQueryRules->qr.DeleteOneQr Error")
 	}
-	return c.JSON(http.StatusOK, "OK")
-}
-func (pmapi *PMApi) UpdateOneVariables(c echo.Context) error {
-	args := struct {
-		VariableName  string `json:"variable_name"`
-		VariableValue string `json:"variable_value"`
-	}{}
-
-	if err := c.Bind(&args); err != nil {
-		return err
-	}
-
-	psv := new(variables.Variables)
-	log.Print("UpdateOneVariables", args)
-
-	psv.VariablesName = args.VariableName
-	psv.Value = args.VariableValue
-
-	pret, _ := psv.UpdateOneVariable(pmapi.Apidb)
-	if pret == 1 {
-		return c.JSON(http.StatusExpectationFailed, "UpdateOneVariable Failed")
-	}
-	return c.JSON(http.StatusOK, "OK")
+	c.JSON(http.StatusOK, "OK")
 }
 
 //查询出所有查询规则
-func (pmapi *PMApi) ListAllQueryRules(c echo.Context) error {
+func (pmapi *PMApi) ListAllQueryRules(c *gin.Context) {
 	qr := new(queryrules.QueryRules)
 
-	limit, _ := strconv.ParseInt(c.QueryParam("limit"), 10, 64)
-	page, _ := strconv.ParseInt(c.QueryParam("page"), 10, 64)
+	limit, _ := strconv.ParseInt(c.Query("limit"), 10, 64)
+	page, _ := strconv.ParseInt(c.Query("page"), 10, 64)
 
 	if limit == 0 {
 		limit = 10
@@ -396,25 +129,7 @@ func (pmapi *PMApi) ListAllQueryRules(c echo.Context) error {
 	ret, err := qr.FindAllQr(pmapi.Apidb, limit, skip)
 	if err != nil {
 		log.Print("ListAllQueryRules->qr.FindAllQr ", err)
-		return c.JSON(http.StatusExpectationFailed, "ListAllQueryRules ExpectationFailed")
+		c.JSON(http.StatusExpectationFailed, "ListAllQueryRules ExpectationFailed")
 	}
-	return c.JSON(http.StatusOK, ret)
-}
-
-//查询出一个规则的内容
-func (pmapi *PMApi) ListOneQueryRule(c echo.Context) error {
-	qr := new(queryrules.QueryRules)
-	if err := c.Bind(qr); err != nil {
-		return err
-	}
-	qr.Rule_id, _ = strconv.ParseInt(c.Param("ruleid"), 10, 64)
-	log.Print("ListOneQueryRule->qr.Rule_id = ", qr.Rule_id)
-
-	ret, err := qr.FindOneQr(pmapi.Apidb)
-	if err != nil {
-		log.Print("ListOneQueryRules: ", err)
-		return c.JSON(http.StatusExpectationFailed, "QueryRuler Exec Error")
-	}
-
-	return c.JSON(http.StatusOK, ret)
+	c.JSON(http.StatusOK, ret)
 }

@@ -1,12 +1,11 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"log"
-	"github.com/labstack/echo"
-	"proxysql-master/pmapi"
-	"flag"
 	"os"
+	"proxysql-master/pmapi"
 	"strings"
 	"syscall"
 )
@@ -45,17 +44,12 @@ func main() {
 	}
 	log.SetOutput(pmapiv1.ApiLogfd)
 
-	pmapiv1.Echo = echo.New()
 	pmapiv1.PMuser = strings.Split(strings.Split(*apiSource, "@")[0], "/")[0]
 	pmapiv1.PMpass = strings.Split(strings.Split(*apiSource, "@")[0], "/")[1]
 	pmapiv1.PMhost = strings.Split(strings.Split(*apiSource, "@")[1], "/")[0]
 	pmapiv1.PMdb = strings.Split(strings.Split(*apiSource, "@")[1], "/")[1]
 
 	pmapiv1.MakePMdbi()
-
-	pmapiv1.RegisterMiddleware()
-
-	pmapiv1.RegisterDBInterface()
 
 	pmapiv1.RegisterServices()
 

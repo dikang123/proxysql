@@ -6,14 +6,14 @@ import (
 	"proxysql-master/admin/schedulers"
 	"strconv"
 
-	"github.com/labstack/echo"
+	"github.com/gin-gonic/gin"
 )
 
 /*与调取器相关的api函数*/
-func (pmapi *PMApi) ListAllScheduler(c echo.Context) error {
+func (pmapi *PMApi) ListAllScheduler(c *gin.Context) {
 
-	limit, _ := strconv.ParseInt(c.QueryParam("limit"), 10, 64)
-	page, _ := strconv.ParseInt(c.QueryParam("page"), 10, 64)
+	limit, _ := strconv.ParseInt(c.Query("limit"), 10, 64)
+	page, _ := strconv.ParseInt(c.Query("page"), 10, 64)
 
 	if limit == 0 {
 		limit = 10
@@ -28,13 +28,13 @@ func (pmapi *PMApi) ListAllScheduler(c echo.Context) error {
 	ret, err := schedulers.FindAllSchedulerInfo(pmapi.Apidb, limit, skip)
 	if err != nil {
 		log.Print("ListAllScheduler->qr.FindAllSchdulerInfo ", err)
-		return c.JSON(http.StatusExpectationFailed, "ListAllSchduler ExpectationFailed")
+		c.JSON(http.StatusExpectationFailed, "ListAllSchduler ExpectationFailed")
 	}
 	log.Print("ret=", ret)
-	return c.JSON(http.StatusOK, ret)
+	c.JSON(http.StatusOK, ret)
 }
 
-func (pmapi *PMApi) CreateScheduler(c echo.Context) error {
+func (pmapi *PMApi) CreateOneScheduler(c *gin.Context) {
 	args := struct {
 		FileName   string `json:"filename"`
 		IntervalMs int64  `json:"interval_ms"`
@@ -43,7 +43,7 @@ func (pmapi *PMApi) CreateScheduler(c echo.Context) error {
 	schld := new(schedulers.Schedulers)
 
 	if err := c.Bind(&args); err != nil {
-		return err
+		c.JSON(http.StatusExpectationFailed, gin.H{"result": err})
 	}
 
 	schld.FileName = args.FileName
@@ -52,23 +52,23 @@ func (pmapi *PMApi) CreateScheduler(c echo.Context) error {
 	sret := schld.AddOneScheduler(pmapi.Apidb)
 	if sret == 1 {
 		log.Print("pmapi.go->CreateScheduler->AddOneScheduler Failed")
-		return c.JSON(http.StatusExpectationFailed, "CreateScheduler Failed")
+		c.JSON(http.StatusExpectationFailed, "CreateScheduler Failed")
 	}
-	return c.JSON(http.StatusOK, "OK")
+	c.JSON(http.StatusOK, "OK")
 }
 
-func (pmapi *PMApi) DeleteOneScheduler(c echo.Context) error {
+func (pmapi *PMApi) DeleteOneScheduler(c *gin.Context) {
 	schld := new(schedulers.Schedulers)
 	schld.Id, _ = strconv.ParseInt(c.Param("id"), 10, 64)
 
 	sret := schld.DeleteOneScheduler(pmapi.Apidb)
 	if sret != 0 {
-		return c.JSON(http.StatusExpectationFailed, "DeleteOneScheduler Failed")
+		c.JSON(http.StatusExpectationFailed, "DeleteOneScheduler Failed")
 	}
-	return c.JSON(http.StatusOK, "OK")
+	c.JSON(http.StatusOK, "OK")
 }
 
-func (pmapi *PMApi) UpdateOneScheduler(c echo.Context) error {
+func (pmapi *PMApi) UpdateOneScheduler(c *gin.Context) {
 	args := struct {
 		Id         int64  `json:"id" db:"id"`
 		Active     int64  `json:"active" db:"active"`
@@ -85,7 +85,7 @@ func (pmapi *PMApi) UpdateOneScheduler(c echo.Context) error {
 	schld := new(schedulers.Schedulers)
 	if err := c.Bind(&args); err != nil {
 		log.Print("UpdateOneScheduler->c.Bind ", err)
-		return err
+		c.JSON(http.StatusExpectationFailed, gin.H{"result": err})
 	}
 
 	schld.Id = args.Id
@@ -103,8 +103,8 @@ func (pmapi *PMApi) UpdateOneScheduler(c echo.Context) error {
 
 	sret := schld.UpdateOneSchedulerInfo(pmapi.Apidb)
 	if sret != 0 {
-		return c.JSON(http.StatusExpectationFailed, "UpdateOneScheduler Failed")
+		c.JSON(http.StatusExpectationFailed, "UpdateOneScheduler Failed")
 	}
-	return c.JSON(http.StatusOK, "OK")
+	c.JSON(http.StatusOK, "OK")
 
 }

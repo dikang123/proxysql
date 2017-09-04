@@ -4,12 +4,12 @@ import (
 	"net/http"
 	"proxysql-master/admin/status"
 
-	"github.com/labstack/echo"
+	"github.com/gin-gonic/gin"
 )
 
 //查询出ProxySQL状态信息
-func (pmapi *PMApi) ListPStatus(c echo.Context) error {
+func (pmapi *PMApi) ListPStatus(c *gin.Context) {
 	ps := new(status.PsStatus)
 
-	return c.JSON(http.StatusOK, ps.GetProxySqlStatus(pmapi.Apidb))
+	c.JSON(http.StatusOK, ps.GetProxySqlStatus(pmapi.Apidb))
 }

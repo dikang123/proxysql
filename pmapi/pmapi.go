@@ -61,7 +61,7 @@ func (pmapi *PMApi) RegisterServices() {
 	pmapi.Router.GET("/api/v1/schedulers", pmapi.ListAllScheduler)
 	pmapi.Router.POST("/api/v1/schedulers", pmapi.CreateOneScheduler)
 	pmapi.Router.PUT("/api/v1/schedulers", pmapi.UpdateOneScheduler)
-	pmapi.Router.DELETE("/api/v1/schedulers/:id", pmapi.DeleteOneScheduler)
+	pmapi.Router.DELETE("/api/v1/schedulers", pmapi.DeleteOneScheduler)
 
 	/*ProxySQL admin API*/
 	pmapi.Router.GET("/api/v1/cmd/readonly", pmapi.SetProxySQLReadonly)

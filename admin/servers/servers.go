@@ -129,37 +129,85 @@ func (srvs *Servers) FindAllServerInfo(db *sql.DB, limit int64, skip int64) ([]S
 	return allserver, nil
 }
 
-func (srvs *Servers) AddOneServers(db *sql.DB) int {
-	st := fmt.Sprintf(StmtAddOneServers, srvs.HostGroupId, srvs.HostName, srvs.Port)
-	_, err := db.Query(st)
+/*新加一个后端服务*/
+func (srvs *Servers) AddOneServers(db *sql.DB) (int, error) {
+	/*
+		后端数据库节点由三部分组成，分别是：hostgroup_id,hostname,port
+	*/
+
+	Query := fmt.Sprintf(StmtAddOneServers, srvs.HostGroupId, srvs.HostName, srvs.Port)
+	log.Print("admin->servers.go->AddOneServers->Query", Query)
+
+	res, err := db.Exec(Query)
 	if err != nil {
-		return 1
+		log.Print("admin->servers.go->AddOneServers->db.Exec Failed: ", err)
+		return 1, err
 	}
+
+	rowsAffected, err := res.RowsAffected()
+	log.Print("admin->servers.go->AddOneServers->rowsAffected: ", rowsAffected)
+
 	cmd.LoadServerToRuntime(db)
 	cmd.SaveServerToDisk(db)
-	return 0
+
+	return 0, nil
 }
 
-func (srvs *Servers) DeleteOneServers(db *sql.DB) int {
-	st := fmt.Sprintf(StmtDeleteOneServers, srvs.HostGroupId, srvs.HostName, srvs.Port)
-	_, err := db.Query(st)
+/*删除一个后端服务*/
+func (srvs *Servers) DeleteOneServers(db *sql.DB) (int, error) {
+	/*
+		通过hostgroup_id,hostname,po三个参数删除一个后端节点
+	*/
+
+	Query := fmt.Sprintf(StmtDeleteOneServers, srvs.HostGroupId, srvs.HostName, srvs.Port)
+	log.Print("admin->servers.go->DeleteOneServers->Query ", Query)
+
+	res, err := db.Exec(Query)
 	if err != nil {
-		return 1
+		log.Print("admin->servers.go->DeleteOneServers->db.Exec Failed ", err)
+		return 1, err
 	}
+
+	rowsAffected, err := res.RowsAffected()
+	log.Print("admin->servers.go->DeleteOneServers->RowsAffected", rowsAffected)
+
 	cmd.LoadServerToRuntime(db)
 	cmd.SaveServerToDisk(db)
-	return 0
+
+	return 0, nil
 }
 
 //更新后端服务全部信息
-func (srvs *Servers) UpdateOneServerInfo(db *sql.DB) int {
-	st := fmt.Sprintf(StmtUpdateOneServer, srvs.Status, srvs.Weight, srvs.Compression, srvs.MaxConnections, srvs.MaxReplicationLag, srvs.UseSsl, srvs.MaxLatencyMs, srvs.Comment, srvs.HostGroupId, srvs.HostName, srvs.Port)
-	log.Print("servers->UpdateOneServerInfo->st: ", st)
-	_, err := db.Query(st)
+func (srvs *Servers) UpdateOneServerInfo(db *sql.DB) (int, error) {
+	/*
+		后端数据节点信息更新使用PUT,参数为hostgroup_id,hostname,port
+	*/
+	Query := fmt.Sprintf(StmtUpdateOneServer,
+		srvs.Status,
+		srvs.Weight,
+		srvs.Compression,
+		srvs.MaxConnections,
+		srvs.MaxReplicationLag,
+		srvs.UseSsl,
+		srvs.MaxLatencyMs,
+		srvs.Comment,
+		srvs.HostGroupId,
+		srvs.HostName,
+		srvs.Port)
+
+	log.Print("admin->servers.go->UpdateOneServerInfo->Query", Query)
+
+	res, err := db.Exec(Query)
 	if err != nil {
-		return 1
+		log.Print("admin->servers.go->UpdateOneServersInfo->db.Exec Failed", err)
+		return 1, err
 	}
+
+	rowsAffected, err := res.RowsAffected()
+	log.Print("admin->servers.go->UpdateOneServers->RowsAffected", rowsAffected)
+
 	cmd.LoadServerToRuntime(db)
 	cmd.SaveServerToDisk(db)
-	return 0
+
+	return 0, nil
 }

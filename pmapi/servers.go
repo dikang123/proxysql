@@ -1,8 +1,10 @@
 package pmapi
 
 import (
+	"Pdbn/src/dbusers"
 	"Pdbs/src/admin/users"
 	"database/sql"
+	"log"
 	"net/http"
 	"proxysql-master/admin/servers"
 	"strconv"
@@ -54,110 +56,128 @@ func (pmapi *PMApi) ListAllServers(c *gin.Context) {
 		if err != nil {
 			c.JSON(http.StatusExpectationFailed, gin.H{"error": err})
 		}
-		c.JSON(http.StatusOK, aryusr)
+		c.JSON(http.StatusOK, aryservers)
 	}
 
 }
 
 /*创建一个新的后端数据库服务节点*/
 func (pmapi *PMApi) CreateOneServer(c *gin.Context) {
-	args := struct {
-		HostGroupId uint64 `json:"hostgroup_id"`
-		HostName    string `json:"hostname"`
-		Port        uint64 `json:"port"`
-	}{}
 
-	server := new(servers.Servers)
+	var tmpserver servers.Servers
+	var err error
 
-	if err := c.Bind(&args); err != nil {
-		c.JSON(http.StatusExpectationFailed, gin.H{"result": err})
-	}
+	hostname := c.Query("hostname")
+	port := c.Query("port")
+	username := c.Query("username")
+	password := c.Query("password")
 
-	server.HostGroupId = args.HostGroupId
-	server.HostName = args.HostName
-	server.Port = args.Port
+	if len(hostname) == 0 {
+		c.JSON(http.StatusOK, []dbusers.Users{})
+	} else {
+		pmapi.PMhost = hostname + ":" + port
+		pmapi.PMuser = username
+		pmapi.PMpass = password
+		pmapi.PMdb = "information_schema"
+		pmapi.MakePMdbi()
 
-	cret := server.AddOneServers(pmapi.Apidb)
-	switch cret {
-	case 0:
-		c.JSON(http.StatusOK, "OK")
-	case 1:
-		c.JSON(http.StatusExpectationFailed, "CreateServer Failed")
-	case 2:
-		c.JSON(http.StatusExpectationFailed, "Server exists")
-	default:
-		c.JSON(http.StatusOK, "CreateServer ???")
+		pmapi.Apidb, err = sql.Open("mysql", pmapi.PMdbi)
+		if err != nil {
+			c.JSON(http.StatusExpectationFailed, gin.H{"error": err})
+		}
+		defer pmapi.Apidb.Close()
 
+		if err := c.Bind(&tmpserver); err != nil {
+			c.JSON(http.StatusExpectationFailed, gin.H{"result": err})
+		}
+		log.Print("pmapi->CreateOneServer->AddOneServer tmpserver", tmpserver)
+
+		_, err := tmpserver.AddOneServers(pmapi.Apidb)
+		if err != nil {
+			log.Print("pmapi->CreateOneServer->AddOneServer Failed", err)
+			c.JSON(http.StatusExpectationFailed, gin.H{"result": err})
+		} else {
+			c.JSON(http.StatusOK, gin.H{"result": "OK"})
+		}
 	}
 }
 
 /*删除指定服务器*/
 func (pmapi *PMApi) DeleteOneServers(c *gin.Context) {
-	args := struct {
-		HostGroupId uint64 `json:"hostgroup_id"`
-		HostName    string `json:"hostname"`
-		Port        uint64 `json:"port"`
-	}{}
+	var tmpserver servers.Servers
+	var err error
 
-	server := new(servers.Servers)
+	hostname := c.Query("hostname")
+	port := c.Query("port")
+	username := c.Query("username")
+	password := c.Query("password")
 
-	if err := c.Bind(&args); err != nil {
-		c.JSON(http.StatusExpectationFailed, gin.H{"result": err})
-	}
+	if len(hostname) == 0 {
+		c.JSON(http.StatusOK, []dbusers.Users{})
+	} else {
+		pmapi.PMhost = hostname + ":" + port
+		pmapi.PMuser = username
+		pmapi.PMpass = password
+		pmapi.PMdb = "information_schema"
+		pmapi.MakePMdbi()
 
-	server.HostGroupId = args.HostGroupId
-	server.HostName = args.HostName
-	server.Port = args.Port
+		pmapi.Apidb, err = sql.Open("mysql", pmapi.PMdbi)
+		if err != nil {
+			c.JSON(http.StatusExpectationFailed, gin.H{"error": err})
+		}
+		defer pmapi.Apidb.Close()
 
-	cret := server.DeleteOneServers(pmapi.Apidb)
-	switch cret {
-	case 0:
-		c.JSON(http.StatusOK, "OK")
-	case 1:
-		c.JSON(http.StatusExpectationFailed, "DeleteOneServer Failed")
-	case 2:
-		c.JSON(http.StatusExpectationFailed, "Server not exists")
-	default:
-		c.JSON(http.StatusOK, "DeleteOneServers ???")
+		if err := c.Bind(&tmpserver); err != nil {
+			c.JSON(http.StatusExpectationFailed, gin.H{"result": err})
+		}
+		log.Print("pmapi->DeleteOneServer->DeleteOneServer tmpserver", tmpserver)
 
+		_, err := tmpserver.DeleteOneServers(pmapi.Apidb)
+		if err != nil {
+			log.Print("pmapi->DeleteOneServer->DeleteOneServer Failed", err)
+			c.JSON(http.StatusExpectationFailed, gin.H{"result": err})
+		} else {
+			c.JSON(http.StatusOK, gin.H{"result": "OK"})
+		}
 	}
 }
 
 /*更新服务信息的patch函数*/
 func (pmapi *PMApi) UpdateOneServer(c *gin.Context) {
-	args := struct {
-		HostGroupId       uint64 `json:"hostgroup_id"`
-		HostName          string `json:"hostname"`
-		Port              uint64 `json:"port"`
-		Status            string `json:"status"`
-		Weight            uint64 `json:"weight"`
-		Compression       uint64 `json:"compression"`
-		MaxConnections    uint64 `json:"max_connections"`
-		MaxReplicationLag uint64 `json:"max_replication_lag"`
-		UseSsl            uint64 `json:"use_ssl"`
-		MaxLatencyMs      uint64 `json:"max_latency_ms"`
-		Comment           string `json:"comment"`
-	}{}
+	var tmpserver servers.Servers
+	var err error
 
-	server := new(servers.Servers)
+	hostname := c.Query("hostname")
+	port := c.Query("port")
+	username := c.Query("username")
+	password := c.Query("password")
 
-	if err := c.Bind(&args); err != nil {
-		c.JSON(http.StatusExpectationFailed, gin.H{"result": err})
+	if len(hostname) == 0 {
+		c.JSON(http.StatusOK, []dbusers.Users{})
+	} else {
+		pmapi.PMhost = hostname + ":" + port
+		pmapi.PMuser = username
+		pmapi.PMpass = password
+		pmapi.PMdb = "information_schema"
+		pmapi.MakePMdbi()
+
+		pmapi.Apidb, err = sql.Open("mysql", pmapi.PMdbi)
+		if err != nil {
+			c.JSON(http.StatusExpectationFailed, gin.H{"error": err})
+		}
+		defer pmapi.Apidb.Close()
+
+		if err := c.Bind(&tmpserver); err != nil {
+			c.JSON(http.StatusExpectationFailed, gin.H{"result": err})
+		}
+		log.Print("pmapi->UpdateOneServer->UpdateOneServer tmpserver", tmpserver)
+
+		_, err := tmpserver.UpdateOneServerInfo(pmapi.Apidb)
+		if err != nil {
+			log.Print("pmapi->UpdateOneServer->UpdateOneServer Failed", err)
+			c.JSON(http.StatusExpectationFailed, gin.H{"result": err})
+		} else {
+			c.JSON(http.StatusOK, gin.H{"result": "OK"})
+		}
 	}
-
-	server.HostGroupId = args.HostGroupId
-	server.HostName = args.HostName
-	server.Port = args.Port
-	server.Status = args.Status
-	server.Weight = args.Weight
-	server.Compression = args.Compression
-	server.MaxConnections = args.MaxConnections
-	server.MaxReplicationLag = args.MaxReplicationLag
-	server.UseSsl = args.UseSsl
-	server.MaxLatencyMs = args.MaxLatencyMs
-	server.Comment = args.Comment
-
-	server.UpdateOneServerInfo(pmapi.Apidb)
-
-	c.JSON(http.StatusOK, "OK")
 }

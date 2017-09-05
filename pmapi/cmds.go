@@ -8,81 +8,81 @@ import (
 )
 
 func (pmapi *PMApi) SetProxySQLReadonly(c *gin.Context) {
-	cret := cmd.ProxyReadOnly(pmapi.Apidb)
-	if cret == 0 {
-		c.JSON(http.StatusOK, gin.H{"result": "OK"})
+	_, err := cmd.ProxyReadOnly(pmapi.Apidb)
+	if err != nil {
+		c.JSON(http.StatusExpectationFailed, gin.H{"result": err})
 	}
-	c.JSON(http.StatusExpectationFailed, gin.H{"result": "Failed"})
+	c.JSON(http.StatusOK, gin.H{"result": "OK"})
 }
 
 func (pmapi *PMApi) SetProxySQLReadwrite(c *gin.Context) {
-	cret := cmd.ProxyReadWrite(pmapi.Apidb)
-	if cret == 0 {
-		c.JSON(http.StatusOK, "OK")
+	_, err := cmd.ProxyReadWrite(pmapi.Apidb)
+	if err != nil {
+		c.JSON(http.StatusExpectationFailed, gin.H{"result": err})
 	}
-	c.JSON(http.StatusExpectationFailed, "Failed")
+	c.JSON(http.StatusOK, gin.H{"result": "OK"})
 }
 
 func (pmapi *PMApi) SetProxySQLStart(c *gin.Context) {
-	cret := cmd.ProxyStart(pmapi.Apidb)
-	if cret == 0 {
-		c.JSON(http.StatusOK, "OK")
+	_, err := cmd.ProxyStart(pmapi.Apidb)
+	if err != nil {
+		c.JSON(http.StatusExpectationFailed, gin.H{"result": err})
 	}
-	c.JSON(http.StatusExpectationFailed, "Failed")
+	c.JSON(http.StatusOK, gin.H{"result": "OK"})
 }
 
 func (pmapi *PMApi) SetProxySQLRestart(c *gin.Context) {
-	cret := cmd.ProxyRestart(pmapi.Apidb)
-	if cret == 0 {
-		c.JSON(http.StatusOK, "OK")
+	_, err := cmd.ProxyRestart(pmapi.Apidb)
+	if err != nil {
+		c.JSON(http.StatusExpectationFailed, gin.H{"result": err})
 	}
-	c.JSON(http.StatusExpectationFailed, "Failed")
+	c.JSON(http.StatusOK, gin.H{"result": "OK"})
 }
 
 func (pmapi *PMApi) SetProxySQLStop(c *gin.Context) {
-	cret := cmd.ProxyStop(pmapi.Apidb)
-	if cret == 0 {
-		c.JSON(http.StatusOK, "OK")
+	_, err := cmd.ProxyStop(pmapi.Apidb)
+	if err != nil {
+		c.JSON(http.StatusExpectationFailed, gin.H{"result": err})
 	}
-	c.JSON(http.StatusExpectationFailed, "Failed")
+	c.JSON(http.StatusOK, gin.H{"result": "OK"})
 }
 
 func (pmapi *PMApi) SetProxySQLPause(c *gin.Context) {
-	cret := cmd.ProxyPause(pmapi.Apidb)
-	if cret == 0 {
-		c.JSON(http.StatusOK, "OK")
+	_, err := cmd.ProxyPause(pmapi.Apidb)
+	if err != nil {
+		c.JSON(http.StatusExpectationFailed, gin.H{"result": err})
 	}
-	c.JSON(http.StatusExpectationFailed, "Failed")
+	c.JSON(http.StatusOK, gin.H{"result": "OK"})
 }
 
 func (pmapi *PMApi) SetProxySQLResume(c *gin.Context) {
-	cret := cmd.ProxyResume(pmapi.Apidb)
-	if cret == 0 {
-		c.JSON(http.StatusOK, "OK")
+	_, err := cmd.ProxyResume(pmapi.Apidb)
+	if err != nil {
+		c.JSON(http.StatusExpectationFailed, gin.H{"result": err})
 	}
-	c.JSON(http.StatusExpectationFailed, "Failed")
+	c.JSON(http.StatusOK, gin.H{"result": "OK"})
 }
 
 func (pmapi *PMApi) SetProxySQLShutdown(c *gin.Context) {
-	cret := cmd.ProxyShutdown(pmapi.Apidb)
-	if cret == 0 {
-		c.JSON(http.StatusOK, "OK")
+	_, err := cmd.ProxyShutdown(pmapi.Apidb)
+	if err != nil {
+		c.JSON(http.StatusExpectationFailed, gin.H{"result": err})
 	}
-	c.JSON(http.StatusExpectationFailed, "Failed")
+	c.JSON(http.StatusOK, gin.H{"result": "OK"})
 }
 
 func (pmapi *PMApi) SetProxySQLFlogs(c *gin.Context) {
-	cret := cmd.ProxyFlushLogs(pmapi.Apidb)
-	if cret == 0 {
-		c.JSON(http.StatusOK, "OK")
+	_, err := cmd.ProxyFlushLogs(pmapi.Apidb)
+	if err != nil {
+		c.JSON(http.StatusExpectationFailed, gin.H{"result": err})
 	}
-	c.JSON(http.StatusExpectationFailed, "Failed")
+	c.JSON(http.StatusOK, gin.H{"result": "OK"})
 }
 
 func (pmapi *PMApi) SetProxySQLKill(c *gin.Context) {
-	cret := cmd.ProxyKill(pmapi.Apidb)
-	if cret == 0 {
-		c.JSON(http.StatusOK, "OK")
+	_, err := cmd.ProxyKill(pmapi.Apidb)
+	if err != nil {
+		c.JSON(http.StatusExpectationFailed, gin.H{"result": err})
 	}
-	c.JSON(http.StatusExpectationFailed, "Failed")
+	c.JSON(http.StatusOK, gin.H{"result": "OK"})
 }

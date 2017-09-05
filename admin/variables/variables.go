@@ -102,7 +102,12 @@ type (
 
 const (
 	StmtGlobalVariables   = `SHOW GLOBAL VARIABLES`
-	StmtUpdateOneVariable = `UPDATE global_variables SET variable_value=%q WHERE variable_name = %q`
+	StmtUpdateOneVariable = `
+	UPDATE 
+		global_variables 
+	SET 
+		variable_value=%q 
+	WHERE variable_name = %q`
 )
 
 func (vars *Variables) UpdateOneVariable(db *sql.DB) (int, error) {
@@ -120,14 +125,14 @@ func (vars *Variables) UpdateOneVariable(db *sql.DB) (int, error) {
 	return 0, nil
 }
 
-func GetProxySqlVariables(db *sql.DB) []Variables {
+func (vars *Variables) GetProxySqlVariables(db *sql.DB) ([]Variables, error) {
 	var tmparray []Variables
 	var tmp Variables
 	log.Print("Execution: ", StmtGlobalVariables)
 	rows, err := db.Query(StmtGlobalVariables)
 	if err != nil {
 		log.Print("StmtGlobalVariables Msg:", err)
-		return []Variables{}
+		return []Variables{}, err
 	}
 
 	for rows.Next() {
@@ -136,6 +141,6 @@ func GetProxySqlVariables(db *sql.DB) []Variables {
 		tmparray = append(tmparray, tmp)
 	}
 	log.Printf("GetProxySqlVariables tmp variables =%#v", tmparray)
-	return tmparray
+	return tmparray, nil
 
 }

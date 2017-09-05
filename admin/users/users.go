@@ -37,233 +37,84 @@ type (
 )
 
 const (
-	StmtUserExist         = `SELECT count(*) FROM mysql_users WHERE username = %q`
-	StmtAddOneUser        = `INSERT INTO mysql_users(username,password) VALUES(%q,%q)`
-	StmtDeleteOneUser     = `DELETE FROM mysql_users WHERE username = %q`
-	StmtActiveOneUser     = `UPDATE mysql_users SET active = 1 WHERE username = %q`
-	StmtDisactiveOneUser  = `UPDATE mysql_users SET active = 0 WHERE username = %q`
-	StmtFindOneUserInfo   = `SELECT ifnull(username,""),ifnull(password,""),ifnull(active,0),ifnull(use_ssl,0),ifnull(default_hostgroup,0),ifnull(default_schema,""),ifnull(schema_locked,0),ifnull(transaction_persistent,0),ifnull(fast_forward,0),ifnull(backend,0),ifnull(frontend,0),ifnull(max_connections,0) FROM mysql_users WHERE username = %q`
-	StmtFindAllUserInfo   = `SELECT ifnull(username,""),ifnull(password,""),ifnull(active,0),ifnull(use_ssl,0),ifnull(default_hostgroup,0),ifnull(default_schema,""),ifnull(schema_locked,0),ifnull(transaction_persistent,0),ifnull(fast_forward,0),ifnull(backend,0),ifnull(frontend,0),ifnull(max_connections,0) FROM mysql_users limit %d offset %d`
-	StmtUpdateOneUserDs   = `UPDATE mysql_users SET default_schema=%q WHERE username = %q`
-	StmtUpdateOneUserMc   = `UPDATE mysql_users SET max_connections = %d WHERE username = %q`
-	StmtUpdateOneUserDH   = `UPDATE mysql_users SET default_hostgroup=%d WHERE username = %q`
-	StmtUpdateOneUserPass = `UPDATE mysql_users SET password=%q WHERE username = %q`
-	StmtUpdateOneUser     = `UPDATE mysql_users SET password=%q,active=%d,use_ssl=%d,default_hostgroup=%d,default_schema=%q,schema_locked=%d,transaction_persistent=%d,fast_forward=%d,backend=%d,frontend=%d,max_connections=%d WHERE username = %q`
+	/*新建一个用户*/
+	StmtAddOneUser = `
+	INSERT INTO 
+		mysql_users(username,password,default_schema) 
+	VALUES(%q,%q,%q)`
+
+	/*删除一个用户*/
+	StmtDeleteOneUser = `
+	DELETE FROM 
+		mysql_users 
+	WHERE 
+		username = %q,
+		backend = 1,
+		frontend = 1
+	`
+
+	/*查询出所有用户的信息*/
+	StmtFindAllUserInfo = `
+	SELECT 
+		ifnull(username,""),
+		ifnull(password,""),
+		ifnull(active,0),
+		ifnull(use_ssl,0),
+		ifnull(default_hostgroup,0),
+		ifnull(default_schema,""),
+		ifnull(schema_locked,0),
+		ifnull(transaction_persistent,0),
+		ifnull(fast_forward,0),
+		ifnull(backend,0),
+		ifnull(frontend,0),
+		ifnull(max_connections,0) 
+	FROM mysql_users 
+	LIMIT %d 
+	OFFSET %d`
+
+	/*更新一个用户信息*/
+	StmtUpdateOneUser = `
+	UPDATE 
+		mysql_users 
+	SET 
+		password=%q,
+		active=%d,
+		use_ssl=%d,
+		default_hostgroup=%d,
+		default_schema=%q,
+		schema_locked=%d,
+		transaction_persistent=%d,
+		fast_forward=%d,
+		backend=%d,
+		frontend=%d,
+		max_connections=%d 
+	WHERE 
+		username = %q,
+		backend = 1,
+		frontend = 1
+		`
 )
 
-func (users *Users) UserExists(db *sql.DB) bool {
-	st := fmt.Sprintf(StmtUserExist, users.Username)
-	rows, err := db.Query(st)
-	if err != nil {
-		log.Print("UserExists:", err)
-	}
-	var UserCount uint64
-	for rows.Next() {
-		err = rows.Scan(&UserCount)
-		if err != nil {
-			log.Print("UserExists,Scan:", err)
-		}
-	}
-	if UserCount == 0 {
-		return false
-	} else {
-		return true
-	}
-}
-
-func (users *Users) AddOneUser(db *sql.DB) int {
-	if isexist := users.UserExists(db); isexist == false {
-		st := fmt.Sprintf(StmtAddOneUser, users.Username, users.Password)
-		_, err := db.Query(st)
-		if err != nil {
-			return 1 //add user failed
-		}
-		cmd.LoadUserToRuntime(db)
-		cmd.SaveUserToDisk(db)
-		return 0
-	} else {
-		return 2 //username exists
-	}
-}
-
-func (users *Users) DeleteOneUser(db *sql.DB) int {
-	if isexist := users.UserExists(db); isexist == true {
-		st := fmt.Sprintf(StmtDeleteOneUser, users.Username)
-		_, err := db.Query(st)
-		if err != nil {
-			return 1 //delte failed
-		}
-		cmd.LoadUserToRuntime(db)
-		cmd.SaveUserToDisk(db)
-		return 0 //delete success
-
-	} else {
-		return 2 //user exists
-	}
-}
-
-func (users *Users) ActiveOneUser(db *sql.DB) int {
-	if isexist := users.UserExists(db); isexist == true {
-		st := fmt.Sprintf(StmtActiveOneUser, users.Username)
-		_, err := db.Query(st)
-		if err != nil {
-			log.Print("ActiveOneUser:", err)
-			return 1
-		}
-		cmd.LoadUserToRuntime(db)
-		cmd.SaveUserToDisk(db)
-		return 0
-	} else {
-		log.Print("ActiveOneUser: User is not exists")
-		return 2
-	}
-}
-
-func (users *Users) DisactiveOneUser(db *sql.DB) int {
-	if isexist := users.UserExists(db); isexist == true {
-		st := fmt.Sprintf(StmtDisactiveOneUser, users.Username)
-		_, err := db.Query(st)
-		if err != nil {
-			log.Print("DisactiveOneUser:", err)
-			return 1
-		}
-		cmd.LoadUserToRuntime(db)
-		cmd.SaveUserToDisk(db)
-		return 0
-	} else {
-		log.Print("DisactiveOneUser: User is not exists")
-		return 2
-	}
-}
-
-// 更新一个用户所有信息，使用PATCH方法
-func (users *Users) UpdateOneUserInfo(db *sql.DB) int {
-	if isexist := users.UserExists(db); isexist == true {
-		st := fmt.Sprintf(StmtUpdateOneUser, users.Password, users.Active, users.UseSsl, users.DefaultHostgroup, users.DefaultSchema, users.SchemaLocked, users.TransactionPersistent, users.FastForward, users.Backend, users.Frontend, users.MaxConnections, users.Username)
-		log.Print("users->UpdateOneUserInfo->st: ", st)
-
-		_, err := db.Query(st)
-		if err != nil {
-			log.Print("UpdateOneUserInfo:", err)
-			return 1
-		}
-		cmd.LoadUserToRuntime(db)
-		cmd.SaveUserToDisk(db)
-		return 0
-	} else {
-		log.Print("UpdateOneUserInfo: User is not exists")
-		return 2
-	}
-}
-
-func (users *Users) UpdateOneUserDh(db *sql.DB) int {
-	if isexist := users.UserExists(db); isexist == true {
-		st := fmt.Sprintf(StmtUpdateOneUserDH, users.DefaultHostgroup, users.Username)
-		_, err := db.Query(st)
-		if err != nil {
-			log.Print("UpdateOneUserDH()", err)
-			return 1
-		}
-		cmd.LoadUserToRuntime(db)
-		cmd.SaveUserToDisk(db)
-		return 0
-	} else {
-		log.Print("UpdateOneUserDH()", "User is not exists")
-		return 2
-	}
-}
-
-func (users *Users) UpdateOneUserPass(db *sql.DB) int {
-	if isexist := users.UserExists(db); isexist == true {
-		st := fmt.Sprintf(StmtUpdateOneUserPass, users.Password, users.Username)
-		_, err := db.Query(st)
-		if err != nil {
-			log.Print("UpdateOneUserPass()", err)
-			return 1
-		}
-		cmd.LoadUserToRuntime(db)
-		cmd.SaveUserToDisk(db)
-		return 0
-	} else {
-		log.Print("UpdateOneUserPass()", "User is not exists")
-		return 2
-	}
-}
-
-func (users *Users) UpdateOneUserDs(db *sql.DB) int {
-	if isexist := users.UserExists(db); isexist == true {
-		st := fmt.Sprintf(StmtUpdateOneUserDs, users.DefaultSchema, users.Username)
-		_, err := db.Query(st)
-		if err != nil {
-			log.Print("UpdateOneUserDs:", err)
-			return 1
-		}
-		cmd.LoadUserToRuntime(db)
-		cmd.SaveUserToDisk(db)
-		return 0
-	} else {
-		log.Print("UpdateOneUserDs: User is not exists")
-		return 2
-	}
-}
-
-func (users *Users) UpdateOneUserMc(db *sql.DB) int {
-	if isexist := users.UserExists(db); isexist == true {
-		st := fmt.Sprintf(StmtUpdateOneUserMc, users.MaxConnections, users.Username)
-		_, err := db.Query(st)
-		if err != nil {
-			log.Print("UpdateOneUserMc:", err)
-			return 1
-		}
-		cmd.LoadUserToRuntime(db)
-		cmd.SaveUserToDisk(db)
-		return 0
-	} else {
-		log.Print("UpdateOneUserMc: User is not exists")
-		return 2
-	}
-}
-
-func (users *Users) FindOneUserInfo(db *sql.DB) Users {
-	if isexist := users.UserExists(db); isexist == true {
-		st := fmt.Sprintf(StmtFindOneUserInfo, users.Username)
-		rows, err := db.Query(st)
-		if err != nil {
-			log.Print("UpdateOneUserMc:", err)
-		}
-		for rows.Next() {
-			err = rows.Scan(&users.Username,
-				&users.Password,
-				&users.Active,
-				&users.UseSsl,
-				&users.DefaultHostgroup,
-				&users.DefaultSchema,
-				&users.SchemaLocked,
-				&users.TransactionPersistent,
-				&users.FastForward,
-				&users.Backend,
-				&users.Frontend,
-				&users.MaxConnections)
-		}
-	} else {
-		log.Print("UpdateOneUserMc: User is not exists")
-	}
-	return *users
-}
-
-func FindAllUserInfo(db *sql.DB, limit int64, skip int64) []Users {
+func (users *Users) FindAllUserInfo(db *sql.DB, limit int64, skip int64) ([]Users, error) {
+	/*定义一个新的变量，alluser用户保存所有用户信息*/
 	var alluser []Users
-	var tmpusr Users
-	var QueryText string
-	QueryText = fmt.Sprintf(StmtFindAllUserInfo, limit, skip)
-	log.Printf(StmtFindAllUserInfo, limit, skip)
-	rows, err := db.Query(QueryText)
+
+	Query := fmt.Sprintf(StmtFindAllUserInfo, limit, skip)
+	log.Printf("admin->users.go->FindAllUserInfo->Query :", Query)
+
+	rows, err := db.Query(Query)
 	if err != nil {
-		log.Print("FindAllUserInfo:", err)
+		log.Print("admin->users.go->FindAllUserInfo=->db.Query Failed:", err)
+		return []Users{}, err
 	}
 	defer rows.Close()
+
+	/*得出查询结果*/
 	for rows.Next() {
-		tmpusr = Users{}
+
+		/*定义一个临时用户信息*/
+		var tmpusr Users
+
 		err = rows.Scan(
 			&tmpusr.Username,
 			&tmpusr.Password,
@@ -278,7 +129,59 @@ func FindAllUserInfo(db *sql.DB, limit int64, skip int64) []Users {
 			&tmpusr.Frontend,
 			&tmpusr.MaxConnections,
 		)
+
+		if err != nil {
+			log.Print("admin->users.go->FindAllUserInfo->rows.Scan Failed:", err)
+			continue
+		}
+
+		log.Print("admin->users.go->FindAllUserInfo->rows.Scan->tmpusr ", tmpusr)
+
 		alluser = append(alluser, tmpusr)
 	}
-	return alluser
+	return alluser, nil
+}
+
+func (users *Users) AddOneUser(db *sql.DB) (int, error) {
+
+	Query := fmt.Sprintf(StmtAddOneUser, users.Username, users.Password, users.DefaultSchema)
+	log.Print("admin->users.go->AddOneUser->Query :", Query)
+
+	rowsAffected, err := db.Exec(Query)
+	if err != nil {
+		log.Print("admin->users.go->AddOneUser->db.Exec Failed:", err)
+		return 1, err //add user failed
+	}
+	log.Print("admin->users.go->AddOneUser->RowsAffected: ", rowsAffected)
+
+	cmd.LoadUserToRuntime(db)
+	cmd.SaveUserToDisk(db)
+	return 0, nil
+}
+
+func (users *Users) DeleteOneUser(db *sql.DB) int {
+	st := fmt.Sprintf(StmtDeleteOneUser, users.Username)
+	_, err := db.Query(st)
+	if err != nil {
+		return 1 //delte failed
+	}
+	cmd.LoadUserToRuntime(db)
+	cmd.SaveUserToDisk(db)
+	return 0 //delete success
+
+}
+
+// 更新一个用户所有信息，使用PATCH方法
+func (users *Users) UpdateOneUserInfo(db *sql.DB) int {
+	st := fmt.Sprintf(StmtUpdateOneUser, users.Password, users.Active, users.UseSsl, users.DefaultHostgroup, users.DefaultSchema, users.SchemaLocked, users.TransactionPersistent, users.FastForward, users.Backend, users.Frontend, users.MaxConnections, users.Username)
+	log.Print("users->UpdateOneUserInfo->st: ", st)
+
+	_, err := db.Query(st)
+	if err != nil {
+		log.Print("UpdateOneUserInfo:", err)
+		return 1
+	}
+	cmd.LoadUserToRuntime(db)
+	cmd.SaveUserToDisk(db)
+	return 0
 }

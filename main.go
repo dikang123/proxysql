@@ -3,11 +3,8 @@ package main
 import (
 	"flag"
 	"fmt"
-	"log"
-	"os"
 	"proxysql-master/pmapi"
 	"strings"
-	"syscall"
 )
 
 var (
@@ -18,18 +15,20 @@ var (
 
 func main() {
 
-	flag.Parse()
-	if len(os.Args) <= 2 {
-		log.Fatal(`
-	    Usage of proxysql-master:
-	      -l string
-	        api log file.  (default "/tmp/pm.log")
-	      -p int
-	        Api port.  (default 6031)
-	      -s string
-         	ProxySQL Connection URI address. (default "admin/admin@localhost:6032/main")
-	    `)
-	}
+	/*
+			flag.Parse()
+			if len(os.Args) <= 2 {
+				log.Fatal(`
+			    Usage of proxysql-master:
+			      -l string
+			        api log file.  (default "/tmp/pm.log")
+			      -p int
+			        Api port.  (default 6031)
+			      -s string
+		         	ProxySQL Connection URI address. (default "admin/admin@localhost:6032/main")
+			    `)
+			}
+	*/
 
 	//新建Api实例
 	pmapiv1 := new(pmapi.PMApi)
@@ -37,12 +36,12 @@ func main() {
 	pmapiv1.ApiHost = fmt.Sprintf(":%d", *apiPort)
 
 	//设定api的日志路径
-	pmapiv1.ApiLogcwd = *apiLog
-	pmapiv1.ApiLogfd, pmapiv1.ApiErr = os.OpenFile(pmapiv1.ApiLogcwd, syscall.O_RDWR|syscall.O_CREAT|syscall.O_APPEND, 0644)
-	if pmapiv1.ApiErr != nil {
-		log.Fatal("Open Log File Failed", pmapiv1.ApiErr)
-	}
-	log.SetOutput(pmapiv1.ApiLogfd)
+	//pmapiv1.ApiLogcwd = *apiLog
+	//pmapiv1.ApiLogfd, pmapiv1.ApiErr = os.OpenFile(pmapiv1.ApiLogcwd, syscall.O_RDWR|syscall.O_CREAT|syscall.O_APPEND, 0644)
+	//if pmapiv1.ApiErr != nil {
+	//	log.Fatal("Open Log File Failed", pmapiv1.ApiErr)
+	//}
+	//log.SetOutput(pmapiv1.ApiLogfd)
 
 	pmapiv1.PMuser = strings.Split(strings.Split(*apiSource, "@")[0], "/")[0]
 	pmapiv1.PMpass = strings.Split(strings.Split(*apiSource, "@")[0], "/")[1]

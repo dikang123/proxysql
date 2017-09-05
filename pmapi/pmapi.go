@@ -43,7 +43,7 @@ func (pmapi *PMApi) RegisterServices() {
 	pmapi.Router.GET("/api/v1/users", pmapi.ListAllUsers)
 	pmapi.Router.POST("/api/v1/users", pmapi.CreateOneUser)
 	pmapi.Router.PUT("/api/v1/users", pmapi.UpdateOneUser)
-	pmapi.Router.DELETE("/api/v1/users/:username", pmapi.DeleteOneUser)
+	pmapi.Router.DELETE("/api/v1/users", pmapi.DeleteOneUser)
 
 	/*Server Services*/
 	pmapi.Router.GET("/api/v1/servers", pmapi.ListAllServers)

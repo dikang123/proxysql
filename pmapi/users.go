@@ -12,21 +12,43 @@ import (
 )
 
 func (pmapi *PMApi) DeleteOneUser(c *gin.Context) {
-	user := new(users.Users)
-	user.Username = c.Param("username")
-	dret := user.DeleteOneUser((pmapi.Apidb))
-	switch dret {
-	case 0:
-		c.JSON(http.StatusOK, user)
-	case 1:
-		c.JSON(http.StatusExpectationFailed, "Failed")
-	case 2:
-		c.JSON(http.StatusFound, "Exists")
-	default:
-		c.JSON(http.StatusOK, "Nothing")
+	/*新建一个用户实例*/
+	var tmpusr users.Users
+	var err error
 
+	hostname := c.Query("hostname")
+	port := c.Query("port")
+	username := c.Query("username")
+	password := c.Query("password")
+
+	if len(hostname) == 0 {
+		c.JSON(http.StatusOK, []dbusers.Users{})
+	} else {
+		pmapi.PMhost = hostname + ":" + port
+		pmapi.PMuser = username
+		pmapi.PMpass = password
+		pmapi.PMdb = "information_schema"
+		pmapi.MakePMdbi()
+
+		pmapi.Apidb, err = sql.Open("mysql", pmapi.PMdbi)
+		if err != nil {
+			c.JSON(http.StatusExpectationFailed, gin.H{"error": err})
+		}
+		defer pmapi.Apidb.Close()
+
+		if err := c.Bind(&tmpusr); err != nil {
+			c.JSON(http.StatusExpectationFailed, gin.H{"result": err})
+		}
+		log.Print("pmapi->DeleteOneUser->DeleteOneUser tmpusr", tmpusr)
+
+		_, err := tmpusr.DeleteOneUser(pmapi.Apidb)
+		if err != nil {
+			log.Print("pmapi->DeleteOneUser->DeleteOneUser Failed", err)
+			c.JSON(http.StatusExpectationFailed, gin.H{"result": err})
+		} else {
+			c.JSON(http.StatusOK, gin.H{"result": "OK"})
+		}
 	}
-
 }
 
 func (pmapi *PMApi) CreateOneUser(c *gin.Context) {
@@ -63,6 +85,8 @@ func (pmapi *PMApi) CreateOneUser(c *gin.Context) {
 		if err != nil {
 			log.Print("pmapi->CreateOneUser->AddOneUser Failed", err)
 			c.JSON(http.StatusExpectationFailed, gin.H{"result": err})
+		} else {
+			c.JSON(http.StatusOK, gin.H{"result": "OK"})
 		}
 	}
 }
@@ -118,42 +142,41 @@ func (pmapi *PMApi) ListAllUsers(c *gin.Context) {
 /*更新用户信息的patch方法*/
 func (pmapi *PMApi) UpdateOneUser(c *gin.Context) {
 
-	args := struct {
-		UserName              string `json:"username"`
-		Password              string `json:"password"`
-		Active                uint64 `json:"active"`
-		UseSsl                uint64 `json:"use_ssl"`
-		DefaultHostgroup      uint64 `json:"default_hostgroup"`
-		DefaultSchema         string `json:"default_schema"`
-		SchemaLocked          uint64 `json:"schema_locked"`
-		TransactionPersistent uint64 `json:"transaction_persistent"`
-		FastForward           uint64 `json:"fast_forward"`
-		Backend               uint64 `json:"backend"`
-		Frontend              uint64 `json:"frontend"`
-		MaxConnections        uint64 `json:"max_connections"`
-	}{}
+	/*新建一个用户实例*/
+	var tmpusr users.Users
+	var err error
 
-	user := new(users.Users)
+	hostname := c.Query("hostname")
+	port := c.Query("port")
+	username := c.Query("username")
+	password := c.Query("password")
 
-	if err := c.Bind(&args); err != nil {
-		c.JSON(http.StatusExpectationFailed, gin.H{"result": err})
+	if len(hostname) == 0 {
+		c.JSON(http.StatusOK, []dbusers.Users{})
+	} else {
+		pmapi.PMhost = hostname + ":" + port
+		pmapi.PMuser = username
+		pmapi.PMpass = password
+		pmapi.PMdb = "information_schema"
+		pmapi.MakePMdbi()
+
+		pmapi.Apidb, err = sql.Open("mysql", pmapi.PMdbi)
+		if err != nil {
+			c.JSON(http.StatusExpectationFailed, gin.H{"error": err})
+		}
+		defer pmapi.Apidb.Close()
+
+		if err := c.Bind(&tmpusr); err != nil {
+			c.JSON(http.StatusExpectationFailed, gin.H{"result": err})
+		}
+		log.Print("pmapi->UpdateOneUser->UpdateOneUser tmpusr", tmpusr)
+
+		_, err := tmpusr.UpdateOneUserInfo(pmapi.Apidb)
+		if err != nil {
+			log.Print("pmapi->UpdateOneUser->UpdateOneUser Failed", err)
+			c.JSON(http.StatusExpectationFailed, gin.H{"result": err})
+		} else {
+			c.JSON(http.StatusOK, gin.H{"result": "OK"})
+		}
 	}
-
-	user.Username = args.UserName
-	user.Password = args.Password
-	user.Active = args.Active
-	user.UseSsl = args.UseSsl
-	user.DefaultHostgroup = args.DefaultHostgroup
-	user.DefaultSchema = args.DefaultSchema
-	user.SchemaLocked = args.SchemaLocked
-	user.TransactionPersistent = args.TransactionPersistent
-	user.FastForward = args.FastForward
-	user.Backend = args.Backend
-	user.Frontend = args.Frontend
-	user.MaxConnections = args.MaxConnections
-
-	log.Print("pmapi->UpdateOneUserInfo->user :", user)
-
-	user.UpdateOneUserInfo(pmapi.Apidb)
-	c.JSON(http.StatusOK, "OK")
 }

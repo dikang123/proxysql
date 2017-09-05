@@ -48,8 +48,10 @@ const (
 	DELETE FROM 
 		mysql_users 
 	WHERE 
-		username = %q,
-		backend = 1,
+		username = %q
+	AND
+		backend = 1
+	AND
 		frontend = 1
 	`
 
@@ -147,11 +149,13 @@ func (users *Users) AddOneUser(db *sql.DB) (int, error) {
 	Query := fmt.Sprintf(StmtAddOneUser, users.Username, users.Password, users.DefaultSchema)
 	log.Print("admin->users.go->AddOneUser->Query :", Query)
 
-	rowsAffected, err := db.Exec(Query)
+	res, err := db.Exec(Query)
 	if err != nil {
 		log.Print("admin->users.go->AddOneUser->db.Exec Failed:", err)
 		return 1, err //add user failed
 	}
+
+	rowsAffected, err := res.RowsAffected()
 	log.Print("admin->users.go->AddOneUser->RowsAffected: ", rowsAffected)
 
 	cmd.LoadUserToRuntime(db)
@@ -159,29 +163,56 @@ func (users *Users) AddOneUser(db *sql.DB) (int, error) {
 	return 0, nil
 }
 
-func (users *Users) DeleteOneUser(db *sql.DB) int {
-	st := fmt.Sprintf(StmtDeleteOneUser, users.Username)
-	_, err := db.Query(st)
+func (users *Users) DeleteOneUser(db *sql.DB) (int, error) {
+
+	Query := fmt.Sprintf(StmtDeleteOneUser, users.Username)
+	log.Print("admin->users.go->DeleteOneUser->Query:", Query)
+
+	res, err := db.Exec(Query)
 	if err != nil {
-		return 1 //delte failed
+		log.Print("admin->users.go->DeleteOneUser->db.Exec Failed:", err)
+		return 1, err //delte failed
 	}
+
+	rowsAffected, err := res.RowsAffected()
+	log.Print("admin->users.go->DeleteOneUser->RowsAffected:", rowsAffected)
+
 	cmd.LoadUserToRuntime(db)
 	cmd.SaveUserToDisk(db)
-	return 0 //delete success
+	return 0, nil //delete success
 
 }
 
 // 更新一个用户所有信息，使用PATCH方法
-func (users *Users) UpdateOneUserInfo(db *sql.DB) int {
-	st := fmt.Sprintf(StmtUpdateOneUser, users.Password, users.Active, users.UseSsl, users.DefaultHostgroup, users.DefaultSchema, users.SchemaLocked, users.TransactionPersistent, users.FastForward, users.Backend, users.Frontend, users.MaxConnections, users.Username)
-	log.Print("users->UpdateOneUserInfo->st: ", st)
+func (users *Users) UpdateOneUserInfo(db *sql.DB) (int, error) {
 
-	_, err := db.Query(st)
+	Query := fmt.Sprintf(StmtUpdateOneUser,
+		users.Password,
+		users.Active,
+		users.UseSsl,
+		users.DefaultHostgroup,
+		users.DefaultSchema,
+		users.SchemaLocked,
+		users.TransactionPersistent,
+		users.FastForward,
+		users.Backend,
+		users.Frontend,
+		users.MaxConnections,
+		users.Username)
+
+	log.Print("users->UpdateOneUserInfo->st: ", Query)
+
+	res, err := db.Exec(Query)
 	if err != nil {
-		log.Print("UpdateOneUserInfo:", err)
-		return 1
+		log.Print("admin->users.go->UpdateOneUserInfo->db.Exec Failed :", err)
+		return 1, err
 	}
+
+	rowsAffected, err := res.RowsAffected()
+	log.Print("admin->users.go->UpdateOneUser->RowsAffected: ", rowsAffected)
+
 	cmd.LoadUserToRuntime(db)
 	cmd.SaveUserToDisk(db)
-	return 0
+
+	return 0, nil
 }

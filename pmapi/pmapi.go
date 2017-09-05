@@ -55,7 +55,7 @@ func (pmapi *PMApi) RegisterServices() {
 	pmapi.Router.GET("/api/v1/queryrules", pmapi.ListAllQueryRules)
 	pmapi.Router.POST("/api/v1/queryrules", pmapi.CreateOneQueryRules)
 	pmapi.Router.PUT("/api/v1/queryrules", pmapi.UpdateOneQueryRules)
-	pmapi.Router.DELETE("/api/v1/queryrules/:ruleid", pmapi.DeleteOneQueryRules)
+	pmapi.Router.DELETE("/api/v1/queryrules", pmapi.DeleteOneQueryRules)
 
 	/*Scheduler*/
 	pmapi.Router.GET("/api/v1/schedulers", pmapi.ListAllScheduler)

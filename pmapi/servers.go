@@ -1,6 +1,8 @@
 package pmapi
 
 import (
+	"Pdbs/src/admin/users"
+	"database/sql"
 	"net/http"
 	"proxysql-master/admin/servers"
 	"strconv"
@@ -10,6 +12,16 @@ import (
 
 /*返回所有后端数据库服务器的信息*/
 func (pmapi *PMApi) ListAllServers(c *gin.Context) {
+
+	var tmpserver servers.Servers
+	var aryservers []servers.Servers
+
+	var err error
+
+	hostname := c.Query("hostname")
+	port := c.Query("port")
+	username := c.Query("username")
+	password := c.Query("password")
 	limit, _ := strconv.ParseInt(c.Query("limit"), 10, 64)
 	page, _ := strconv.ParseInt(c.Query("page"), 10, 64)
 
@@ -22,7 +34,29 @@ func (pmapi *PMApi) ListAllServers(c *gin.Context) {
 	}
 
 	skip := (page - 1) * limit
-	c.JSON(http.StatusOK, servers.FindAllServerInfo(pmapi.Apidb, limit, skip))
+
+	if len(hostname) == 0 {
+		c.JSON(http.StatusOK, []users.Users{})
+	} else {
+		pmapi.PMhost = hostname + ":" + port
+		pmapi.PMuser = username
+		pmapi.PMpass = password
+		pmapi.PMdb = "information_schema"
+		pmapi.MakePMdbi()
+
+		pmapi.Apidb, err = sql.Open("mysql", pmapi.PMdbi)
+		if err != nil {
+			c.JSON(http.StatusExpectationFailed, gin.H{"error": err})
+		}
+		defer pmapi.Apidb.Close()
+
+		aryservers, err = tmpserver.FindAllServerInfo(pmapi.Apidb, limit, skip)
+		if err != nil {
+			c.JSON(http.StatusExpectationFailed, gin.H{"error": err})
+		}
+		c.JSON(http.StatusOK, aryusr)
+	}
+
 }
 
 /*创建一个新的后端数据库服务节点*/

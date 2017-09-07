@@ -91,8 +91,10 @@ const (
 		frontend=%d,
 		max_connections=%d 
 	WHERE 
-		username = %q,
-		backend = 1,
+		username = %q
+	AND
+		backend = 1
+	AND
 		frontend = 1
 		`
 )

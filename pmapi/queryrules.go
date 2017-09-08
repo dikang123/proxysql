@@ -35,7 +35,7 @@ func (pmapi *PMApi) ListAllQueryRules(c *gin.Context) {
 
 	skip := (page - 1) * limit
 
-	if len(hostname) == 0 {
+	if len(hostname) == 0 || hostname == "undefined" {
 		c.JSON(http.StatusOK, []users.Users{})
 	} else {
 		pmapi.PMhost = hostname + ":" + port

@@ -17,8 +17,8 @@ func (pmapi *PMApi) ListPsVariables(c *gin.Context) {
 
 	hostname := c.Query("hostname")
 	port := c.Query("port")
-	username := c.Query("username")
-	password := c.Query("password")
+	username := c.Query("adminuser")
+	password := c.Query("adminpass")
 	/*
 		limit, _ := strconv.ParseInt(c.Query("limit"), 10, 64)
 		page, _ := strconv.ParseInt(c.Query("page"), 10, 64)
@@ -34,7 +34,7 @@ func (pmapi *PMApi) ListPsVariables(c *gin.Context) {
 		skip := (page - 1) * limit
 	*/
 
-	if len(hostname) == 0 {
+	if len(hostname) == 0 || hostname == "undefined" {
 		c.JSON(http.StatusOK, []users.Users{})
 	} else {
 		pmapi.PMhost = hostname + ":" + port
@@ -65,10 +65,10 @@ func (pmapi *PMApi) UpdateOneVariables(c *gin.Context) {
 
 	hostname := c.Query("hostname")
 	port := c.Query("port")
-	username := c.Query("username")
-	password := c.Query("password")
+	username := c.Query("adminuser")
+	password := c.Query("adminpass")
 
-	if len(hostname) == 0 {
+	if len(hostname) == 0 || hostname == "undefined" {
 		c.JSON(http.StatusOK, []users.Users{})
 	} else {
 		pmapi.PMhost = hostname + ":" + port

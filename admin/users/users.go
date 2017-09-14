@@ -50,9 +50,9 @@ const (
 	WHERE 
 		username = %q
 	AND
-		backend = 1
+		backend = %d
 	AND
-		frontend = 1
+		frontend = %d
 	`
 
 	/*查询出所有用户的信息*/
@@ -93,9 +93,9 @@ const (
 	WHERE 
 		username = %q
 	AND
-		backend = 1
+		backend = %d
 	AND
-		frontend = 1
+		frontend = %d
 		`
 )
 
@@ -167,7 +167,7 @@ func (users *Users) AddOneUser(db *sql.DB) (int, error) {
 
 func (users *Users) DeleteOneUser(db *sql.DB) (int, error) {
 
-	Query := fmt.Sprintf(StmtDeleteOneUser, users.Username)
+	Query := fmt.Sprintf(StmtDeleteOneUser, users.Username, users.Backend, users.Frontend)
 	log.Print("admin->users.go->DeleteOneUser->Query:", Query)
 
 	res, err := db.Exec(Query)
@@ -200,7 +200,9 @@ func (users *Users) UpdateOneUserInfo(db *sql.DB) (int, error) {
 		users.Backend,
 		users.Frontend,
 		users.MaxConnections,
-		users.Username)
+		users.Username,
+		users.Backend,
+		users.Frontend)
 
 	log.Print("users->UpdateOneUserInfo->st: ", Query)
 

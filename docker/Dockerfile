@@ -1,7 +1,6 @@
 FROM centos:7
 
-COPY proxysql-master  /usr/local/bin/proxysql-master
+COPY main /usr/local/bin/main
 
 
-CMD /usr/local/bin/proxysql-master  -s 'admin/admin@127.0.0.1:6032/main' -p 3333 -l /tmp/pm.log
-
+CMD  /usr/local/bin/main

@@ -1,7 +1,6 @@
 package pmapi
 
 import (
-	"Pdbn/src/dbusers"
 	"database/sql"
 	"log"
 	"net/http"
@@ -22,7 +21,7 @@ func (pmapi *PMApi) DeleteOneUser(c *gin.Context) {
 	password := c.Query("adminpass")
 
 	if len(hostname) == 0 {
-		c.JSON(http.StatusOK, []dbusers.Users{})
+		c.JSON(http.StatusOK, []users.Users{})
 	} else {
 		pmapi.PMhost = hostname + ":" + port
 		pmapi.PMuser = username
@@ -62,7 +61,7 @@ func (pmapi *PMApi) CreateOneUser(c *gin.Context) {
 	password := c.Query("adminpass")
 
 	if len(hostname) == 0 {
-		c.JSON(http.StatusOK, []dbusers.Users{})
+		c.JSON(http.StatusOK, []users.Users{})
 	} else {
 		pmapi.PMhost = hostname + ":" + port
 		pmapi.PMuser = username
@@ -152,7 +151,7 @@ func (pmapi *PMApi) UpdateOneUser(c *gin.Context) {
 	password := c.Query("adminpass")
 
 	if len(hostname) == 0 {
-		c.JSON(http.StatusOK, []dbusers.Users{})
+		c.JSON(http.StatusOK, []users.Users{})
 	} else {
 		pmapi.PMhost = hostname + ":" + port
 		pmapi.PMuser = username

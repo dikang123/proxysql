@@ -1,8 +1,6 @@
 package pmapi
 
 import (
-	"Pdbn/src/dbusers"
-	"Pdbs/src/admin/users"
 	"database/sql"
 	"log"
 	"net/http"
@@ -37,7 +35,7 @@ func (pmapi *PMApi) ListAllScheduler(c *gin.Context) {
 	skip := (page - 1) * limit
 
 	if len(hostname) == 0 || hostname == "undefined" {
-		c.JSON(http.StatusOK, []users.Users{})
+		c.JSON(http.StatusOK, []schedulers.Schedulers{})
 	} else {
 		pmapi.PMhost = hostname + ":" + port
 		pmapi.PMuser = username
@@ -70,7 +68,7 @@ func (pmapi *PMApi) CreateOneScheduler(c *gin.Context) {
 	password := c.Query("adminpass")
 
 	if len(hostname) == 0 || hostname == "undefined" {
-		c.JSON(http.StatusOK, []dbusers.Users{})
+		c.JSON(http.StatusOK, []schedulers.Schedulers{})
 	} else {
 		pmapi.PMhost = hostname + ":" + port
 		pmapi.PMuser = username
@@ -109,7 +107,7 @@ func (pmapi *PMApi) DeleteOneScheduler(c *gin.Context) {
 	password := c.Query("adminpass")
 
 	if len(hostname) == 0 || hostname == "undefined" {
-		c.JSON(http.StatusOK, []dbusers.Users{})
+		c.JSON(http.StatusOK, []schedulers.Schedulers{})
 	} else {
 		pmapi.PMhost = hostname + ":" + port
 		pmapi.PMuser = username
@@ -148,7 +146,7 @@ func (pmapi *PMApi) UpdateOneScheduler(c *gin.Context) {
 	password := c.Query("adminpass")
 
 	if len(hostname) == 0 || hostname == "undefined" {
-		c.JSON(http.StatusOK, []dbusers.Users{})
+		c.JSON(http.StatusOK, []schedulers.Schedulers{})
 	} else {
 		pmapi.PMhost = hostname + ":" + port
 		pmapi.PMuser = username

@@ -1,7 +1,6 @@
 package pmapi
 
 import (
-	"Pdbs/src/admin/users"
 	"database/sql"
 	"log"
 	"net/http"
@@ -36,7 +35,7 @@ func (pmapi *PMApi) ListAllQueryRules(c *gin.Context) {
 	skip := (page - 1) * limit
 
 	if len(hostname) == 0 || hostname == "undefined" {
-		c.JSON(http.StatusOK, []users.Users{})
+		c.JSON(http.StatusOK, []queryrules.QueryRules{})
 	} else {
 		pmapi.PMhost = hostname + ":" + port
 		pmapi.PMuser = username
@@ -70,7 +69,7 @@ func (pmapi *PMApi) CreateOneQueryRules(c *gin.Context) {
 	password := c.Query("adminpass")
 
 	if len(hostname) == 0 {
-		c.JSON(http.StatusOK, []users.Users{})
+		c.JSON(http.StatusOK, []queryrules.QueryRules{})
 	} else {
 		pmapi.PMhost = hostname + ":" + port
 		pmapi.PMuser = username
@@ -109,7 +108,7 @@ func (pmapi *PMApi) DeleteOneQueryRules(c *gin.Context) {
 	password := c.Query("adminpass")
 
 	if len(hostname) == 0 {
-		c.JSON(http.StatusOK, []users.Users{})
+		c.JSON(http.StatusOK, []queryrules.QueryRules{})
 	} else {
 		pmapi.PMhost = hostname + ":" + port
 		pmapi.PMuser = username
@@ -148,7 +147,7 @@ func (pmapi *PMApi) UpdateOneQueryRules(c *gin.Context) {
 	password := c.Query("adminpass")
 
 	if len(hostname) == 0 {
-		c.JSON(http.StatusOK, []users.Users{})
+		c.JSON(http.StatusOK, []queryrules.QueryRules{})
 	} else {
 		pmapi.PMhost = hostname + ":" + port
 		pmapi.PMuser = username

@@ -1,8 +1,6 @@
 package pmapi
 
 import (
-	"Pdbn/src/dbusers"
-	"Pdbs/src/admin/users"
 	"database/sql"
 	"log"
 	"net/http"
@@ -38,7 +36,7 @@ func (pmapi *PMApi) ListAllServers(c *gin.Context) {
 	skip := (page - 1) * limit
 
 	if len(hostname) == 0 || hostname == "undefined" {
-		c.JSON(http.StatusOK, []users.Users{})
+		c.JSON(http.StatusOK, []servers.Servers{})
 	} else {
 		pmapi.PMhost = hostname + ":" + port
 		pmapi.PMuser = username
@@ -73,7 +71,7 @@ func (pmapi *PMApi) CreateOneServer(c *gin.Context) {
 	password := c.Query("adminpass")
 
 	if len(hostname) == 0 {
-		c.JSON(http.StatusOK, []dbusers.Users{})
+		c.JSON(http.StatusOK, []servers.Servers{})
 	} else {
 		pmapi.PMhost = hostname + ":" + port
 		pmapi.PMuser = username
@@ -113,7 +111,7 @@ func (pmapi *PMApi) DeleteOneServers(c *gin.Context) {
 	password := c.Query("adminpass")
 
 	if len(hostname) == 0 {
-		c.JSON(http.StatusOK, []dbusers.Users{})
+		c.JSON(http.StatusOK, []servers.Servers{})
 	} else {
 		pmapi.PMhost = hostname + ":" + port
 		pmapi.PMuser = username
@@ -153,7 +151,7 @@ func (pmapi *PMApi) UpdateOneServer(c *gin.Context) {
 	password := c.Query("adminpass")
 
 	if len(hostname) == 0 {
-		c.JSON(http.StatusOK, []dbusers.Users{})
+		c.JSON(http.StatusOK, []servers.Servers{})
 	} else {
 		pmapi.PMhost = hostname + ":" + port
 		pmapi.PMuser = username

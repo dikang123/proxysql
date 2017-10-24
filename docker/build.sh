@@ -1,19 +1,22 @@
 #!/bin/bash
 
-set -e
+#set -e
 set -x
 
-docker stop pm
-docker rm pm
+readonly CNAME=proxysql_master
+readonly IMGTAG=1.3
+
+docker stop $CNAME
+docker rm $CNAME
 
 export CGO_ENABLED=0 
 export GOOS=linux 
 export GOARCH=amd64
 
-go build -o main  ../main.go
+go build -o $CNAME  ../main.go
 
-docker build -t pm .
+docker build -t $CNAME:$IMGTAG .
 
-rm -f main
+rm -f $CNAME
 
-docker run --name pm -p 3333:3333 -d pm 
+docker run --name $CNAME -p 3333:3333 -d $CNAME:$IMGTAG

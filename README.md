@@ -24,7 +24,7 @@ Such as:
 
 # go get -u github.com/gin-gonic/gin
 
-# go install proxysql-master  OR go build main.go
+# go install proxysql-master 
 ```
 
 ### 4. How to running?

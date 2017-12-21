@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"log"
 	"net/http"
-	"proxysql-master/admin/queryrules"
+	"github.com/imSQL/proxysql-master/admin/queryrules"
 	"strconv"
 
 	"github.com/gin-gonic/gin"

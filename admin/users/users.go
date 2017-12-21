@@ -15,7 +15,7 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
-	"github.com/imSQL/proxysql-master/admin/cmd"
+	"github.com/imSQL/go-proxysql-library/admin/cmd"
 )
 
 type (

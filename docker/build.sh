@@ -1,22 +1,16 @@
 #!/bin/bash
 
-#set -e
-set -x
+set -xeuo pipefail
 
+readonly HTTP_PROXY=http://172.18.0.2:7777/pac
 readonly CNAME=proxysql_master
 readonly IMGTAG=1.3
 
-docker stop $CNAME
-docker rm $CNAME
+#docker stop $CNAME
+#docker rm -f $CNAME
 
-export CGO_ENABLED=0 
-export GOOS=linux 
-export GOARCH=amd64
+#docker build with proxy
+#docker build -t $CNAME --build-arg HTTP_PROXY=$HTTP_PROXY .
 
-go build -o $CNAME  ../main.go
-
-docker build -t $CNAME:$IMGTAG .
-
-rm -f $CNAME
-
-docker run --name $CNAME -p 3333:3333 -d $CNAME:$IMGTAG
+#docker build without proxy
+docker build -t $CNAME .

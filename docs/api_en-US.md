@@ -1,17 +1,30 @@
-# 本文档主要说明restful-api的使用方法
+# Quick Start
 
-### 1.用户相关
+-----
 
-#### 1.1.查看当前代理保存的用户列表
+proxysql-master provides RESTful API interfaces to manage ProxySQL.
+
+proxysql-master is in beta stage,don't use it to the production environment.
+
+
+### 1. mysql_users api
+
+#### 1.1. list all mysql_users
 
 ```
 Action: GET
-URL: http://127.0.0.1:3333/api/v1/users
-参数：无
-返回结果： 用户详细信息列表
+
+URL: http://127.0.0.1:3333/api/v1/users?hostname=127.0.0.1&port=13306&adminuser=admin&adminpass=admin&limit=0&page=0
+
+arg1: hostname is host ip address which running proxysql.
+arg2: port is host port  which running proxysql
+arg3: adminuser is proxysql admin user.
+arg4: adminpass is proxysql admin pass.
+
+return： if success return a json array,else return [].
 
 ```
-#### 示例
+#### example
 
 ```
 curl -X GET 

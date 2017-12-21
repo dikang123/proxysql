@@ -1,4 +1,4 @@
-package status
+package proxysql
 
 import (
 	"database/sql"

@@ -1,10 +1,9 @@
-package queryrules
+package proxysql
 
 import (
 	"database/sql"
 	"fmt"
 	"log"
-	"github.com/imSQL/go-proxysql-library/admin/cmd"
 )
 
 type (
@@ -204,8 +203,8 @@ func (qr *QueryRules) AddOneQr(db *sql.DB) (int, error) {
 	rowsAffected, err := res.RowsAffected()
 	log.Print("admin->queryrules.go->AddOneQr->rowsAffected: ", rowsAffected)
 
-	cmd.LoadQueryRulesToRuntime(db)
-	cmd.SaveQueryRulesToDisk(db)
+	LoadQueryRulesToRuntime(db)
+	SaveQueryRulesToDisk(db)
 
 	return 0, nil
 }
@@ -227,8 +226,8 @@ func (qr *QueryRules) DeleteOneQr(db *sql.DB) (int, error) {
 	rowsAffected, err := res.RowsAffected()
 	log.Print("admin->queryrules.go->DeleteOneQr->RowsAffected:", rowsAffected)
 
-	cmd.LoadQueryRulesToRuntime(db)
-	cmd.SaveQueryRulesToDisk(db)
+	LoadQueryRulesToRuntime(db)
+	SaveQueryRulesToDisk(db)
 
 	return 0, nil
 }
@@ -300,8 +299,8 @@ func (qr *QueryRules) UpdateOneQrInfo(db *sql.DB) (int, error) {
 	rowsAffected, err := res.RowsAffected()
 	log.Print("admin->queryrules.go->UpdateOneQrInfo->RowsAffected", rowsAffected)
 
-	cmd.LoadQueryRulesToRuntime(db)
-	cmd.SaveQueryRulesToDisk(db)
+	LoadQueryRulesToRuntime(db)
+	SaveQueryRulesToDisk(db)
 
 	return 0, nil
 }

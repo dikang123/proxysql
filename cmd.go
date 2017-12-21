@@ -1,4 +1,4 @@
-package cmd
+package proxysql
 
 import (
 	"database/sql"

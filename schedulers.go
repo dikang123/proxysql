@@ -1,10 +1,9 @@
-package schedulers
+package proxysql
 
 import (
 	"database/sql"
 	"fmt"
 	"log"
-	"github.com/imSQL/go-proxysql-library/admin/cmd"
 )
 
 type Schedulers struct {
@@ -132,8 +131,8 @@ func (schld *Schedulers) AddOneScheduler(db *sql.DB) (int, error) {
 	rowsAffected, err := res.RowsAffected()
 	log.Print("admin-scheduler.go->AddOneScheduler->rowsAffected:", rowsAffected)
 
-	cmd.LoadSchedulerToRuntime(db)
-	cmd.SaveSchedulerToDisk(db)
+	LoadSchedulerToRuntime(db)
+	SaveSchedulerToDisk(db)
 
 	return 0, nil
 }
@@ -153,8 +152,8 @@ func (schld *Schedulers) DeleteOneScheduler(db *sql.DB) (int, error) {
 	rowsAffected, err := res.RowsAffected()
 	log.Print("admin-scheduler->DeleteOneScheduler->RowsAffected: ", rowsAffected)
 
-	cmd.LoadSchedulerToRuntime(db)
-	cmd.SaveSchedulerToDisk(db)
+	LoadSchedulerToRuntime(db)
+	SaveSchedulerToDisk(db)
 	return 0, nil
 }
 
@@ -173,8 +172,8 @@ func (schld *Schedulers) UpdateOneSchedulerInfo(db *sql.DB) (int, error) {
 	rowsAffected, err := res.RowsAffected()
 	log.Print("admin-scheduler.go-UpdateOneScheduler->rowsAffected", rowsAffected)
 
-	cmd.LoadSchedulerToRuntime(db)
-	cmd.SaveSchedulerToDisk(db)
+	LoadSchedulerToRuntime(db)
+	SaveSchedulerToDisk(db)
 
 	return 0, nil
 }

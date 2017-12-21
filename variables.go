@@ -1,12 +1,11 @@
-package variables
+package proxysql
 
 import (
 	"database/sql"
 	"fmt"
+
 	//"fmt"
 	"log"
-
-	"github.com/imSQL/go-proxysql-library/admin/cmd"
 )
 
 type (
@@ -119,10 +118,10 @@ func (vars *Variables) UpdateOneVariable(db *sql.DB) (int, error) {
 		log.Print("UpdateOneVariable->db.Query: ", err)
 		return 1, err
 	}
-	cmd.LoadMySQlVariablesToRuntime(db)
-	cmd.LoadAdminVariablesToRuntime(db)
-	cmd.SaveMySQLVariablesToDisk(db)
-	cmd.SaveAdminVariablesToDisk(db)
+	LoadMySQlVariablesToRuntime(db)
+	LoadAdminVariablesToRuntime(db)
+	SaveMySQLVariablesToDisk(db)
+	SaveAdminVariablesToDisk(db)
 	return 0, nil
 }
 

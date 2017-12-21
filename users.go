@@ -1,4 +1,4 @@
-package users
+package proxysql
 
 /*
 * 1.获取当前用户列表
@@ -15,7 +15,6 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
-	"github.com/imSQL/go-proxysql-library/admin/cmd"
 )
 
 type (
@@ -159,8 +158,8 @@ func (users *Users) AddOneUser(db *sql.DB) (int, error) {
 	rowsAffected, err := res.RowsAffected()
 	log.Print("admin->users.go->AddOneUser->RowsAffected: ", rowsAffected)
 
-	cmd.LoadUserToRuntime(db)
-	cmd.SaveUserToDisk(db)
+	LoadUserToRuntime(db)
+	SaveUserToDisk(db)
 	return 0, nil
 }
 
@@ -178,8 +177,8 @@ func (users *Users) DeleteOneUser(db *sql.DB) (int, error) {
 	rowsAffected, err := res.RowsAffected()
 	log.Print("admin->users.go->DeleteOneUser->RowsAffected:", rowsAffected)
 
-	cmd.LoadUserToRuntime(db)
-	cmd.SaveUserToDisk(db)
+	LoadUserToRuntime(db)
+	SaveUserToDisk(db)
 	return 0, nil //delete success
 
 }
@@ -214,8 +213,8 @@ func (users *Users) UpdateOneUserInfo(db *sql.DB) (int, error) {
 	rowsAffected, err := res.RowsAffected()
 	log.Print("admin->users.go->UpdateOneUser->RowsAffected: ", rowsAffected)
 
-	cmd.LoadUserToRuntime(db)
-	cmd.SaveUserToDisk(db)
+	LoadUserToRuntime(db)
+	SaveUserToDisk(db)
 
 	return 0, nil
 }

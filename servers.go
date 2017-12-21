@@ -1,10 +1,9 @@
-package servers
+package proxysql
 
 import (
 	"database/sql"
 	"fmt"
 	"log"
-	"github.com/imSQL/go-proxysql-library/admin/cmd"
 )
 
 type Servers struct {
@@ -146,8 +145,8 @@ func (srvs *Servers) AddOneServers(db *sql.DB) (int, error) {
 	rowsAffected, err := res.RowsAffected()
 	log.Print("admin->servers.go->AddOneServers->rowsAffected: ", rowsAffected)
 
-	cmd.LoadServerToRuntime(db)
-	cmd.SaveServerToDisk(db)
+	LoadServerToRuntime(db)
+	SaveServerToDisk(db)
 
 	return 0, nil
 }
@@ -170,8 +169,8 @@ func (srvs *Servers) DeleteOneServers(db *sql.DB) (int, error) {
 	rowsAffected, err := res.RowsAffected()
 	log.Print("admin->servers.go->DeleteOneServers->RowsAffected", rowsAffected)
 
-	cmd.LoadServerToRuntime(db)
-	cmd.SaveServerToDisk(db)
+	LoadServerToRuntime(db)
+	SaveServerToDisk(db)
 
 	return 0, nil
 }
@@ -205,8 +204,8 @@ func (srvs *Servers) UpdateOneServerInfo(db *sql.DB) (int, error) {
 	rowsAffected, err := res.RowsAffected()
 	log.Print("admin->servers.go->UpdateOneServers->RowsAffected", rowsAffected)
 
-	cmd.LoadServerToRuntime(db)
-	cmd.SaveServerToDisk(db)
+	LoadServerToRuntime(db)
+	SaveServerToDisk(db)
 
 	return 0, nil
 }

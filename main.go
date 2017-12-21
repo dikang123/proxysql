@@ -3,8 +3,9 @@ package main
 import (
 	"flag"
 	"fmt"
-	"proxysql-master/pmapi"
 	"strings"
+
+	"github.com/imSQL/proxysql-master/pmapi"
 )
 
 var (

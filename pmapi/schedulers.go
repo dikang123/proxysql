@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"log"
 	"net/http"
-	"proxysql-master/admin/schedulers"
+	"github.com/imSQL/proxysql-master/admin/schedulers"
 	"strconv"
 
 	"github.com/gin-gonic/gin"

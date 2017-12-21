@@ -1,13 +1,8 @@
 {
-	"ImportPath": "proxysql-master",
+	"ImportPath": "github.com/imSQL/proxysql-master",
 	"GoVersion": "go1.9",
 	"GodepVersion": "v79",
 	"Deps": [
-		{
-			"ImportPath": "Pdbs/src/admin/users",
-			"Comment": "v0.7",
-			"Rev": "a4598974f4c39dea5b6c031b84bda7a292d13516"
-		},
 		{
 			"ImportPath": "github.com/gin-contrib/sse",
 			"Rev": "22d885f9ecc78bf4ee5d72b937e4bbcdc58e8cae"
@@ -39,7 +34,7 @@
 		},
 		{
 			"ImportPath": "github.com/golang/protobuf/proto",
-			"Rev": "0a4f71a498b7c4812f64969510bcb4eca251e33a"
+			"Rev": "1e59b77b52bf8e4b449a57e6f79f21226d571845"
 		},
 		{
 			"ImportPath": "github.com/json-iterator/go",

@@ -1,12 +1,11 @@
 package pmapi
 
 import (
-	"Pdbs/src/admin/users"
 	"database/sql"
 	"net/http"
-	"proxysql-master/admin/variables"
 
 	"github.com/gin-gonic/gin"
+	"github.com/imSQL/proxysql-master/admin/variables"
 )
 
 //查询出所有变量的内容
@@ -35,7 +34,7 @@ func (pmapi *PMApi) ListPsVariables(c *gin.Context) {
 	*/
 
 	if len(hostname) == 0 || hostname == "undefined" {
-		c.JSON(http.StatusOK, []users.Users{})
+		c.JSON(http.StatusOK, []variables.Variables{})
 	} else {
 		pmapi.PMhost = hostname + ":" + port
 		pmapi.PMuser = username
@@ -69,7 +68,7 @@ func (pmapi *PMApi) UpdateOneVariables(c *gin.Context) {
 	password := c.Query("adminpass")
 
 	if len(hostname) == 0 || hostname == "undefined" {
-		c.JSON(http.StatusOK, []users.Users{})
+		c.JSON(http.StatusOK, []variables.Variables{})
 	} else {
 		pmapi.PMhost = hostname + ":" + port
 		pmapi.PMuser = username

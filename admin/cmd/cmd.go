@@ -2,9 +2,7 @@ package cmd
 
 import (
 	"database/sql"
-	//	"fmt"
 	"log"
-	//	"os"
 )
 
 const (

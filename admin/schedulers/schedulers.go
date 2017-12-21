@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
-	"proxysql-master/admin/cmd"
+	"github.com/imSQL/proxysql-master/admin/cmd"
 )
 
 type Schedulers struct {

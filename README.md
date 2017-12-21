@@ -12,9 +12,9 @@ If you want build this project,You should download some library.
 
 Such as:
 
-    https://github.com/go-sql-driver/mysql
+    github.com/go-sql-driver/mysql
 
-    https://github.com/labstack/echo
+    github.com/gin-gonic/gin
 
 
 ### 2.How to build?
@@ -22,7 +22,7 @@ Such as:
 ```
 # go get -u github.com/go-sql-driver/mysql
 
-# go get -u github.com/labstack/echo/...
+# go get -u github.com/gin-gonic/gin
 
 # go install proxysql-master
 ```
@@ -34,6 +34,7 @@ Such as:
 
 By default, proxysql-master print all messages to stdout.
 
+By default, proxysql-master use 3333 port to listen connections.
 
 ### 5. How to use?
 

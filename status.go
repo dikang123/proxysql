@@ -55,7 +55,7 @@ type (
 		Mysql_frontend_buffers_bytes int64 `db:"mysql_frontend_buffers_bytes" json:"mysql_frontend_buffers_bytes"`
 		Mysql_session_internal_bytes int64 `db:"mysql_session_internal_bytes" json:"mysql_session_internal_bytes"`
 	}
-	Variables struct {
+	Status struct {
 		VariablesName string `db:"Variable_name" json:"Variable_name"`
 		Value         int64  `db:"Value" json:"Value"`
 	}
@@ -67,13 +67,13 @@ const (
 
 func (ps *PsStatus) GetProxySqlStatus(db *sql.DB) PsStatus {
 
-	var tmp Variables
+	var tmp Status
 	rows, err := db.Query(StmtMySQLStatus)
 	if err != nil {
 		log.Print("db.Query", StmtMySQLStatus)
 	}
 	for rows.Next() {
-		tmp = Variables{}
+		tmp = Status{}
 		err = rows.Scan(&tmp.VariablesName, &tmp.Value)
 		if err != nil {
 			log.Print("err = ", err)

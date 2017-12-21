@@ -1,6 +1,14 @@
-FROM centos:7
+FROM golang:1.9
 MAINTAINER Lei Tian
 
-COPY proxysql_master /usr/local/bin/main
+WORKDIR /go/src
 
-ENTRYPOINT ["/usr/local/bin/main"]
+RUN \
+    mkdir -p github.com/imSQL && \
+    go get -u github.com/go-sql-driver/mysql && \
+    go get -u github.com/gin-gonic/gin && \
+    git clone https://github.com/imSQL/proxysql-master.git github.com/imSQL/proxysql-master && \
+    go install proxysql-master
+
+
+ENTRYPOINT ["/go/bin/proxysql-master"]

@@ -1,62 +1,31 @@
-# ProxySQL RESTful API
+
+# Golang ProxySQL Library
+
+-----
 
 ### 1.introduce
 
-I think ProxySQL is a best MySQL proxy software.
+A ProxySQL Go library.
 
-But I can't control it through a restful api.
+### 2. Requirements
 
-So, I write this project.
+1. Go 1.7 or higher.
+1. ProxySQL 1.3.x
 
-If you want build this project,You should download some libraries. 
+### 3. Installation
 
-Such as:
+Simple install the package to your $GOPATH with the go tool from shell:
 
-    github.com/go-sql-driver/mysql
+    # go get -u github.com/imSQL/proxysql
 
-    github.com/gin-gonic/gin
+Make sure git command is installed on your OS.
 
+### 4. Usage
 
-### 2.How to build?
+example:
 
-#### 2.1 build
+list all mysql_users .
 
-You can quickly build proxysql-master on your OS.
+    import "github.com/imSQL/proxysql"
 
-I recommend go version >= 1.6.
-
-```
-# go get -u github.com/go-sql-driver/mysql
-
-# go get -u github.com/gin-gonic/gin
-
-# go install proxysql-master 
-```
-
-#### 2.2. docker build
-
-You can quickly build proxysql-master with Docker.
-
-The Dockerfile in docker directory.
-
-```
-# docker build -t proxysql-master .
-
-```
-
-### 4. How to running?
-
-
-    # proxysql-master
-
-By default, proxysql-master print all messages to stdout.
-
-By default, proxysql-master use 3333 port to listen connections.
-
-If you running proxysql-master by docker , execute this command:
-
-    # docker run -it proxysql-master
-
-### 5. How to use?
-
-ref : ![api_en-US.md](https://github.com/imSQL/proxysql-master/blob/v1.3/doc/api_en-US.md)
+    proxysql.FindAllUserInfo(db,0,0)

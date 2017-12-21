@@ -27,10 +27,10 @@ return： if success return a json array,else return [].
 #### example
 
 ```
-curl -X GET 
+# curl -X GET 
      -H 'Content-Type: application/json'  \
-     127.0.0.1:3333/api/v1/users
-返回结果：
+     localhost:3333/api/v1/users?hostname=127.0.0.1&port=13306&adminuser=admin&adminpass=admin&limit=0&page=0
+
 [
     {
         "username": "dev",
@@ -63,41 +63,8 @@ curl -X GET
 ]
 ```
 
-#### 1.2.只查询一个用户的详细信息
+#### 1.3.create a new mysql user.
 
-```
-Action: GET
-URL: http://127.0.0.1:3333/api/v1/users/:username
-参数：无
-返回结果： 指定用户相信信息
-```
-
-#### 示例
-
-```
-curl -X GET
-     -H 'Content-Type: application/json'
-     127.0.0.1:3333/api/v1/users/dev
-查看dev用户的详细信息
-
-返回结果
-{
-    "username": "dev",
-    "password": "dev",
-    "active": 1,
-    "use_ssl": 0,
-    "default_hostgroup": 0,
-    "default_schema": "",
-    "schema_locked": 0,
-    "transaction_persistent": 0,
-    "fast_forward": 0,
-    "backend": 0,
-    "frontend": 0,
-    "max_connections": 0
-}
-```
-
-#### 1.3.创建一个新的用户
 
 ```
 Action: POST

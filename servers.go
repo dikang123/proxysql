@@ -122,6 +122,89 @@ func (srvs *Servers) FindAllServerInfo(db *sql.DB, limit int64, skip int64) ([]S
 	return allserver, nil
 }
 
+// init a new servers.
+func (srvs *Servers) NewServer(hostgroup_id uint64, hostname string, port uint64) (*Servers, error) {
+	newsrv := new(Servers)
+
+	newsrv.HostGroupId = hostgroup_id
+	newsrv.HostName = hostname
+	newsrv.Port = port
+
+	newsrv.Status = "ONLINE"
+	newsrv.Weight = 1000
+	newsrv.Compression = 0
+	newsrv.MaxConnections = 1000
+	newsrv.MaxReplicationLag = 0
+	newsrv.UseSsl = 0
+	newsrv.MaxLatencyMs = 0
+	newsrv.Comment = ""
+
+	return newsrv, nil
+}
+
+// set servers status
+func (srvs *Servers) SetServerStatus(status string) {
+	switch status {
+	case "ONLINE":
+		srvs.Status = "ONLINE"
+	case "SHUNNED":
+		srvs.Status = "SHUNNED"
+	case "OFFLINE_SOFT":
+		srvs.Status = "OFFLINE_SOFT"
+	case "OFFLINE_HARD":
+		srvs.Status = "OFFLINE_HARD"
+	default:
+		srvs.Status = "ONLINE"
+	}
+}
+
+// set servers weight
+func (srvs *Servers) SetServerWeight(weight uint64) {
+	srvs.Weight = weight
+}
+
+// set servers compression
+func (srvs *Servers) SetServerCompression(compression uint64) {
+	srvs.Compression = compression
+}
+
+// set servers max_connections
+func (srvs *Servers) SetServerMaxConnection(max_connections uint64) {
+	if max_connections >= 10000 {
+		srvs.MaxConnections = 10000
+	} else {
+		srvs.MaxConnections = max_connections
+	}
+}
+
+// set servers max_replication_lag
+func (srvs *Servers) SetServerMaxReplicationLag(max_replication_lag uint64) {
+	if max_replication_lag > 126144000 {
+		srvs.MaxReplicationLag = 1261440000
+	} else {
+		srvs.MaxReplicationLag = max_replication_lag
+	}
+}
+
+// set servers use_ssl
+func (srvs *Servers) SetServerUseSSL(use_ssl uint64) {
+	if use_ssl >= 1 {
+		srvs.UseSsl = 1
+	} else {
+		srvs.UseSsl = 0
+	}
+}
+
+// set servers max_latency_ms
+func (srvs *Servers) SetServerMaxLatencyMs(max_latency_ms uint64) {
+	srvs.MaxLatencyMs = max_latency_ms
+}
+
+// set servers comment
+func (srvs *Servers) SetServersComment(comment string) {
+	srvs.Comment = comment
+}
+
 /*add a new backend*/
 func (srvs *Servers) AddOneServers(db *sql.DB) error {
 

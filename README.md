@@ -26,6 +26,17 @@ example:
 
 list all mysql_users .
 
-    import "github.com/imSQL/proxysql"
+	conn, err := NewConn("172.18.10.111", 13306, "admin", "admin")
+	if err != nil {
+		t.Error(conn, err)
+	}
 
-    proxysql.FindAllUserInfo(db,0,0)
+	db, err := conn.OpenConn()
+	if err != nil {
+		t.Error(db, err)
+	}
+
+	allusers, err := FindAllUserInfo(db, 1, 0)
+	if err != nil {
+		t.Error(allusers, err)
+	}

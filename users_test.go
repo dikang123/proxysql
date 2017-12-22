@@ -33,11 +33,10 @@ func TestAddOneUser(t *testing.T) {
 		t.Error(db, err)
 	}
 
-	newuser := new(Users)
-	newuser.SetDefaultHostgroup(0)
-	newuser.SetDefaultSchema("dev")
-	newuser.SetUserName("devtest")
-	newuser.SetUserPass("devtest")
+	newuser, err := NewUser("devtest", "devtest", 0, "dev")
+	if err != nil {
+		t.Error(err)
+	}
 	newuser.SetUserActive(1)
 
 	err = newuser.AddOneUser(db)
@@ -58,12 +57,36 @@ func TestDeleteOneUser(t *testing.T) {
 		t.Error(db, err)
 	}
 
-	newuser := new(Users)
-	newuser.SetUserName("devtest")
-	newuser.SetBackend(1)
-	newuser.SetFrontend(1)
+	newuser, err := NewUser("devtest", "devtest", 0, "dev")
+	if err != nil {
+		t.Error(err)
+	}
 
 	err = newuser.DeleteOneUser(db)
+	if err != nil {
+		t.Error(err)
+	}
+
+}
+func TestUpdateOneUser(t *testing.T) {
+	conn, err := NewConn("172.18.10.111", 13306, "admin", "admin")
+	if err != nil {
+		t.Error(conn, err)
+	}
+
+	db, err := conn.OpenConn()
+	if err != nil {
+		t.Error(db, err)
+	}
+
+	newuser, err := NewUser("devtest", "devtest", 0, "dev")
+	if err != nil {
+		t.Error(err)
+	}
+	newuser.SetMaxConnections(999)
+	newuser.SetSchemaLocked(1)
+
+	err = newuser.UpdateOneUserInfo(db)
 	if err != nil {
 		t.Error(err)
 	}

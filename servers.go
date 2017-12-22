@@ -123,7 +123,7 @@ func FindAllServerInfo(db *sql.DB, limit int64, skip int64) ([]Servers, error) {
 }
 
 // init a new servers.
-func (srvs *Servers) NewServer(hostgroup_id uint64, hostname string, port uint64) (*Servers, error) {
+func NewServer(hostgroup_id uint64, hostname string, port uint64) (*Servers, error) {
 	newsrv := new(Servers)
 
 	newsrv.HostGroupId = hostgroup_id

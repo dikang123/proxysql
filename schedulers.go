@@ -110,48 +110,48 @@ func (schld *Schedulers) FindAllSchedulerInfo(db *sql.DB, limit int64, skip int6
 }
 
 //add a new scheduler
-func (schld *Schedulers) AddOneScheduler(db *sql.DB) (int, error) {
+func (schld *Schedulers) AddOneScheduler(db *sql.DB) error {
 
 	Query := fmt.Sprintf(StmtAddOneScheduler, schld.FileName, schld.IntervalMs)
 
 	_, err := db.Exec(Query)
 	if err != nil {
-		return 1, errors.Trace(err)
+		return errors.Trace(err)
 	}
 
 	LoadSchedulerToRuntime(db)
 	SaveSchedulerToDisk(db)
 
-	return 0, nil
+	return nil
 }
 
 //delete a scheduler
-func (schld *Schedulers) DeleteOneScheduler(db *sql.DB) (int, error) {
+func (schld *Schedulers) DeleteOneScheduler(db *sql.DB) error {
 
 	Query := fmt.Sprintf(StmtDeleteOneScheduler, schld.Id)
 
 	_, err := db.Exec(Query)
 	if err != nil {
-		return 1, errors.Trace(err)
+		return errors.Trace(err)
 	}
 
 	LoadSchedulerToRuntime(db)
 	SaveSchedulerToDisk(db)
-	return 0, nil
+	return nil
 }
 
 //update a scheduler.
-func (schld *Schedulers) UpdateOneSchedulerInfo(db *sql.DB) (int, error) {
+func (schld *Schedulers) UpdateOneSchedulerInfo(db *sql.DB) error {
 
 	Query := fmt.Sprintf(StmtUpdateOneScheduler, schld.Active, schld.IntervalMs, schld.FileName, schld.Arg1, schld.Arg2, schld.Arg3, schld.Arg4, schld.Arg5, schld.Comment, schld.Id)
 
 	_, err := db.Exec(Query)
 	if err != nil {
-		return 1, errors.Trace(err)
+		return errors.Trace(err)
 	}
 
 	LoadSchedulerToRuntime(db)
 	SaveSchedulerToDisk(db)
 
-	return 0, nil
+	return nil
 }

@@ -133,7 +133,7 @@ func NewServer(hostgroup_id uint64, hostname string, port uint64) (*Servers, err
 	newsrv.Status = "ONLINE"
 	newsrv.Weight = 1000
 	newsrv.Compression = 0
-	newsrv.MaxConnections = 1000
+	newsrv.MaxConnections = 10000
 	newsrv.MaxReplicationLag = 0
 	newsrv.UseSsl = 0
 	newsrv.MaxLatencyMs = 0

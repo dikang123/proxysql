@@ -135,6 +135,15 @@ func NewUser(username string, password string, default_hostgroup uint64, default
 	newuser.DefaultHostgroup = default_hostgroup
 	newuser.DefaultSchema = default_schema
 
+	newuser.Active = 1
+	newuser.UseSsl = 0
+	newuser.SchemaLocked = 0
+	newuser.TransactionPersistent = 0
+	newuser.FastForward = 0
+	newuser.Backend = 1
+	newuser.Frontend = 1
+	newuser.MaxConnections = 10000
+
 	return newuser, nil
 }
 
@@ -177,11 +186,39 @@ func (users *Users) SetFrontend(frontend uint64) {
 	}
 }
 
+// set user active/disactive
 func (users *Users) SetUserActive(active uint64) {
 	if active >= 1 {
 		users.Active = 1
 	} else {
 		users.Active = 0
+	}
+}
+
+// Set users UseSSL
+func (users *Users) SetUseSSL(use_ssl uint64) {
+	if use_ssl >= 1 {
+		users.UseSsl = 1
+	} else {
+		users.UseSsl = 0
+	}
+}
+
+// set users SchemaLocked
+func (users *Users) SetSchemaLocked(schema_locked uint64) {
+	if schema_locked >= 1 {
+		users.SchemaLocked = 1
+	} else {
+		users.SchemaLocked = 0
+	}
+}
+
+// set users transaction_persistent
+func (users *Users) SetTransactionPersistent(transaction_persistent uint64) {
+	if transaction_persistent >= 1 {
+		users.TransactionPersistent = 1
+	} else {
+		users.TransactionPersistent = 0
 	}
 }
 

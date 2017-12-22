@@ -182,35 +182,35 @@ func (qr *QueryRules) FindAllQr(db *sql.DB, limit int64, skip int64) ([]QueryRul
 }
 
 // add a new query rules.
-func (qr *QueryRules) AddOneQr(db *sql.DB) (int, error) {
+func (qr *QueryRules) AddOneQr(db *sql.DB) error {
 
 	Query := fmt.Sprintf(StmtAddOneQr, qr.Username)
 
 	_, err := db.Exec(Query)
 	if err != nil {
-		return 1, errors.Trace(err)
+		return errors.Trace(err)
 	}
 
 	LoadQueryRulesToRuntime(db)
 	SaveQueryRulesToDisk(db)
 
-	return 0, nil
+	return nil
 }
 
 //delete a query rules.
-func (qr *QueryRules) DeleteOneQr(db *sql.DB) (int, error) {
+func (qr *QueryRules) DeleteOneQr(db *sql.DB) error {
 
 	Query := fmt.Sprintf(StmtDeleteOneQr, qr.Rule_id)
 
 	_, err := db.Exec(Query)
 	if err != nil {
-		return 1, errors.Trace(err)
+		return errors.Trace(err)
 	}
 
 	LoadQueryRulesToRuntime(db)
 	SaveQueryRulesToDisk(db)
 
-	return 0, nil
+	return nil
 }
 
 func convertString(cs string) string {
@@ -224,7 +224,7 @@ func convertString(cs string) string {
 }
 
 //update a query rules.
-func (qr *QueryRules) UpdateOneQrInfo(db *sql.DB) (int, error) {
+func (qr *QueryRules) UpdateOneQrInfo(db *sql.DB) error {
 
 	var Query string
 	qr.Username = convertString(qr.Username)
@@ -270,11 +270,11 @@ func (qr *QueryRules) UpdateOneQrInfo(db *sql.DB) (int, error) {
 
 	_, err := db.Exec(Query)
 	if err != nil {
-		return 1, errors.Trace(err)
+		return errors.Trace(err)
 	}
 
 	LoadQueryRulesToRuntime(db)
 	SaveQueryRulesToDisk(db)
 
-	return 0, nil
+	return nil
 }

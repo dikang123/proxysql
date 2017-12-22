@@ -3,7 +3,8 @@ package proxysql
 import (
 	"database/sql"
 	"fmt"
-	"log"
+
+	"github.com/juju/errors"
 )
 
 type (
@@ -38,21 +39,21 @@ type (
 )
 
 const (
-	/*新建一个查询规则*/
+	/*new query rules*/
 	StmtAddOneQr = `
 	INSERT 
 	INTO 
 		mysql_query_rules(username) 
 	VALUES(%q)`
 
-	/*删除一个查询规则*/
+	/*delete a query rules*/
 	StmtDeleteOneQr = `
 	DELETE 
 	FROM 
 		mysql_query_rules 
 	WHERE rule_id = %d`
 
-	/*查询所有查询规则*/
+	/*query all query rules.*/
 	StmtFindAllQr = `
 	SELECT 
 		ifnull(rule_id,0) as rule_id,
@@ -85,7 +86,7 @@ const (
 	LIMIT %d 
 	OFFSET %d`
 
-	/*更新查询规则*/
+	/*update a query rules.*/
 	StmtUpdateOneQr = `
 	UPDATE 
 		mysql_query_rules 
@@ -124,23 +125,20 @@ const (
 		rule_id=%d`
 )
 
-//获取所有查询规则的内容
+// select * from mysql_query_rules limit n offset n
 func (qr *QueryRules) FindAllQr(db *sql.DB, limit int64, skip int64) ([]QueryRules, error) {
 
-	/*定义一个保存所有查询规则信息的变量*/
 	var AllQr []QueryRules
-
 	Query := fmt.Sprintf(StmtFindAllQr, limit, skip)
-	log.Print("admin->queryrules->FindAllQr->Query", Query)
 
+	// exec query statement
 	rows, err := db.Query(Query)
 	if err != nil {
-		log.Print("admin->queryrules->FindAllQr->db.Query Failed: ", Query)
-		return []QueryRules{}, err
+		return []QueryRules{}, errors.Trace(err)
 	}
 	defer rows.Close()
 
-	/*得出查询规则信息*/
+	// scan results.
 	for rows.Next() {
 
 		var tmpqr QueryRules
@@ -175,33 +173,23 @@ func (qr *QueryRules) FindAllQr(db *sql.DB, limit int64, skip int64) ([]QueryRul
 		)
 
 		if err != nil {
-			log.Print("admin->queryrules.go->FindAllQr->rows.Scan Failed: ", err)
 			continue
 		}
 
-		log.Printf("admin->queryrules.go->FindAllQr->tmpqr: ", tmpqr)
 		AllQr = append(AllQr, tmpqr)
 	}
 	return AllQr, nil
 }
 
-//添加一个新的查询规则
+// add a new query rules.
 func (qr *QueryRules) AddOneQr(db *sql.DB) (int, error) {
-	/*
-		创建查询规则默认接收一个用户名参数
-	*/
 
 	Query := fmt.Sprintf(StmtAddOneQr, qr.Username)
-	log.Print("admin->AddOneQr->Query", Query)
 
-	res, err := db.Exec(Query)
+	_, err := db.Exec(Query)
 	if err != nil {
-		log.Print("admin->queryrules.go->AddOneQr->db.Exec Failed:", err)
-		return 1, err
+		return 1, errors.Trace(err)
 	}
-
-	rowsAffected, err := res.RowsAffected()
-	log.Print("admin->queryrules.go->AddOneQr->rowsAffected: ", rowsAffected)
 
 	LoadQueryRulesToRuntime(db)
 	SaveQueryRulesToDisk(db)
@@ -209,22 +197,15 @@ func (qr *QueryRules) AddOneQr(db *sql.DB) (int, error) {
 	return 0, nil
 }
 
-//删除一个已有的查询规则
+//delete a query rules.
 func (qr *QueryRules) DeleteOneQr(db *sql.DB) (int, error) {
-	/*
-		根据rule_id删除一个查询规则
-	*/
+
 	Query := fmt.Sprintf(StmtDeleteOneQr, qr.Rule_id)
-	log.Print("admin->queryrules.go->DeleteOneQr->Query: ", Query)
 
-	res, err := db.Exec(Query)
+	_, err := db.Exec(Query)
 	if err != nil {
-		log.Print("admin->queryrules.go->DeleteOneQr->db.Exec Failed:", err)
-		return 1, err
+		return 1, errors.Trace(err)
 	}
-
-	rowsAffected, err := res.RowsAffected()
-	log.Print("admin->queryrules.go->DeleteOneQr->RowsAffected:", rowsAffected)
 
 	LoadQueryRulesToRuntime(db)
 	SaveQueryRulesToDisk(db)
@@ -242,7 +223,7 @@ func convertString(cs string) string {
 	return cstmp
 }
 
-//添加一个Patch方法更新查询规则信息
+//update a query rules.
 func (qr *QueryRules) UpdateOneQrInfo(db *sql.DB) (int, error) {
 
 	var Query string
@@ -256,7 +237,6 @@ func (qr *QueryRules) UpdateOneQrInfo(db *sql.DB) (int, error) {
 	qr.Error_msg = convertString(qr.Error_msg)
 
 	if qr.Cache_ttl == 0 {
-		log.Print("admin->queryrules.go->UpdateOneQr->qr.Cache=0")
 		Query = fmt.Sprintf(StmtUpdateOneQrNoCache,
 			qr.Active,
 			qr.Username,
@@ -271,7 +251,6 @@ func (qr *QueryRules) UpdateOneQrInfo(db *sql.DB) (int, error) {
 			qr.Active,
 			qr.Rule_id)
 	} else {
-		log.Print("admin->queryrules.go->UpdateOneQr->qr.Cache!=0")
 		Query = fmt.Sprintf(StmtUpdateOneQr,
 			qr.Active,
 			qr.Username,
@@ -288,16 +267,11 @@ func (qr *QueryRules) UpdateOneQrInfo(db *sql.DB) (int, error) {
 			qr.Rule_id)
 
 	}
-	log.Print("admin->queryrules.go->UpdateOneQr->Query: ", Query)
 
-	res, err := db.Exec(Query)
+	_, err := db.Exec(Query)
 	if err != nil {
-		log.Print("admin->queryrules.go->UpdateOneQrInfo->db.Exec Failed:", err)
-		return 1, err
+		return 1, errors.Trace(err)
 	}
-
-	rowsAffected, err := res.RowsAffected()
-	log.Print("admin->queryrules.go->UpdateOneQrInfo->RowsAffected", rowsAffected)
 
 	LoadQueryRulesToRuntime(db)
 	SaveQueryRulesToDisk(db)

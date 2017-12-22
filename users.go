@@ -28,8 +28,8 @@ const (
 	/*add a new users*/
 	StmtAddOneUser = `
 	INSERT INTO 
-		mysql_users(username,password,default_schema) 
-	VALUES(%q,%q,%q)`
+		mysql_users(username,password,default_hostgroup,default_schema)
+	VALUES(%q,%q,%d,%q)`
 
 	/*delete a user*/
 	StmtDeleteOneUser = `
@@ -87,7 +87,8 @@ const (
 		`
 )
 
-func (users *Users) FindAllUserInfo(db *sql.DB, limit int64, skip int64) ([]Users, error) {
+//list all users.
+func FindAllUserInfo(db *sql.DB, limit uint64, skip uint64) ([]Users, error) {
 	var alluser []Users
 
 	Query := fmt.Sprintf(StmtFindAllUserInfo, limit, skip)
@@ -126,10 +127,69 @@ func (users *Users) FindAllUserInfo(db *sql.DB, limit int64, skip int64) ([]User
 	return alluser, nil
 }
 
+// set username
+func (users *Users) SetUserName(username string) {
+	users.Username = username
+}
+
+// set password
+func (users *Users) SetUserPass(password string) {
+	users.Password = password
+}
+
+// set default_hostgroup
+func (users *Users) SetDefaultHostgroup(default_hostgroup uint64) {
+	users.DefaultHostgroup = default_hostgroup
+}
+
+// set default_schema
+func (users *Users) SetDefaultSchema(default_schema string) {
+	users.DefaultSchema = default_schema
+}
+
+// set fast_forward
+func (users *Users) SetFastForward(fast_forward uint64) {
+	if fast_forward >= 1 {
+		users.FastForward = 1
+	} else {
+		users.FastForward = 0
+	}
+}
+
+// set max_connections
+func (users *Users) SetMaxConnections(max_connections uint64) {
+	switch {
+	case max_connections >= 10000:
+		users.MaxConnections = 10000
+	case max_connections <= 1:
+		users.MaxConnections = 1
+	default:
+		users.MaxConnections = max_connections
+	}
+}
+
+// set backend
+func (users *Users) SetBackend(backend uint64) {
+	if backend >= 1 {
+		users.Backend = 1
+	} else {
+		users.Backend = 0
+	}
+}
+
+// set fronted
+func (users *Users) SetFrontend(frontend uint64) {
+	if frontend >= 1 {
+		users.Frontend = 1
+	} else {
+		users.Frontend = 0
+	}
+}
+
 //add a new user.
 func (users *Users) AddOneUser(db *sql.DB) error {
 
-	Query := fmt.Sprintf(StmtAddOneUser, users.Username, users.Password, users.DefaultSchema)
+	Query := fmt.Sprintf(StmtAddOneUser, users.Username, users.Password, users.DefaultHostgroup, users.DefaultSchema)
 
 	_, err := db.Exec(Query)
 	if err != nil {

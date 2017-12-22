@@ -113,7 +113,7 @@ const (
 func (vars *Variables) UpdateOneVariable(db *sql.DB) error {
 	st := fmt.Sprintf(StmtUpdateOneVariable, vars.Value, vars.VariablesName)
 
-	_, err := db.Query(st)
+	_, err := db.Exec(st)
 	if err != nil {
 		return errors.Trace(err)
 	}

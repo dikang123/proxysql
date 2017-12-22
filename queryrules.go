@@ -126,7 +126,7 @@ const (
 )
 
 // select * from mysql_query_rules limit n offset n
-func (qr *QueryRules) FindAllQr(db *sql.DB, limit int64, skip int64) ([]QueryRules, error) {
+func FindAllQr(db *sql.DB, limit int64, skip int64) ([]QueryRules, error) {
 
 	var AllQr []QueryRules
 	Query := fmt.Sprintf(StmtFindAllQr, limit, skip)

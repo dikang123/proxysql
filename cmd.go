@@ -1,10 +1,14 @@
 package proxysql
 
+// proxysql admin commands
+
 import (
 	"database/sql"
-	"log"
+
+	"github.com/juju/errors"
 )
 
+// define commands
 const (
 	CmdProxyReadOnly               = `PROXYSQL READONLY`
 	CmdProxyReadWrite              = `PROXYSQL READWRITE`
@@ -30,244 +34,200 @@ const (
 	CmdSaveAdminVariablesToDisk    = `SAVE ADMIN VARIABLES TO DISK`
 )
 
-func ProxyReadOnly(db *sql.DB) (int, error) {
-	log.Print("ProxyReadOnly: ", CmdProxyReadOnly)
-	_, err := db.Query(CmdProxyReadOnly)
+//set proxysql to readonly mode.
+func ProxyReadOnly(db *sql.DB) error {
+	_, err := db.Exec(CmdProxyReadOnly)
 	if err != nil {
-		log.Print("ProxyReadOnly:", err)
-		return 1, err
+		return errors.Trace(err)
 	}
-	log.Print("ProxyReadOnly: Success")
-	return 0, nil
+	return nil
 }
 
-func ProxyReadWrite(db *sql.DB) (int, error) {
-	log.Print("ProxyReadWrite: ", CmdProxyReadWrite)
-	_, err := db.Query(CmdProxyReadWrite)
+// set proxysql to readwrite mode.
+func ProxyReadWrite(db *sql.DB) error {
+	_, err := db.Exec(CmdProxyReadWrite)
 	if err != nil {
-		log.Print("ProxyReadWrite:", err)
-		return 1, err
+		return errors.Trace(err)
 	}
-	log.Print("ProxyReadWrite: Success")
-	return 0, nil
+	return nil
 }
 
-func ProxyStart(db *sql.DB) (int, error) {
-	log.Print("ProxyStart: ", CmdProxyStart)
-	_, err := db.Query(CmdProxyStart)
+// start proxysql child process.
+func ProxyStart(db *sql.DB) error {
+	_, err := db.Exec(CmdProxyStart)
 	if err != nil {
-		log.Print("ProxyStart:", err)
-		return 1, err
+		return errors.Trace(err)
 	}
-	log.Print("ProxyStart: Success")
-	return 0, nil
+	return nil
 }
 
-func ProxyRestart(db *sql.DB) (int, error) {
-	log.Print("ProxyRestart: ", CmdProxyRestart)
-	_, err := db.Query(CmdProxyRestart)
+// restart proxysql process.
+func ProxyRestart(db *sql.DB) error {
+	_, err := db.Exec(CmdProxyRestart)
 	if err != nil {
-		log.Print("ProxyRestart:", err)
-		return 1, err
+		return errors.Trace(err)
 	}
-	log.Print("ProxyRestart: Success")
-	return 0, nil
+	return nil
 }
 
-func ProxyStop(db *sql.DB) (int, error) {
-	log.Print("ProxyStop: ", CmdProxyStop)
-	_, err := db.Query(CmdProxyStop)
+// stop proxysql child process.
+func ProxyStop(db *sql.DB) error {
+	_, err := db.Exec(CmdProxyStop)
 	if err != nil {
-		log.Print("ProxyStop:", err)
-		return 1, err
+		return errors.Trace(err)
 	}
-	log.Print("ProxyStop: Success")
-	return 0, nil
+	return nil
 }
 
-func ProxyPause(db *sql.DB) (int, error) {
-	log.Print("ProxyPause: ", CmdProxyStop)
-	_, err := db.Query(CmdProxyPause)
+// pause proxysql
+func ProxyPause(db *sql.DB) error {
+	_, err := db.Exec(CmdProxyPause)
 	if err != nil {
-		log.Print("ProxyPause:", err)
-		return 1, err
+		return errors.Trace(err)
 	}
-	log.Print("ProxyPause: Success")
-	return 0, nil
+	return nil
 }
 
-func ProxyResume(db *sql.DB) (int, error) {
-	log.Print("ProxyResume: ", CmdProxyResume)
-	_, err := db.Query(CmdProxyResume)
+// resume proxysql
+func ProxyResume(db *sql.DB) error {
+	_, err := db.Exec(CmdProxyResume)
 	if err != nil {
-		log.Print("ProxyResume:", err)
-		return 1, err
+		return errors.Trace(err)
 	}
-	log.Print("ProxyResume: Success")
-	return 0, nil
+	return nil
 }
 
-func ProxyShutdown(db *sql.DB) (int, error) {
-	log.Print("ProxyShutdown: ", CmdProxyShutdown)
-	_, err := db.Query(CmdProxyShutdown)
+// shutdown proxysql
+func ProxyShutdown(db *sql.DB) error {
+	_, err := db.Exec(CmdProxyShutdown)
 	if err != nil {
-		log.Print("ProxyShutdown:", err)
-		return 1, err
+		return errors.Trace(err)
 	}
-	log.Print("ProxyShutdown: Success")
-	return 0, nil
+	return nil
 }
 
-func ProxyFlushLogs(db *sql.DB) (int, error) {
-	log.Print("ProxyFlushLogs: ", CmdProxyFlushLogs)
-	_, err := db.Query(CmdProxyFlushLogs)
+// flush proxysql logs to file
+func ProxyFlushLogs(db *sql.DB) error {
+	_, err := db.Exec(CmdProxyFlushLogs)
 	if err != nil {
-		log.Print("ProxyFlushLogs:", err)
-		return 1, err
+		return errors.Trace(err)
 	}
-	log.Print("ProxyFlushLogs: Success")
-	return 0, nil
+	return nil
 }
 
-func ProxyKill(db *sql.DB) (int, error) {
-	log.Print("ProxyKill: ", CmdProxyKill)
-	_, err := db.Query(CmdProxyKill)
+// kill child process.
+func ProxyKill(db *sql.DB) error {
+	_, err := db.Exec(CmdProxyKill)
 	if err != nil {
-		log.Print("ProxyKill:", err)
-		return 1, err
+		return errors.Trace(err)
 	}
-	log.Print("ProxyKill: Success")
-	return 0, nil
+	return nil
 }
 
-func LoadUserToRuntime(db *sql.DB) (int, error) {
-	log.Print("LoadUserToRuntime: ", CmdLoadUserToRuntime)
-	_, err := db.Query(CmdLoadUserToRuntime)
+//execute load mysql users to runtime.
+func LoadUserToRuntime(db *sql.DB) error {
+	_, err := db.Exec(CmdLoadUserToRuntime)
 	if err != nil {
-		log.Print("LoadUserToRuntime:", err)
-		return 1, err
+		return errors.Trace(err)
 	}
-	log.Print("LoadUserToRuntime: Success")
-	return 0, nil
+	return nil
 }
 
-func SaveUserToDisk(db *sql.DB) (int, error) {
-	log.Print("SaveUserToDisk: ", CmdSaveUserToDisk)
-	_, err := db.Query(CmdSaveUserToDisk)
+//execute save mysql users to disk.
+func SaveUserToDisk(db *sql.DB) error {
+	_, err := db.Exec(CmdSaveUserToDisk)
 	if err != nil {
-		log.Print("SaveUserToDisk", err)
-		return 1, err
+		return errors.Trace(err)
 	}
-	log.Print("SaveUserToDisk: Success")
-	return 0, nil
+	return nil
 }
 
-func LoadServerToRuntime(db *sql.DB) (int, error) {
-	log.Print("LoadServerToRuntime: ", CmdLoadServerToRuntime)
-	_, err := db.Query(CmdLoadServerToRuntime)
+// execute load mysql servers to runtime.
+func LoadServerToRuntime(db *sql.DB) error {
+	_, err := db.Exec(CmdLoadServerToRuntime)
 	if err != nil {
-		log.Print("LoadServerToRuntime:", err)
-		return 1, err
+		return errors.Trace(err)
 	}
-	log.Print("LoadServerToRuntime: Success")
-	return 0, nil
+	return nil
 }
 
-func SaveServerToDisk(db *sql.DB) (int, error) {
-	log.Print("SaveServerToDisk: ", CmdSaveServerToDisk)
-	_, err := db.Query(CmdSaveServerToDisk)
+// execute save mysql servers to disk.
+func SaveServerToDisk(db *sql.DB) error {
+	_, err := db.Exec(CmdSaveServerToDisk)
 	if err != nil {
-		log.Print("SaveServerToDisk:", err)
-		return 1, err
+		return errors.Trace(err)
 	}
-	log.Print("SaveServerToDisk: Success")
-	return 0, nil
+	return nil
 }
 
-func LoadQueryRulesToRuntime(db *sql.DB) (int, error) {
-	log.Print("LoadQueryRulesToRuntime: ", CmdLoadQueryRulesToRuntime)
-	_, err := db.Query(CmdLoadQueryRulesToRuntime)
+// execute load mysql query rules to runtime.
+func LoadQueryRulesToRuntime(db *sql.DB) error {
+	_, err := db.Exec(CmdLoadQueryRulesToRuntime)
 	if err != nil {
-		log.Print("LoadQueryRulesToRuntime:", err)
-		return 1, err
+		return errors.Trace(err)
 	}
-	log.Print("LoadQueryRulesToRuntime: Success")
-	return 0, nil
+	return nil
 }
 
-func SaveQueryRulesToDisk(db *sql.DB) (int, error) {
-	log.Print("SaveQueryRulesToDisk: ", CmdSaveQueryRulesToDisk)
-	_, err := db.Query(CmdSaveQueryRulesToDisk)
+// execute save mysql query rules to disk.
+func SaveQueryRulesToDisk(db *sql.DB) error {
+	_, err := db.Exec(CmdSaveQueryRulesToDisk)
 	if err != nil {
-		log.Print("SaveQueryRulesToDisk:", err)
-		return 1, err
+		return errors.Trace(err)
 	}
-	log.Print("SaveQueryRulesToDisk: Success")
-	return 0, nil
+	return nil
 }
 
-func LoadSchedulerToRuntime(db *sql.DB) (int, error) {
-	log.Print("LoadSchedulerToRuntime: ", CmdLoadSchedulerToRuntime)
-	_, err := db.Query(CmdLoadSchedulerToRuntime)
+// execute load schedulers to runtime.
+func LoadSchedulerToRuntime(db *sql.DB) error {
+	_, err := db.Exec(CmdLoadSchedulerToRuntime)
 	if err != nil {
-		log.Print("LoadSchedulerToRuntime:", err)
-		return 1, err
+		return errors.Trace(err)
 	}
-	log.Print("LoadSchedulerToRuntime: Success")
-	return 0, nil
+	return nil
 }
 
-func SaveSchedulerToDisk(db *sql.DB) (int, error) {
-	log.Print("SaveSchedulerToDisk: ", CmdSaveSchedulerToDisk)
-	_, err := db.Query(CmdSaveSchedulerToDisk)
+// execute save schedulers to disk.
+func SaveSchedulerToDisk(db *sql.DB) error {
+	_, err := db.Exec(CmdSaveSchedulerToDisk)
 	if err != nil {
-		log.Print("SaveSchedulerToDisk:", err)
-		return 1, err
+		return errors.Trace(err)
 	}
-	log.Print("SaveSchedulerToDisk: Success")
-	return 0, nil
+	return nil
 }
 
-func LoadMySQlVariablesToRuntime(db *sql.DB) (int, error) {
-	log.Print("LoadMySQLVariablesToRunTime: ", CmdLoadMySQLVariablesToRuntime)
-	_, err := db.Query(CmdLoadMySQLVariablesToRuntime)
+// execute  load mysql variables to runtime.
+func LoadMySQlVariablesToRuntime(db *sql.DB) error {
+	_, err := db.Exec(CmdLoadMySQLVariablesToRuntime)
 	if err != nil {
-		log.Print("LoadMySQlVariablesToRunTime: ", err)
-		return 1, err
+		return errors.Trace(err)
 	}
-	log.Print("LoadMySQlVariablesToRunTime: Success")
-	return 0, nil
+	return nil
 }
 
-func LoadAdminVariablesToRuntime(db *sql.DB) (int, error) {
-	log.Print("LoadAdminVariablesToRunTime: ", CmdLoadAdminVariablesToRuntime)
-	_, err := db.Query(CmdLoadAdminVariablesToRuntime)
+// execute load admin variables to runtime.
+func LoadAdminVariablesToRuntime(db *sql.DB) error {
+	_, err := db.Exec(CmdLoadAdminVariablesToRuntime)
 	if err != nil {
-		log.Print("LoadAdminVariablesToRunTime: ", err)
-		return 1, err
+		return errors.Trace(err)
 	}
-	log.Print("LoadAdminVariablesToRunTime: Success")
-	return 0, nil
+	return nil
 }
 
-func SaveMySQLVariablesToDisk(db *sql.DB) (int, error) {
-	log.Print("SaveMySQLVariablesToDisk: ", CmdSaveMySQLVariablesToDisk)
-	_, err := db.Query(CmdSaveMySQLVariablesToDisk)
+// execute save mysql variables to runtime.
+func SaveMySQLVariablesToDisk(db *sql.DB) error {
+	_, err := db.Exec(CmdSaveMySQLVariablesToDisk)
 	if err != nil {
-		log.Print("SaveMySQLVariablesToDisk:", err)
-		return 1, err
+		return errors.Trace(err)
 	}
-	log.Print("SaveMySQLVariablesToDisk: Success")
-	return 0, nil
+	return nil
 }
 
-func SaveAdminVariablesToDisk(db *sql.DB) (int, error) {
-	log.Print("SaveAdminVariablesToDisk: ", CmdSaveAdminVariablesToDisk)
-	_, err := db.Query(CmdSaveAdminVariablesToDisk)
+// execute save admin variables to disk.
+func SaveAdminVariablesToDisk(db *sql.DB) error {
+	_, err := db.Exec(CmdSaveAdminVariablesToDisk)
 	if err != nil {
-		log.Print("SaveAdminVariablesToDisk:", err)
-		return 1, err
+		return errors.Trace(err)
 	}
-	log.Print("SaveAdminVariablesToDisk: Success")
-	return 0, nil
+	return nil
 }

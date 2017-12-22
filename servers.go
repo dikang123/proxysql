@@ -82,7 +82,7 @@ const (
 )
 
 /*list all mysql_servers*/
-func (srvs *Servers) FindAllServerInfo(db *sql.DB, limit int64, skip int64) ([]Servers, error) {
+func FindAllServerInfo(db *sql.DB, limit int64, skip int64) ([]Servers, error) {
 
 	var allserver []Servers
 

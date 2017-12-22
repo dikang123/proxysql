@@ -4,8 +4,8 @@ import (
 	"database/sql"
 	"fmt"
 
+	"github.com/juju/errors"
 	//"fmt"
-	"log"
 )
 
 type (
@@ -110,29 +110,28 @@ const (
 	WHERE variable_name = %q`
 )
 
-func (vars *Variables) UpdateOneVariable(db *sql.DB) (int, error) {
+func (vars *Variables) UpdateOneVariable(db *sql.DB) error {
 	st := fmt.Sprintf(StmtUpdateOneVariable, vars.Value, vars.VariablesName)
-	log.Print("variables.go->UpdateOneVariable->st:", st)
+
 	_, err := db.Query(st)
 	if err != nil {
-		log.Print("UpdateOneVariable->db.Query: ", err)
-		return 1, err
+		return errors.Trace(err)
 	}
+
 	LoadMySQlVariablesToRuntime(db)
 	LoadAdminVariablesToRuntime(db)
 	SaveMySQLVariablesToDisk(db)
 	SaveAdminVariablesToDisk(db)
-	return 0, nil
+	return nil
 }
 
 func (vars *Variables) GetProxySqlVariables(db *sql.DB) ([]Variables, error) {
 	var tmparray []Variables
 	var tmp Variables
-	log.Print("Execution: ", StmtGlobalVariables)
+
 	rows, err := db.Query(StmtGlobalVariables)
 	if err != nil {
-		log.Print("StmtGlobalVariables Msg:", err)
-		return []Variables{}, err
+		return []Variables{}, errors.Trace(err)
 	}
 
 	for rows.Next() {
@@ -140,7 +139,6 @@ func (vars *Variables) GetProxySqlVariables(db *sql.DB) ([]Variables, error) {
 		err = rows.Scan(&tmp.VariablesName, &tmp.Value)
 		tmparray = append(tmparray, tmp)
 	}
-	log.Printf("GetProxySqlVariables tmp variables =%#v", tmparray)
-	return tmparray, nil
 
+	return tmparray, nil
 }

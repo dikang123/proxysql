@@ -127,24 +127,15 @@ func FindAllUserInfo(db *sql.DB, limit uint64, skip uint64) ([]Users, error) {
 	return alluser, nil
 }
 
-// set username
-func (users *Users) SetUserName(username string) {
-	users.Username = username
-}
+func NewUser(username string, password string, default_hostgroup uint64, default_schema string) (*Users, error) {
+	newuser := new(Users)
 
-// set password
-func (users *Users) SetUserPass(password string) {
-	users.Password = password
-}
+	newuser.Username = username
+	newuser.Password = password
+	newuser.DefaultHostgroup = default_hostgroup
+	newuser.DefaultSchema = default_schema
 
-// set default_hostgroup
-func (users *Users) SetDefaultHostgroup(default_hostgroup uint64) {
-	users.DefaultHostgroup = default_hostgroup
-}
-
-// set default_schema
-func (users *Users) SetDefaultSchema(default_schema string) {
-	users.DefaultSchema = default_schema
+	return newuser, nil
 }
 
 // set fast_forward
@@ -183,6 +174,14 @@ func (users *Users) SetFrontend(frontend uint64) {
 		users.Frontend = 1
 	} else {
 		users.Frontend = 0
+	}
+}
+
+func (users *Users) SetUserActive(active uint64) {
+	if active >= 1 {
+		users.Active = 1
+	} else {
+		users.Active = 0
 	}
 }
 

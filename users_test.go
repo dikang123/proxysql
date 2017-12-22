@@ -38,6 +38,7 @@ func TestAddOneUser(t *testing.T) {
 	newuser.SetDefaultSchema("dev")
 	newuser.SetUserName("devtest")
 	newuser.SetUserPass("devtest")
+	newuser.SetUserActive(1)
 
 	err = newuser.AddOneUser(db)
 	if err != nil {

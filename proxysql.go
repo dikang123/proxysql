@@ -5,6 +5,10 @@ package proxysql
 import (
 	"database/sql"
 	"fmt"
+
+	_ "github.com/go-sql-driver/mysql"
+
+	"github.com/juju/errors"
 )
 
 type (
@@ -22,6 +26,7 @@ type (
 )
 
 func NewConn(addr string, port int, user string, password string) (*Conn, error) {
+
 	ps := new(Conn)
 	ps.Addr = addr
 	ps.Port = port
@@ -30,6 +35,8 @@ func NewConn(addr string, port int, user string, password string) (*Conn, error)
 	ps.Database = "stats"
 	ps.Charset = "utf8"
 	ps.Collation = "utf8_general_ci"
+
+	ps.DBI = fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8?collation=utf8_general_ci", ps.User, ps.Password, ps.Addr, ps.Port, ps.Database)
 
 	return ps, nil
 }
@@ -43,16 +50,15 @@ func (ps *Conn) SetCollation(collation string) {
 }
 
 func (ps *Conn) OpenConn() (*sql.DB, error) {
-	ps.DBI = fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8?collation=utf8_general_ci", ps.User, ps.Password, ps.Addr, ps.Port, ps.Database)
 
 	db, err := sql.Open("mysql", ps.DBI)
 	if err != nil {
-		println(err)
+		return nil, errors.Trace(err)
 	}
 
 	err = db.Ping()
 	if err != nil {
-		println(err)
+		return nil, errors.Trace(err)
 	}
 	return db, nil
 }

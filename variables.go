@@ -118,7 +118,7 @@ func (vars *Variables) UpdateOneVariable(db *sql.DB) error {
 		return errors.Trace(err)
 	}
 
-	LoadMySQlVariablesToRuntime(db)
+	LoadMySQLVariablesToRuntime(db)
 	LoadAdminVariablesToRuntime(db)
 	SaveMySQLVariablesToDisk(db)
 	SaveAdminVariablesToDisk(db)

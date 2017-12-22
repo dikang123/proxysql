@@ -197,7 +197,7 @@ func SaveSchedulerToDisk(db *sql.DB) error {
 }
 
 // execute  load mysql variables to runtime.
-func LoadMySQlVariablesToRuntime(db *sql.DB) error {
+func LoadMySQLVariablesToRuntime(db *sql.DB) error {
 	_, err := db.Exec(CmdLoadMySQLVariablesToRuntime)
 	if err != nil {
 		return errors.Trace(err)

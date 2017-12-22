@@ -3,7 +3,8 @@ package proxysql
 import (
 	"database/sql"
 	"fmt"
-	"log"
+
+	"github.com/juju/errors"
 )
 
 type Servers struct {
@@ -21,7 +22,7 @@ type Servers struct {
 }
 
 const (
-	/*新建一个后端服务*/
+	/*add a new backends.*/
 	StmtAddOneServers = `
 	INSERT 
 	INTO 
@@ -32,7 +33,7 @@ const (
 		) 
 	VALUES(%d,%q,%d)`
 
-	/*删除一个后端服务*/
+	/*delete a backend*/
 	StmtDeleteOneServers = `
 	DELETE 
 	FROM 
@@ -42,7 +43,7 @@ const (
 	AND hostname=%q 
 	AND port=%d`
 
-	/*更新一个后端服务*/
+	/*update a backends*/
 	StmtUpdateOneServer = `
 	UPDATE 
 		mysql_servers 
@@ -60,7 +61,7 @@ const (
 	AND hostname=%q 
 	AND port=%d`
 
-	/*查询出所有后端服务信息*/
+	/*list all mysql_servers*/
 	StmtFindAllServer = `
 	SELECT 
 		ifnull(hostgroup_id,0) as hostgroup_id,
@@ -80,23 +81,19 @@ const (
 	OFFSET %d`
 )
 
-/*查询所有后端服务的信息*/
+/*list all mysql_servers*/
 func (srvs *Servers) FindAllServerInfo(db *sql.DB, limit int64, skip int64) ([]Servers, error) {
 
-	/*定义一个新的变量，保存所有后端服务信息*/
 	var allserver []Servers
 
 	Query := fmt.Sprintf(StmtFindAllServer, limit, skip)
-	log.Print("admin->servers.go->FindAllServerInfo->Query: ", Query)
 
 	rows, err := db.Query(Query)
 	if err != nil {
-		log.Print("admin->servers.go->FindAllServerInfo Failed:", err)
-		return []Servers{}, err
+		return []Servers{}, errors.Trace(err)
 	}
 	defer rows.Close()
 
-	/*得出查询结果*/
 	for rows.Next() {
 
 		var tmpserver Servers
@@ -116,70 +113,50 @@ func (srvs *Servers) FindAllServerInfo(db *sql.DB, limit int64, skip int64) ([]S
 		)
 
 		if err != nil {
-			log.Print("admin->servers.go->FindAllServerInfo-rows.Scan Failed:", err)
 			continue
 		}
 
-		log.Print("admin->servers.go->FindAllServerInfo-tmpserver: ", tmpserver)
 		allserver = append(allserver, tmpserver)
 	}
 
 	return allserver, nil
 }
 
-/*新加一个后端服务*/
-func (srvs *Servers) AddOneServers(db *sql.DB) (int, error) {
-	/*
-		后端数据库节点由三部分组成，分别是：hostgroup_id,hostname,port
-	*/
+/*add a new backend*/
+func (srvs *Servers) AddOneServers(db *sql.DB) error {
 
 	Query := fmt.Sprintf(StmtAddOneServers, srvs.HostGroupId, srvs.HostName, srvs.Port)
-	log.Print("admin->servers.go->AddOneServers->Query", Query)
 
-	res, err := db.Exec(Query)
+	_, err := db.Exec(Query)
 	if err != nil {
-		log.Print("admin->servers.go->AddOneServers->db.Exec Failed: ", err)
-		return 1, err
+		return errors.Trace(err)
 	}
-
-	rowsAffected, err := res.RowsAffected()
-	log.Print("admin->servers.go->AddOneServers->rowsAffected: ", rowsAffected)
 
 	LoadServerToRuntime(db)
 	SaveServerToDisk(db)
 
-	return 0, nil
+	return nil
 }
 
-/*删除一个后端服务*/
-func (srvs *Servers) DeleteOneServers(db *sql.DB) (int, error) {
-	/*
-		通过hostgroup_id,hostname,po三个参数删除一个后端节点
-	*/
+/*delete a backend*/
+func (srvs *Servers) DeleteOneServers(db *sql.DB) error {
 
 	Query := fmt.Sprintf(StmtDeleteOneServers, srvs.HostGroupId, srvs.HostName, srvs.Port)
-	log.Print("admin->servers.go->DeleteOneServers->Query ", Query)
 
-	res, err := db.Exec(Query)
+	_, err := db.Exec(Query)
 	if err != nil {
-		log.Print("admin->servers.go->DeleteOneServers->db.Exec Failed ", err)
-		return 1, err
+		return errors.Trace(err)
 	}
-
-	rowsAffected, err := res.RowsAffected()
-	log.Print("admin->servers.go->DeleteOneServers->RowsAffected", rowsAffected)
 
 	LoadServerToRuntime(db)
 	SaveServerToDisk(db)
 
-	return 0, nil
+	return nil
 }
 
 //更新后端服务全部信息
-func (srvs *Servers) UpdateOneServerInfo(db *sql.DB) (int, error) {
-	/*
-		后端数据节点信息更新使用PUT,参数为hostgroup_id,hostname,port
-	*/
+func (srvs *Servers) UpdateOneServerInfo(db *sql.DB) error {
+
 	Query := fmt.Sprintf(StmtUpdateOneServer,
 		srvs.Status,
 		srvs.Weight,
@@ -193,19 +170,13 @@ func (srvs *Servers) UpdateOneServerInfo(db *sql.DB) (int, error) {
 		srvs.HostName,
 		srvs.Port)
 
-	log.Print("admin->servers.go->UpdateOneServerInfo->Query", Query)
-
-	res, err := db.Exec(Query)
+	_, err := db.Exec(Query)
 	if err != nil {
-		log.Print("admin->servers.go->UpdateOneServersInfo->db.Exec Failed", err)
-		return 1, err
+		return errors.Trace(err)
 	}
-
-	rowsAffected, err := res.RowsAffected()
-	log.Print("admin->servers.go->UpdateOneServers->RowsAffected", rowsAffected)
 
 	LoadServerToRuntime(db)
 	SaveServerToDisk(db)
 
-	return 0, nil
+	return nil
 }

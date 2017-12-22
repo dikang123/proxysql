@@ -215,6 +215,11 @@ func NewQr(username string, destination_hostgroup uint64) (*QueryRules, error) {
 	return newqr, nil
 }
 
+// set qr rule_id
+func (qr *QueryRules) SetQrRuleid(rule_id uint64) {
+	qr.Rule_id = rule_id
+}
+
 // set qr active
 func (qr *QueryRules) SetQrActive(active uint64) {
 	switch active {

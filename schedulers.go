@@ -3,7 +3,8 @@ package proxysql
 import (
 	"database/sql"
 	"fmt"
-	"log"
+
+	"github.com/juju/errors"
 )
 
 type Schedulers struct {
@@ -20,21 +21,21 @@ type Schedulers struct {
 }
 
 const (
-	/*添加一个新的调度器*/
+	/*add a new scheduler*/
 	StmtAddOneScheduler = `
 	INSERT 
 	INTO 
 		scheduler(filename,interval_ms) 
 	VALUES(%q,%d)`
 
-	/*删除一个调度器*/
+	/*delete a scheduler*/
 	StmtDeleteOneScheduler = `
 	DELETE 
 	FROM 
 		scheduler 
 	WHERE id = %d`
 
-	/*更新一个调度器*/
+	/*update a scheduler*/
 	StmtUpdateOneScheduler = `
 	UPDATE 
 		scheduler 
@@ -51,7 +52,7 @@ const (
 	WHERE 
 		id = %d`
 
-	/*查询所有调度器*/
+	/*query all schedulers.*/
 	StmtFindAllScheduler = `
 	SELECT 
 		id,
@@ -70,27 +71,21 @@ const (
 	OFFSET %d`
 )
 
-//查找出所有定时器
+// query all schedulers
 func (schld *Schedulers) FindAllSchedulerInfo(db *sql.DB, limit int64, skip int64) ([]Schedulers, error) {
 
-	/*定义保存调度器的变量*/
 	var allscheduler []Schedulers
 
 	Query := fmt.Sprintf(StmtFindAllScheduler, limit, skip)
-	log.Print("admin->scheduler->FindAllSchedulerInfo->Query :", Query)
 
 	rows, err := db.Query(Query)
 	if err != nil {
-		log.Print("admin->scheduler.go->FindAllSchedulerInfo->err: ", err)
-		return []Schedulers{}, err
+		return []Schedulers{}, errors.Trace(err)
 	}
 	defer rows.Close()
 
-	/*得出结果*/
 	for rows.Next() {
-
 		var tmpscheduler Schedulers
-
 		err = rows.Scan(
 			&tmpscheduler.Id,
 			&tmpscheduler.Active,
@@ -105,31 +100,24 @@ func (schld *Schedulers) FindAllSchedulerInfo(db *sql.DB, limit int64, skip int6
 		)
 
 		if err != nil {
-			log.Print("admin->scheduler.go->FindAllSchedulerInfo db.Query Failed: ", err)
 			continue
 		}
 
-		log.Print("admin->scheduler.go->FindAllScheduler->tmpscheduler", tmpscheduler)
 		allscheduler = append(allscheduler, tmpscheduler)
 	}
 
 	return allscheduler, nil
 }
 
-//添加一个新调度器
+//add a new scheduler
 func (schld *Schedulers) AddOneScheduler(db *sql.DB) (int, error) {
 
 	Query := fmt.Sprintf(StmtAddOneScheduler, schld.FileName, schld.IntervalMs)
-	log.Print("admin-scheduler-AddOneScheduler->st: ", Query)
 
-	res, err := db.Exec(Query)
+	_, err := db.Exec(Query)
 	if err != nil {
-		log.Print("admin-schedulers.go->AddOneScheduler->db.Exec Failed:", err)
-		return 1, err
+		return 1, errors.Trace(err)
 	}
-
-	rowsAffected, err := res.RowsAffected()
-	log.Print("admin-scheduler.go->AddOneScheduler->rowsAffected:", rowsAffected)
 
 	LoadSchedulerToRuntime(db)
 	SaveSchedulerToDisk(db)
@@ -137,40 +125,30 @@ func (schld *Schedulers) AddOneScheduler(db *sql.DB) (int, error) {
 	return 0, nil
 }
 
-//删除一个调度器
+//delete a scheduler
 func (schld *Schedulers) DeleteOneScheduler(db *sql.DB) (int, error) {
 
 	Query := fmt.Sprintf(StmtDeleteOneScheduler, schld.Id)
-	log.Print("admin-scheduler->DeleteOneScheduler->st: ", Query)
 
-	res, err := db.Exec(Query)
+	_, err := db.Exec(Query)
 	if err != nil {
-		log.Print("admin-scheduler->DeleteOneScheduler->db.Exec Failed: ", err)
-		return 1, err
+		return 1, errors.Trace(err)
 	}
-
-	rowsAffected, err := res.RowsAffected()
-	log.Print("admin-scheduler->DeleteOneScheduler->RowsAffected: ", rowsAffected)
 
 	LoadSchedulerToRuntime(db)
 	SaveSchedulerToDisk(db)
 	return 0, nil
 }
 
-//更新一个调度器
+//update a scheduler.
 func (schld *Schedulers) UpdateOneSchedulerInfo(db *sql.DB) (int, error) {
 
 	Query := fmt.Sprintf(StmtUpdateOneScheduler, schld.Active, schld.IntervalMs, schld.FileName, schld.Arg1, schld.Arg2, schld.Arg3, schld.Arg4, schld.Arg5, schld.Comment, schld.Id)
-	log.Print("admin-scheduler->UpdateOneScheduler->st: ", Query)
 
-	res, err := db.Exec(Query)
+	_, err := db.Exec(Query)
 	if err != nil {
-		log.Print("admin-scheduler->UpdateOneSchedulerInfo->db.Exec err:", err)
-		return 1, err
+		return 1, errors.Trace(err)
 	}
-
-	rowsAffected, err := res.RowsAffected()
-	log.Print("admin-scheduler.go-UpdateOneScheduler->rowsAffected", rowsAffected)
 
 	LoadSchedulerToRuntime(db)
 	SaveSchedulerToDisk(db)

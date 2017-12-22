@@ -45,3 +45,26 @@ func TestAddOneUser(t *testing.T) {
 	}
 
 }
+
+func TestDeleteOneUser(t *testing.T) {
+	conn, err := NewConn("172.18.10.111", 13306, "admin", "admin")
+	if err != nil {
+		t.Error(conn, err)
+	}
+
+	db, err := conn.OpenConn()
+	if err != nil {
+		t.Error(db, err)
+	}
+
+	newuser := new(Users)
+	newuser.SetUserName("devtest")
+	newuser.SetBackend(1)
+	newuser.SetFrontend(1)
+
+	err = newuser.DeleteOneUser(db)
+	if err != nil {
+		t.Error(err)
+	}
+
+}

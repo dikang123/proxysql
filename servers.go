@@ -29,9 +29,10 @@ const (
 		mysql_servers(
 			hostgroup_id,
 			hostname,
-			port
+			port,
+			max_connections
 		) 
-	VALUES(%d,%q,%d)`
+	VALUES(%d,%q,%d,%d)`
 
 	/*delete a backend*/
 	StmtDeleteOneServers = `
@@ -208,7 +209,7 @@ func (srvs *Servers) SetServersComment(comment string) {
 /*add a new backend*/
 func (srvs *Servers) AddOneServers(db *sql.DB) error {
 
-	Query := fmt.Sprintf(StmtAddOneServers, srvs.HostGroupId, srvs.HostName, srvs.Port)
+	Query := fmt.Sprintf(StmtAddOneServers, srvs.HostGroupId, srvs.HostName, srvs.Port, srvs.MaxConnections)
 
 	_, err := db.Exec(Query)
 	if err != nil {

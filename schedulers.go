@@ -72,7 +72,7 @@ const (
 )
 
 // query all schedulers
-func (schld *Schedulers) FindAllSchedulerInfo(db *sql.DB, limit int64, skip int64) ([]Schedulers, error) {
+func FindAllSchedulerInfo(db *sql.DB, limit int64, skip int64) ([]Schedulers, error) {
 
 	var allscheduler []Schedulers
 
@@ -107,6 +107,67 @@ func (schld *Schedulers) FindAllSchedulerInfo(db *sql.DB, limit int64, skip int6
 	}
 
 	return allscheduler, nil
+}
+
+//new NewSch
+func NewSch(filename string, interval_ms int64) (*Schedulers, error) {
+
+	sched := new(Schedulers)
+
+	sched.FileName = filename
+	sched.IntervalMs = interval_ms
+
+	sched.Active = 0
+	sched.Arg1 = "NULL"
+	sched.Arg2 = "NULL"
+	sched.Arg3 = "NULL"
+	sched.Arg4 = "NULL"
+	sched.Arg5 = "NULL"
+
+	return sched, nil
+
+}
+
+// Set Scheduler Active status
+func (sched *Schedulers) SetSchedulerActive(active int64) {
+	if active >= 1 {
+		sched.Active = 1
+	} else {
+		sched.Active = 0
+	}
+}
+
+// Set Scheduler all Args
+func (sched *Schedulers) SetSchedulerArg1(arg1 string) {
+	sched.Arg1 = arg1
+}
+
+func (sched *Schedulers) SetSchedulerArg2(arg2 string) {
+	sched.Arg2 = arg2
+}
+
+func (sched *Schedulers) SetSchedulerArg3(arg3 string) {
+	sched.Arg3 = arg3
+}
+
+func (sched *Schedulers) SetSchedulerArg4(arg4 string) {
+	sched.Arg4 = arg4
+}
+
+func (sched *Schedulers) SetSchedulerArg5(arg5 string) {
+	sched.Arg5 = arg5
+}
+
+// Set scheduler interval_ms
+func (sched *Schedulers) SetSchedulerIntervalMs(interval_ms int64) {
+	switch {
+	case interval_ms < 100:
+		sched.IntervalMs = 100
+	case interval_ms > 100000000:
+		sched.IntervalMs = 100000000
+	default:
+		sched.IntervalMs = interval_ms
+	}
 }
 
 //add a new scheduler

@@ -55,7 +55,7 @@ func (ps *Conn) OpenConn() (*sql.DB, error) {
 	if err != nil {
 		return nil, errors.Trace(err)
 	}
-	defer db.Close()
+	//defer db.Close()
 
 	err = db.Ping()
 	if err != nil {

@@ -15,7 +15,7 @@ type (
 	// connect proxysql use admin user.
 	Conn struct {
 		Addr      string
-		Port      int
+		Port      uint64
 		User      string
 		Password  string
 		Database  string
@@ -25,7 +25,7 @@ type (
 	}
 )
 
-func NewConn(addr string, port int, user string, password string) (*Conn, error) {
+func NewConn(addr string, port uint64, user string, password string) (*Conn, error) {
 
 	ps := new(Conn)
 	ps.Addr = addr

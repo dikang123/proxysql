@@ -25,8 +25,8 @@ const (
 	StmtAddOneScheduler = `
 	INSERT 
 	INTO 
-		scheduler(filename,interval_ms) 
-	VALUES(%q,%d)`
+		scheduler(filename,interval_ms,active,arg1,arg2,arg3,arg4,arg5) 
+	VALUES(%q,%d,%d,%q,%q,%q,%q,%q)`
 
 	/*delete a scheduler*/
 	StmtDeleteOneScheduler = `
@@ -173,7 +173,7 @@ func (sched *Schedulers) SetSchedulerIntervalMs(interval_ms int64) {
 //add a new scheduler
 func (schld *Schedulers) AddOneScheduler(db *sql.DB) error {
 
-	Query := fmt.Sprintf(StmtAddOneScheduler, schld.FileName, schld.IntervalMs)
+	Query := fmt.Sprintf(StmtAddOneScheduler, schld.FileName, schld.IntervalMs, schld.Active, schld.Arg1, schld.Arg2, schld.Arg3, schld.Arg4, schld.Arg5)
 
 	_, err := db.Exec(Query)
 	if err != nil {

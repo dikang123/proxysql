@@ -266,9 +266,14 @@ func (srvs *Servers) UpdateOneServerInfo(db *sql.DB) error {
 		srvs.HostName,
 		srvs.Port)
 
-	_, err := db.Exec(Query)
+	result, err := db.Exec(Query)
 	if err != nil {
 		return errors.Trace(err)
+	}
+
+	rowsAffected, _ := result.RowsAffected()
+	if rowsAffected == 0 {
+		return errors.NotFoundf(strconv.Itoa(int(srvs.HostGroupId)) + "-" + srvs.HostName + "-" + strconv.Itoa(int(srvs.Port)))
 	}
 
 	LoadServerToRuntime(db)

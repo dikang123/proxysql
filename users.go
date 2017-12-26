@@ -278,9 +278,14 @@ func (users *Users) UpdateOneUserInfo(db *sql.DB) error {
 		users.Backend,
 		users.Frontend)
 
-	_, err := db.Exec(Query)
+	result, err := db.Exec(Query)
 	if err != nil {
 		return errors.Trace(err)
+	}
+
+	rowsAffected, _ := result.RowsAffected()
+	if rowsAffected == 0 {
+		return errors.NotFoundf(users.Username + " Not Found")
 	}
 
 	LoadUserToRuntime(db)

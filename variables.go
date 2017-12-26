@@ -28,9 +28,14 @@ const (
 func UpdateOneConfig(db *sql.DB, var_name string, var_value string) error {
 	st := fmt.Sprintf(StmtUpdateOneVariable, var_value, var_name)
 
-	_, err := db.Exec(st)
+	result, err := db.Exec(st)
 	if err != nil {
 		return errors.Trace(err)
+	}
+
+	rowsAffected, _ := result.RowsAffected()
+	if rowsAffected == 0 {
+		return errors.NotImplementedf(var_name)
 	}
 
 	LoadMySQLVariablesToRuntime(db)

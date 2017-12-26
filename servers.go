@@ -234,9 +234,14 @@ func (srvs *Servers) DeleteOneServers(db *sql.DB) error {
 
 	Query := fmt.Sprintf(StmtDeleteOneServers, srvs.HostGroupId, srvs.HostName, srvs.Port)
 
-	_, err := db.Exec(Query)
+	result, err := db.Exec(Query)
 	if err != nil {
 		return errors.Trace(err)
+	}
+
+	rowsAffected, _ := result.RowsAffected()
+	if rowsAffected == 0 {
+		return errors.NotFoundf(strconv.Itoa(int(srvs.HostGroupId)) + "-" + srvs.HostName + "-" + strconv.Itoa(int(srvs.Port)))
 	}
 
 	LoadServerToRuntime(db)

@@ -3,6 +3,7 @@ package proxysql
 import (
 	"database/sql"
 	"fmt"
+	"strconv"
 
 	"github.com/juju/errors"
 )
@@ -191,9 +192,14 @@ func (schld *Schedulers) DeleteOneScheduler(db *sql.DB) error {
 
 	Query := fmt.Sprintf(StmtDeleteOneScheduler, schld.Id)
 
-	_, err := db.Exec(Query)
+	result, err := db.Exec(Query)
 	if err != nil {
 		return errors.Trace(err)
+	}
+
+	rowsAffected, _ := result.RowsAffected()
+	if rowsAffected == 0 {
+		return errors.NotFoundf(strconv.Itoa(int(schld.Id)))
 	}
 
 	LoadSchedulerToRuntime(db)
@@ -206,9 +212,14 @@ func (schld *Schedulers) UpdateOneSchedulerInfo(db *sql.DB) error {
 
 	Query := fmt.Sprintf(StmtUpdateOneScheduler, schld.Active, schld.IntervalMs, schld.FileName, schld.Arg1, schld.Arg2, schld.Arg3, schld.Arg4, schld.Arg5, schld.Comment, schld.Id)
 
-	_, err := db.Exec(Query)
+	result, err := db.Exec(Query)
 	if err != nil {
 		return errors.Trace(err)
+	}
+
+	rowsAffected, _ := result.RowsAffected()
+	if rowsAffected == 0 {
+		return errors.NotFoundf(strconv.Itoa(int(schld.Id)))
 	}
 
 	LoadSchedulerToRuntime(db)

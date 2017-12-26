@@ -116,7 +116,14 @@ func NewSch(filename string, interval_ms int64) (*Schedulers, error) {
 	sched := new(Schedulers)
 
 	sched.FileName = filename
-	sched.IntervalMs = interval_ms
+	switch {
+	case interval_ms < 100:
+		sched.IntervalMs = 100
+	case interval_ms > 100000000:
+		sched.IntervalMs = 100000000
+	default:
+		sched.IntervalMs = interval_ms
+	}
 
 	sched.Active = 0
 	sched.Arg1 = "NULL"

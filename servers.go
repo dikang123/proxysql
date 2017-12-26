@@ -3,7 +3,9 @@ package proxysql
 import (
 	"database/sql"
 	"fmt"
+	"strconv"
 
+	"github.com/go-sql-driver/mysql"
 	"github.com/juju/errors"
 )
 
@@ -213,7 +215,12 @@ func (srvs *Servers) AddOneServers(db *sql.DB) error {
 
 	_, err := db.Exec(Query)
 	if err != nil {
-		return errors.Trace(err)
+		switch {
+		case err.(*mysql.MySQLError).Number == 1045:
+			return errors.NewAlreadyExists(err, strconv.Itoa(int(srvs.HostGroupId))+"-"+srvs.HostName+"-"+strconv.Itoa(int(srvs.Port)))
+		default:
+			return errors.Trace(err) //add server failed
+		}
 	}
 
 	LoadServerToRuntime(db)

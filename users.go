@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 
+	"github.com/go-sql-driver/mysql"
 	"github.com/juju/errors"
 )
 
@@ -229,7 +230,12 @@ func (users *Users) AddOneUser(db *sql.DB) error {
 
 	_, err := db.Exec(Query)
 	if err != nil {
-		return errors.Trace(err) //add user failed
+		switch {
+		case err.(*mysql.MySQLError).Number == 1045:
+			return errors.NewAlreadyExists(err, users.Username)
+		default:
+			return errors.Trace(err) //add user failed
+		}
 	}
 
 	LoadUserToRuntime(db)
@@ -250,7 +256,7 @@ func (users *Users) DeleteOneUser(db *sql.DB) error {
 
 	rowsAffected, _ := result.RowsAffected()
 	if rowsAffected == 0 {
-		return errors.NotFoundf(users.Username + " Not Found")
+		return errors.NotFoundf(users.Username)
 	}
 
 	LoadUserToRuntime(db)
@@ -285,7 +291,7 @@ func (users *Users) UpdateOneUserInfo(db *sql.DB) error {
 
 	rowsAffected, _ := result.RowsAffected()
 	if rowsAffected == 0 {
-		return errors.NotFoundf(users.Username + " Not Found")
+		return errors.NotFoundf(users.Username)
 	}
 
 	LoadUserToRuntime(db)

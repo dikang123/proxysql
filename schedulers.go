@@ -136,6 +136,11 @@ func NewSch(filename string, interval_ms int64) (*Schedulers, error) {
 
 }
 
+// Set Scheduler id
+func (sched *Schedulers) SetSchedulerId(id int64) {
+	sched.Id = id
+}
+
 // Set Scheduler Active status
 func (sched *Schedulers) SetSchedulerActive(active int64) {
 	if active >= 1 {

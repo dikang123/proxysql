@@ -73,7 +73,7 @@ const (
 )
 
 // query all schedulers
-func FindAllSchedulerInfo(db *sql.DB, limit int64, skip int64) ([]Schedulers, error) {
+func FindAllSchedulerInfo(db *sql.DB, limit uint64, skip uint64) ([]Schedulers, error) {
 
 	var allscheduler []Schedulers
 

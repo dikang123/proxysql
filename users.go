@@ -243,9 +243,14 @@ func (users *Users) DeleteOneUser(db *sql.DB) error {
 
 	Query := fmt.Sprintf(StmtDeleteOneUser, users.Username, users.Backend, users.Frontend)
 
-	_, err := db.Exec(Query)
+	result, err := db.Exec(Query)
 	if err != nil {
 		return errors.Trace(err) //delte failed
+	}
+
+	rowsAffected, _ := result.RowsAffected()
+	if rowsAffected == 0 {
+		return errors.NotFoundf(users.Username + " Not Found")
 	}
 
 	LoadUserToRuntime(db)

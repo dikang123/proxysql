@@ -3,6 +3,7 @@ package proxysql
 import (
 	"database/sql"
 	"fmt"
+	"strconv"
 
 	"github.com/juju/errors"
 )
@@ -395,7 +396,7 @@ func (qr *QueryRules) AddOneQr(db *sql.DB) error {
 
 	_, err := db.Exec(Query)
 	if err != nil {
-		return errors.Trace(err)
+		return errors.Trace(err) //add user failed
 	}
 
 	LoadQueryRulesToRuntime(db)
@@ -409,9 +410,14 @@ func (qr *QueryRules) DeleteOneQr(db *sql.DB) error {
 
 	Query := fmt.Sprintf(StmtDeleteOneQr, qr.Rule_id)
 
-	_, err := db.Exec(Query)
+	result, err := db.Exec(Query)
 	if err != nil {
 		return errors.Trace(err)
+	}
+
+	rowsAffected, _ := result.RowsAffected()
+	if rowsAffected == 0 {
+		return errors.NotFoundf(strconv.Itoa(int(qr.Rule_id)))
 	}
 
 	LoadQueryRulesToRuntime(db)
@@ -475,9 +481,14 @@ func (qr *QueryRules) UpdateOneQrInfo(db *sql.DB) error {
 
 	}
 
-	_, err := db.Exec(Query)
+	result, err := db.Exec(Query)
 	if err != nil {
 		return errors.Trace(err)
+	}
+
+	rowsAffected, _ := result.RowsAffected()
+	if rowsAffected == 0 {
+		return errors.NotFoundf(strconv.Itoa(int(qr.Rule_id)))
 	}
 
 	LoadQueryRulesToRuntime(db)

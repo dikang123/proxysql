@@ -56,5 +56,6 @@ If you like the project and want to buy me a cola, you can through:
 
 |PayPal|微信|
 |------|---|
-|[![](https://www.paypalobjects.com/webstatic/paypalme/images/pp_logo_small.png)](https://paypal.me/siddontang)|[![](https://github.com/siddontang/blog/blob/master/donate/weixin.png)]()|
+|[![](https://www.paypalobjects.com/webstatic/paypalme/images/pp_logo_small.png)](https://www.paypal.me/taylor840326)|[![](https://github.com/taylor840326/blog/blob/master/imgs/wechat.png)]()|
+
 

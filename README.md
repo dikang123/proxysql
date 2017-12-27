@@ -5,9 +5,13 @@
 
 ### 1.introduce
 
+-----
+
 A ProxySQL Go library.
 
 ### 2. Requirements
+
+-----
 
 1. Go 1.7 or higher.
 1. ProxySQL 1.3.x
@@ -21,6 +25,8 @@ Simple install the package to your $GOPATH with the go tool from shell:
 Make sure git command is installed on your OS.
 
 ### 4. Usage
+
+-----
 
 example:
 
@@ -40,3 +46,16 @@ list all mysql_users .
 	if err != nil {
 		t.Error(allusers, err)
 	}
+
+
+### Donate
+
+-----
+
+If you like the project and want to buy me a cola, you can through:
+
+|PayPal|微信|
+|------|---|
+|[![](https://www.paypalobjects.com/webstatic/paypalme/images/pp_logo_small.png)](https://paypal.me/siddontang)|[![]
+(https://github.com/siddontang/blog/blob/master/donate/weixin.png)|
+

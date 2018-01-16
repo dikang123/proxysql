@@ -10,7 +10,7 @@ func TestLoadQueryRulesToRuntime(t *testing.T) {
 
 	conn.SetCharset("utf8")
 	conn.SetCollation("utf8_general_ci")
-	conn.MakeDBI
+	conn.MakeDBI()
 
 	db, err := conn.OpenConn()
 	if err != nil {
@@ -31,7 +31,7 @@ func TestSaveQueryRulesToDisk(t *testing.T) {
 
 	conn.SetCharset("utf8")
 	conn.SetCollation("utf8_general_ci")
-	conn.MakeDBI
+	conn.MakeDBI()
 
 	db, err := conn.OpenConn()
 	if err != nil {
@@ -52,7 +52,7 @@ func TestLoadUserToRuntime(t *testing.T) {
 
 	conn.SetCharset("utf8")
 	conn.SetCollation("utf8_general_ci")
-	conn.MakeDBI
+	conn.MakeDBI()
 
 	db, err := conn.OpenConn()
 	if err != nil {
@@ -73,7 +73,7 @@ func TestSaveUserToDisk(t *testing.T) {
 
 	conn.SetCharset("utf8")
 	conn.SetCollation("utf8_general_ci")
-	conn.MakeDBI
+	conn.MakeDBI()
 
 	db, err := conn.OpenConn()
 	if err != nil {
@@ -94,7 +94,7 @@ func TestLoadServerToRunTime(t *testing.T) {
 
 	conn.SetCharset("utf8")
 	conn.SetCollation("utf8_general_ci")
-	conn.MakeDBI
+	conn.MakeDBI()
 
 	db, err := conn.OpenConn()
 	if err != nil {
@@ -115,7 +115,7 @@ func TestSaveServerToDisk(t *testing.T) {
 
 	conn.SetCharset("utf8")
 	conn.SetCollation("utf8_general_ci")
-	conn.MakeDBI
+	conn.MakeDBI()
 
 	db, err := conn.OpenConn()
 	if err != nil {
@@ -136,7 +136,7 @@ func TestLoadSchedulerToRuntime(t *testing.T) {
 
 	conn.SetCharset("utf8")
 	conn.SetCollation("utf8_general_ci")
-	conn.MakeDBI
+	conn.MakeDBI()
 
 	db, err := conn.OpenConn()
 	if err != nil {
@@ -154,10 +154,10 @@ func TestSaveSchedulerToDisk(t *testing.T) {
 	if err != nil {
 		t.Error(conn, err)
 	}
-	
+
 	conn.SetCharset("utf8")
 	conn.SetCollation("utf8_general_ci")
-	conn.MakeDBI
+	conn.MakeDBI()
 
 	db, err := conn.OpenConn()
 	if err != nil {
@@ -178,7 +178,7 @@ func TestLoadMySQLVariablesToRunTime(t *testing.T) {
 
 	conn.SetCharset("utf8")
 	conn.SetCollation("utf8_general_ci")
-	conn.MakeDBI
+	conn.MakeDBI()
 
 	db, err := conn.OpenConn()
 	if err != nil {
@@ -199,7 +199,7 @@ func TestSaveMySQLVariablesToDisk(t *testing.T) {
 
 	conn.SetCharset("utf8")
 	conn.SetCollation("utf8_general_ci")
-	conn.MakeDBI
+	conn.MakeDBI()
 
 	db, err := conn.OpenConn()
 	if err != nil {
@@ -220,7 +220,7 @@ func TestLoadAdminVariablesToRuntime(t *testing.T) {
 
 	conn.SetCharset("utf8")
 	conn.SetCollation("utf8_general_ci")
-	conn.MakeDBI
+	conn.MakeDBI()
 
 	db, err := conn.OpenConn()
 	if err != nil {
@@ -241,7 +241,7 @@ func TestSaveAdminVariablesToDisk(t *testing.T) {
 
 	conn.SetCharset("utf8")
 	conn.SetCollation("utf8_general_ci")
-	conn.MakeDBI
+	conn.MakeDBI()
 
 	db, err := conn.OpenConn()
 	if err != nil {

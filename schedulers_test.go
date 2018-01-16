@@ -12,7 +12,7 @@ func TestFindAllSchedulers(t *testing.T) {
 
 	conn.SetCharset("utf8")
 	conn.SetCollation("utf8_general_ci")
-	conn.MakeDBI
+	conn.MakeDBI()
 
 	db, err := conn.OpenConn()
 	if err != nil {
@@ -34,7 +34,7 @@ func TestAddOneSchedulers(t *testing.T) {
 
 	conn.SetCharset("utf8")
 	conn.SetCollation("utf8_general_ci")
-	conn.MakeDBI
+	conn.MakeDBI()
 
 	db, err := conn.OpenConn()
 	if err != nil {
@@ -60,7 +60,7 @@ func TestUpdateOneSchedulers(t *testing.T) {
 
 	conn.SetCharset("utf8")
 	conn.SetCollation("utf8_general_ci")
-	conn.MakeDBI
+	conn.MakeDBI()
 
 	db, err := conn.OpenConn()
 	if err != nil {
@@ -90,7 +90,7 @@ func TestDeleteOneSchedulers(t *testing.T) {
 
 	conn.SetCharset("utf8")
 	conn.SetCollation("utf8_general_ci")
-	conn.MakeDBI
+	conn.MakeDBI()
 
 	db, err := conn.OpenConn()
 	if err != nil {

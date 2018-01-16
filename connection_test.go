@@ -8,6 +8,10 @@ func TestNewConn(t *testing.T) {
 		t.Error(conn, err)
 	}
 
+	conn.SetCharset("utf8")
+	conn.SetCollation("utf8_general_ci")
+	conn.MakeDBI
+
 	db, err := conn.OpenConn()
 	if err != nil {
 		t.Error(db, err)

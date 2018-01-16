@@ -12,6 +12,10 @@ func main() {
 		fmt.Println(err)
 	}
 
+	conn.SetCharset("utf8")
+	conn.SetCollation("utf8_general_ci")
+	conn.MakeDBI()
+
 	db, err := conn.OpenConn()
 	if err != nil {
 		fmt.Println(err)

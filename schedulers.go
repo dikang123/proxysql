@@ -206,6 +206,12 @@ func (schld *Schedulers) AddOneScheduler(db *sql.DB) error {
 	Query = fmt.Sprintf(StmtFindLastInsertId, schld.FileName, schld.IntervalMs)
 	rows := db.QueryRow(Query)
 
+	/*
+		FIX:
+		It will always return 0 when you use sql.Result.LastInsertId() function to get last inserted row id.
+		And go-sql-driver/mysql not support transaction.
+		So,I Query a max(id) after insert a row.
+	*/
 	err = rows.Scan(&schld.Id)
 	if err != nil {
 		return errors.Trace(err)

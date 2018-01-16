@@ -410,6 +410,12 @@ func (qr *QueryRules) AddOneQr(db *sql.DB) error {
 	Query = fmt.Sprintf(StmtFindLastRuleId, qr.Username)
 	rows := db.QueryRow(Query)
 
+	/*
+		FIX:
+		It will always return 0 when you use sql.Result.LastInsertId() function to get last inserted row id.
+		And go-sql-driver/mysql not support transaction.
+		So,I Query a max(id) after insert a row.
+	*/
 	err = rows.Scan(&qr.Rule_id)
 	if err != nil {
 		return errors.Trace(err)

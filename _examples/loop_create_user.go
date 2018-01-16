@@ -12,12 +12,16 @@ func main() {
 		fmt.Println(err)
 	}
 
+	conn.SetCharset("utf8")
+	conn.SetCollation("utf8_general_ci")
+	conn.MakeDBI()
+
 	db, err := conn.OpenConn()
 	if err != nil {
 		fmt.Println(err)
 	}
 
-	for i := 0; i < 1000; i++ {
+	for i := 0; i < 10000; i++ {
 		newuser, err := proxysql.NewUser("devtest"+strconv.Itoa(i), "devtest", 0, "dev")
 		if err != nil {
 			fmt.Println(err)

@@ -36,8 +36,6 @@ func NewConn(addr string, port uint64, user string, password string) (*Conn, err
 	ps.Charset = "utf8"
 	ps.Collation = "utf8_general_ci"
 
-	ps.DBI = fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8?collation=utf8_general_ci", ps.User, ps.Password, ps.Addr, ps.Port, ps.Database)
-
 	return ps, nil
 }
 
@@ -47,6 +45,10 @@ func (ps *Conn) SetCharset(charset string) {
 
 func (ps *Conn) SetCollation(collation string) {
 	ps.Collation = collation
+}
+
+func (ps *Conn) MakeDBI() {
+	ps.DBI = fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=%s?collation=%s", ps.User, ps.Password, ps.Addr, ps.Port, ps.Database, ps.Charset, ps.Collation)
 }
 
 func (ps *Conn) OpenConn() (*sql.DB, error) {

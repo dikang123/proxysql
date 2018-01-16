@@ -36,6 +36,10 @@ list all mysql_users .
 	if err != nil {
 		t.Error(conn, err)
 	}
+	
+	conn.SetCharacter("utf8")
+	conn.SetCollation("utf8_general_ci")
+	conn.MakeDBI()
 
 	db, err := conn.OpenConn()
 	if err != nil {
@@ -54,8 +58,8 @@ list all mysql_users .
 
 If you like the project and want to buy me a cola, you can through:
 
-|PayPal|微信|
-|------|---|
-|[![](https://www.paypalobjects.com/webstatic/paypalme/images/pp_logo_small.png)](https://www.paypal.me/taylor840326)|![](https://github.com/taylor840326/blog/raw/master/imgs/weixin.png)|
+| PayPal                                                                                                               | 微信                                                                 |
+| -------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------- |
+| [![](https://www.paypalobjects.com/webstatic/paypalme/images/pp_logo_small.png)](https://www.paypal.me/taylor840326) | ![](https://github.com/taylor840326/blog/raw/master/imgs/weixin.png) |
 
 

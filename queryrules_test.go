@@ -10,6 +10,10 @@ func TestFindAllQr(t *testing.T) {
 		t.Error(conn, err)
 	}
 
+	conn.SetCharset("utf8")
+	conn.SetCollation("utf8_general_ci")
+	conn.MakeDBI
+
 	db, err := conn.OpenConn()
 	if err != nil {
 		t.Error(db, err)
@@ -26,6 +30,10 @@ func TestAddOneQr(t *testing.T) {
 	if err != nil {
 		t.Error(conn, err)
 	}
+
+	conn.SetCharset("utf8")
+	conn.SetCollation("utf8_general_ci")
+	conn.MakeDBI
 
 	db, err := conn.OpenConn()
 	if err != nil {
@@ -49,6 +57,10 @@ func TestDeleteOneQr(t *testing.T) {
 	if err != nil {
 		t.Error(conn, err)
 	}
+
+	conn.SetCharset("utf8")
+	conn.SetCollation("utf8_general_ci")
+	conn.MakeDBI
 
 	db, err := conn.OpenConn()
 	if err != nil {
@@ -74,6 +86,10 @@ func TestUpdateOneQr(t *testing.T) {
 	if err != nil {
 		t.Error(conn, err)
 	}
+
+	conn.SetCharset("utf8")
+	conn.SetCollation("utf8_general_ci")
+	conn.MakeDBI
 
 	db, err := conn.OpenConn()
 	if err != nil {

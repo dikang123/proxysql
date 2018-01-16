@@ -87,6 +87,14 @@ const (
 	LIMIT %d 
 	OFFSET %d`
 
+	/*find last insert rule_id*/
+	StmtFindLastRuleId = `
+	SELECT 
+		max(rule_id)
+	FROM mysql_query_rules
+	WHERE 
+		username = %q`
+
 	/*update a query rules.*/
 	StmtUpdateOneQr = `
 	UPDATE 
@@ -397,6 +405,14 @@ func (qr *QueryRules) AddOneQr(db *sql.DB) error {
 	_, err := db.Exec(Query)
 	if err != nil {
 		return errors.Trace(err) //add user failed
+	}
+
+	Query = fmt.Sprintf(StmtFindLastRuleId, qr.Username)
+	rows := db.QueryRow(Query)
+
+	err = rows.Scan(&qr.Rule_id)
+	if err != nil {
+		return errors.Trace(err)
 	}
 
 	LoadQueryRulesToRuntime(db)

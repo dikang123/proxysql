@@ -10,6 +10,10 @@ func TestFindAllServers(t *testing.T) {
 		t.Error(conn, err)
 	}
 
+	conn.SetCharset("utf8")
+	conn.SetCollation("utf8_general_ci")
+	conn.MakeDBI
+
 	db, err := conn.OpenConn()
 	if err != nil {
 		t.Error(db, err)
@@ -27,6 +31,10 @@ func TestAddOneServer(t *testing.T) {
 	if err != nil {
 		t.Error(conn, err)
 	}
+
+	conn.SetCharset("utf8")
+	conn.SetCollation("utf8_general_ci")
+	conn.MakeDBI
 
 	db, err := conn.OpenConn()
 	if err != nil {
@@ -48,6 +56,10 @@ func TestDeleteOneServer(t *testing.T) {
 		t.Error(conn, err)
 	}
 
+	conn.SetCharset("utf8")
+	conn.SetCollation("utf8_general_ci")
+	conn.MakeDBI
+
 	db, err := conn.OpenConn()
 	if err != nil {
 		t.Error(db, err)
@@ -67,6 +79,10 @@ func TestUpdateOneServer(t *testing.T) {
 	if err != nil {
 		t.Error(conn, err)
 	}
+
+	conn.SetCharset("utf8")
+	conn.SetCollation("utf8_general_ci")
+	conn.MakeDBI
 
 	db, err := conn.OpenConn()
 	if err != nil {

@@ -5,7 +5,7 @@ import (
 )
 
 func TestGetConfigs(t *testing.T) {
-	conn, err := NewConn("172.18.10.111", 13306, "admin", "admin")
+	conn, err := NewConn("172.18.10.136", 13306, "admin", "admin")
 	if err != nil {
 		t.Error(conn, err)
 	}
@@ -24,10 +24,15 @@ func TestGetConfigs(t *testing.T) {
 		t.Error(allusers, err)
 	}
 
+	err = conn.CloseConn(db)
+	if err != nil {
+		t.Error(err)
+	}
+
 }
 
 func TestUpdateOneConfigs(t *testing.T) {
-	conn, err := NewConn("172.18.10.111", 13306, "admin", "admin")
+	conn, err := NewConn("172.18.10.136", 13306, "admin", "admin")
 	if err != nil {
 		t.Error(conn, err)
 	}
@@ -42,6 +47,11 @@ func TestUpdateOneConfigs(t *testing.T) {
 	}
 
 	err = UpdateOneConfig(db, "mysql-max_connections", "99999")
+	if err != nil {
+		t.Error(err)
+	}
+
+	err = conn.CloseConn(db)
 	if err != nil {
 		t.Error(err)
 	}

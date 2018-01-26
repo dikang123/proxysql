@@ -5,7 +5,7 @@ import (
 )
 
 func TestFindAllServers(t *testing.T) {
-	conn, err := NewConn("172.18.10.111", 13306, "admin", "admin")
+	conn, err := NewConn("172.18.10.136", 13306, "admin", "admin")
 	if err != nil {
 		t.Error(conn, err)
 	}
@@ -24,10 +24,15 @@ func TestFindAllServers(t *testing.T) {
 		t.Error(allservers, err)
 	}
 
+	err = conn.CloseConn(db)
+	if err != nil {
+		t.Error(err)
+	}
+
 }
 
 func TestAddOneServer(t *testing.T) {
-	conn, err := NewConn("172.18.10.111", 13306, "admin", "admin")
+	conn, err := NewConn("172.18.10.136", 13306, "admin", "admin")
 	if err != nil {
 		t.Error(conn, err)
 	}
@@ -48,10 +53,15 @@ func TestAddOneServer(t *testing.T) {
 		t.Error(err)
 	}
 
+	err = conn.CloseConn(db)
+	if err != nil {
+		t.Error(err)
+	}
+
 }
 
 func TestUpdateOneServer(t *testing.T) {
-	conn, err := NewConn("172.18.10.111", 13306, "admin", "admin")
+	conn, err := NewConn("172.18.10.136", 13306, "admin", "admin")
 	if err != nil {
 		t.Error(conn, err)
 	}
@@ -75,10 +85,15 @@ func TestUpdateOneServer(t *testing.T) {
 		t.Error(err)
 	}
 
+	err = conn.CloseConn(db)
+	if err != nil {
+		t.Error(err)
+	}
+
 }
 
 func TestDeleteOneServer(t *testing.T) {
-	conn, err := NewConn("172.18.10.111", 13306, "admin", "admin")
+	conn, err := NewConn("172.18.10.136", 13306, "admin", "admin")
 	if err != nil {
 		t.Error(conn, err)
 	}
@@ -95,6 +110,11 @@ func TestDeleteOneServer(t *testing.T) {
 	newsrv, err := NewServer(1, "192.168.100.111", 6032)
 
 	err = newsrv.DeleteOneServers(db)
+	if err != nil {
+		t.Error(err)
+	}
+
+	err = conn.CloseConn(db)
 	if err != nil {
 		t.Error(err)
 	}

@@ -22,6 +22,7 @@ type (
 		Charset   string
 		Collation string
 		DBI       string
+		db        *sql.DB
 	}
 )
 
@@ -64,4 +65,13 @@ func (ps *Conn) OpenConn() (*sql.DB, error) {
 		return nil, errors.Trace(err)
 	}
 	return db, nil
+}
+
+// close connection.
+func (ps *Conn) CloseConn(db *sql.DB) error {
+	err := db.Close()
+	if err != nil {
+		return err
+	}
+	return nil
 }

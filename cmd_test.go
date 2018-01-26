@@ -3,7 +3,7 @@ package proxysql
 import "testing"
 
 func TestLoadQueryRulesToRuntime(t *testing.T) {
-	conn, err := NewConn("172.18.10.111", 13306, "admin", "admin")
+	conn, err := NewConn("172.18.10.136", 13306, "admin", "admin")
 	if err != nil {
 		t.Error(conn, err)
 	}
@@ -24,7 +24,7 @@ func TestLoadQueryRulesToRuntime(t *testing.T) {
 }
 
 func TestSaveQueryRulesToDisk(t *testing.T) {
-	conn, err := NewConn("172.18.10.111", 13306, "admin", "admin")
+	conn, err := NewConn("172.18.10.136", 13306, "admin", "admin")
 	if err != nil {
 		t.Error(conn, err)
 	}
@@ -45,7 +45,7 @@ func TestSaveQueryRulesToDisk(t *testing.T) {
 }
 
 func TestLoadUserToRuntime(t *testing.T) {
-	conn, err := NewConn("172.18.10.111", 13306, "admin", "admin")
+	conn, err := NewConn("172.18.10.136", 13306, "admin", "admin")
 	if err != nil {
 		t.Error(conn, err)
 	}
@@ -66,7 +66,7 @@ func TestLoadUserToRuntime(t *testing.T) {
 }
 
 func TestSaveUserToDisk(t *testing.T) {
-	conn, err := NewConn("172.18.10.111", 13306, "admin", "admin")
+	conn, err := NewConn("172.18.10.136", 13306, "admin", "admin")
 	if err != nil {
 		t.Error(conn, err)
 	}
@@ -87,7 +87,7 @@ func TestSaveUserToDisk(t *testing.T) {
 }
 
 func TestLoadServerToRunTime(t *testing.T) {
-	conn, err := NewConn("172.18.10.111", 13306, "admin", "admin")
+	conn, err := NewConn("172.18.10.136", 13306, "admin", "admin")
 	if err != nil {
 		t.Error(conn, err)
 	}
@@ -108,7 +108,7 @@ func TestLoadServerToRunTime(t *testing.T) {
 }
 
 func TestSaveServerToDisk(t *testing.T) {
-	conn, err := NewConn("172.18.10.111", 13306, "admin", "admin")
+	conn, err := NewConn("172.18.10.136", 13306, "admin", "admin")
 	if err != nil {
 		t.Error(conn, err)
 	}
@@ -129,7 +129,7 @@ func TestSaveServerToDisk(t *testing.T) {
 }
 
 func TestLoadSchedulerToRuntime(t *testing.T) {
-	conn, err := NewConn("172.18.10.111", 13306, "admin", "admin")
+	conn, err := NewConn("172.18.10.136", 13306, "admin", "admin")
 	if err != nil {
 		t.Error(conn, err)
 	}
@@ -150,7 +150,7 @@ func TestLoadSchedulerToRuntime(t *testing.T) {
 }
 
 func TestSaveSchedulerToDisk(t *testing.T) {
-	conn, err := NewConn("172.18.10.111", 13306, "admin", "admin")
+	conn, err := NewConn("172.18.10.136", 13306, "admin", "admin")
 	if err != nil {
 		t.Error(conn, err)
 	}
@@ -171,7 +171,7 @@ func TestSaveSchedulerToDisk(t *testing.T) {
 }
 
 func TestLoadMySQLVariablesToRunTime(t *testing.T) {
-	conn, err := NewConn("172.18.10.111", 13306, "admin", "admin")
+	conn, err := NewConn("172.18.10.136", 13306, "admin", "admin")
 	if err != nil {
 		t.Error(conn, err)
 	}
@@ -192,7 +192,7 @@ func TestLoadMySQLVariablesToRunTime(t *testing.T) {
 }
 
 func TestSaveMySQLVariablesToDisk(t *testing.T) {
-	conn, err := NewConn("172.18.10.111", 13306, "admin", "admin")
+	conn, err := NewConn("172.18.10.136", 13306, "admin", "admin")
 	if err != nil {
 		t.Error(conn, err)
 	}
@@ -213,7 +213,7 @@ func TestSaveMySQLVariablesToDisk(t *testing.T) {
 }
 
 func TestLoadAdminVariablesToRuntime(t *testing.T) {
-	conn, err := NewConn("172.18.10.111", 13306, "admin", "admin")
+	conn, err := NewConn("172.18.10.136", 13306, "admin", "admin")
 	if err != nil {
 		t.Error(conn, err)
 	}
@@ -234,7 +234,7 @@ func TestLoadAdminVariablesToRuntime(t *testing.T) {
 }
 
 func TestSaveAdminVariablesToDisk(t *testing.T) {
-	conn, err := NewConn("172.18.10.111", 13306, "admin", "admin")
+	conn, err := NewConn("172.18.10.136", 13306, "admin", "admin")
 	if err != nil {
 		t.Error(conn, err)
 	}

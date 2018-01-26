@@ -5,7 +5,7 @@ import (
 )
 
 func TestFindAllSchedulers(t *testing.T) {
-	conn, err := NewConn("172.18.10.111", 13306, "admin", "admin")
+	conn, err := NewConn("172.18.10.136", 13306, "admin", "admin")
 	if err != nil {
 		t.Error(conn, err)
 	}
@@ -23,11 +23,15 @@ func TestFindAllSchedulers(t *testing.T) {
 	if err != nil {
 		t.Error(allservers, err)
 	}
+	err = conn.CloseConn(db)
+	if err != nil {
+		t.Error(err)
+	}
 
 }
 
 func TestAddOneSchedulers(t *testing.T) {
-	conn, err := NewConn("172.18.10.111", 13306, "admin", "admin")
+	conn, err := NewConn("172.18.10.136", 13306, "admin", "admin")
 	if err != nil {
 		t.Error(conn, err)
 	}
@@ -60,6 +64,11 @@ func TestAddOneSchedulers(t *testing.T) {
 	}
 
 	err = sched.DeleteOneScheduler(db)
+	if err != nil {
+		t.Error(err)
+	}
+
+	err = conn.CloseConn(db)
 	if err != nil {
 		t.Error(err)
 	}

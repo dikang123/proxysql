@@ -5,7 +5,7 @@ import (
 )
 
 func TestFindAllUsers(t *testing.T) {
-	conn, err := NewConn("172.18.10.111", 13306, "admin", "admin")
+	conn, err := NewConn("172.18.10.136", 13306, "admin", "admin")
 	if err != nil {
 		t.Error(conn, err)
 	}
@@ -24,10 +24,15 @@ func TestFindAllUsers(t *testing.T) {
 		t.Error(allusers, err)
 	}
 
+	err = conn.CloseConn(db)
+	if err != nil {
+		t.Error(err)
+	}
+
 }
 
 func TestAddOneUser(t *testing.T) {
-	conn, err := NewConn("172.18.10.111", 13306, "admin", "admin")
+	conn, err := NewConn("172.18.10.136", 13306, "admin", "admin")
 	if err != nil {
 		t.Error(conn, err)
 	}
@@ -52,10 +57,15 @@ func TestAddOneUser(t *testing.T) {
 		t.Error(err)
 	}
 
+	err = conn.CloseConn(db)
+	if err != nil {
+		t.Error(err)
+	}
+
 }
 
 func TestUpdateOneUser(t *testing.T) {
-	conn, err := NewConn("172.18.10.111", 13306, "admin", "admin")
+	conn, err := NewConn("172.18.10.136", 13306, "admin", "admin")
 	if err != nil {
 		t.Error(conn, err)
 	}
@@ -81,10 +91,15 @@ func TestUpdateOneUser(t *testing.T) {
 		t.Error(err)
 	}
 
+	err = conn.CloseConn(db)
+	if err != nil {
+		t.Error(err)
+	}
+
 }
 
 func TestDeleteOneUser(t *testing.T) {
-	conn, err := NewConn("172.18.10.111", 13306, "admin", "admin")
+	conn, err := NewConn("172.18.10.136", 13306, "admin", "admin")
 	if err != nil {
 		t.Error(conn, err)
 	}
@@ -104,6 +119,11 @@ func TestDeleteOneUser(t *testing.T) {
 	}
 
 	err = newuser.DeleteOneUser(db)
+	if err != nil {
+		t.Error(err)
+	}
+
+	err = conn.CloseConn(db)
 	if err != nil {
 		t.Error(err)
 	}

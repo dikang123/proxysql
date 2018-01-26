@@ -22,7 +22,7 @@ type (
 		Charset   string
 		Collation string
 		DBI       string
-		db        *sql.DB
+		Retry     uint64
 	}
 )
 
@@ -36,16 +36,24 @@ func NewConn(addr string, port uint64, user string, password string) (*Conn, err
 	ps.Database = "stats"
 	ps.Charset = "utf8"
 	ps.Collation = "utf8_general_ci"
+	ps.Retry = 3
 
 	return ps, nil
 }
 
+// set character set .such as : utf8
 func (ps *Conn) SetCharset(charset string) {
 	ps.Charset = charset
 }
 
+// set collation.such as : utf8_general_ci
 func (ps *Conn) SetCollation(collation string) {
 	ps.Collation = collation
+}
+
+// set retrys.
+func (ps *Conn) SetRetry(retry uint64) {
+	ps.Retry = retry
 }
 
 func (ps *Conn) MakeDBI() {
@@ -58,12 +66,12 @@ func (ps *Conn) OpenConn() (*sql.DB, error) {
 	if err != nil {
 		return nil, errors.Trace(err)
 	}
-	//defer db.Close()
-
 	err = db.Ping()
 	if err != nil {
 		return nil, errors.Trace(err)
 	}
+	//defer db.Close()
+
 	return db, nil
 }
 

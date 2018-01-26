@@ -49,7 +49,7 @@ func (ps *Conn) SetCollation(collation string) {
 }
 
 func (ps *Conn) MakeDBI() {
-	ps.DBI = fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=%s?collation=%s", ps.User, ps.Password, ps.Addr, ps.Port, ps.Database, ps.Charset, ps.Collation)
+	ps.DBI = fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=%s&collation=%s", ps.User, ps.Password, ps.Addr, ps.Port, ps.Database, ps.Charset, ps.Collation)
 }
 
 func (ps *Conn) OpenConn() (*sql.DB, error) {

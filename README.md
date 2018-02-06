@@ -51,6 +51,15 @@ list all mysql_users .
 		t.Error(allusers, err)
 	}
 
+### 5. Test
+-----
+
+You can execute 'go test' command to test this project.
+
+if proxysql is listening 172.18.10.136:13306, execute follow command:
+
+	# go test --args -addr 172.18.10.136 -port 13306 -user admin -pass admin
+
 
 ### Donate
 

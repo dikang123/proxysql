@@ -1,11 +1,14 @@
 package proxysql
 
 import (
+	"flag"
 	"testing"
 )
 
 func TestFindAllServers(t *testing.T) {
-	conn, err := NewConn("172.18.10.136", 13306, "admin", "admin")
+
+	flag.Parse()
+	conn, err := NewConn(*proxysql_addr, *proxysql_port, *proxysql_user, *proxysql_pass)
 	if err != nil {
 		t.Error(conn, err)
 	}
@@ -32,7 +35,9 @@ func TestFindAllServers(t *testing.T) {
 }
 
 func TestAddOneServer(t *testing.T) {
-	conn, err := NewConn("172.18.10.136", 13306, "admin", "admin")
+
+	flag.Parse()
+	conn, err := NewConn(*proxysql_addr, *proxysql_port, *proxysql_user, *proxysql_pass)
 	if err != nil {
 		t.Error(conn, err)
 	}
@@ -61,7 +66,9 @@ func TestAddOneServer(t *testing.T) {
 }
 
 func TestUpdateOneServer(t *testing.T) {
-	conn, err := NewConn("172.18.10.136", 13306, "admin", "admin")
+
+	flag.Parse()
+	conn, err := NewConn(*proxysql_addr, *proxysql_port, *proxysql_user, *proxysql_pass)
 	if err != nil {
 		t.Error(conn, err)
 	}
@@ -93,7 +100,9 @@ func TestUpdateOneServer(t *testing.T) {
 }
 
 func TestDeleteOneServer(t *testing.T) {
-	conn, err := NewConn("172.18.10.136", 13306, "admin", "admin")
+
+	flag.Parse()
+	conn, err := NewConn(*proxysql_addr, *proxysql_port, *proxysql_user, *proxysql_pass)
 	if err != nil {
 		t.Error(conn, err)
 	}

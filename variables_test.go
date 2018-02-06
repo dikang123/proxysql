@@ -1,11 +1,14 @@
 package proxysql
 
 import (
+	"flag"
 	"testing"
 )
 
 func TestGetConfigs(t *testing.T) {
-	conn, err := NewConn("172.18.10.136", 13306, "admin", "admin")
+
+	flag.Parse()
+	conn, err := NewConn(*proxysql_addr, *proxysql_port, *proxysql_user, *proxysql_pass)
 	if err != nil {
 		t.Error(conn, err)
 	}
@@ -32,7 +35,9 @@ func TestGetConfigs(t *testing.T) {
 }
 
 func TestUpdateOneConfigs(t *testing.T) {
-	conn, err := NewConn("172.18.10.136", 13306, "admin", "admin")
+
+	flag.Parse()
+	conn, err := NewConn(*proxysql_addr, *proxysql_port, *proxysql_user, *proxysql_pass)
 	if err != nil {
 		t.Error(conn, err)
 	}

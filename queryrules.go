@@ -44,8 +44,8 @@ const (
 	StmtAddOneQr = `
 	INSERT 
 	INTO 
-		mysql_query_rules(username) 
-	VALUES(%q)`
+		mysql_query_rules(rule_id,username) 
+	VALUES(%d,%q)`
 
 	/*delete a query rules*/
 	StmtDeleteOneQr = `
@@ -400,7 +400,7 @@ func (qr *QueryRules) SetQrLog(log uint64) {
 // add a new query rules.
 func (qr *QueryRules) AddOneQr(db *sql.DB) error {
 
-	Query := fmt.Sprintf(StmtAddOneQr, qr.Username)
+	Query := fmt.Sprintf(StmtAddOneQr, qr.Rule_id, qr.Username)
 
 	_, err := db.Exec(Query)
 	if err != nil {

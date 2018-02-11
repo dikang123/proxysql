@@ -40,3 +40,37 @@ go test -v --args -addr 172.18.10.136 -port 13306 -user admin -pass admin -test.
 go test -v --args -addr 172.18.10.136 -port 13306 -user admin -pass admin -test.run TestDeleteOneServer
 
 #Queryrules
+go test -v --args -addr 172.18.10.136 -port 13306 -user admin -pass admin -test.run TestFindAllQr
+go test -v --args -addr 172.18.10.136 -port 13306 -user admin -pass admin -test.run TestAddOneQr
+go test -v --args -addr 172.18.10.136 -port 13306 -user admin -pass admin -test.run TestUpdateOneQr
+go test -v --args -addr 172.18.10.136 -port 13306 -user admin -pass admin -test.run TestUpdateOneQrActive
+go test -v --args -addr 172.18.10.136 -port 13306 -user admin -pass admin -test.run TestUpdateOneQrDisactive
+go test -v --args -addr 172.18.10.136 -port 13306 -user admin -pass admin -test.run TestUpdateOneQrApply
+go test -v --args -addr 172.18.10.136 -port 13306 -user admin -pass admin -test.run TestUpdateOneQrNotapply
+go test -v --args -addr 172.18.10.136 -port 13306 -user admin -pass admin -test.run TestUpdateOneQrSchemaname
+go test -v --args -addr 172.18.10.136 -port 13306 -user admin -pass admin -test.run TestUpdateOneQrFlagIN
+go test -v --args -addr 172.18.10.136 -port 13306 -user admin -pass admin -test.run TestUpdateOneQrClientAddr
+go test -v --args -addr 172.18.10.136 -port 13306 -user admin -pass admin -test.run TestUpdateOneQrProxyAddr
+go test -v --args -addr 172.18.10.136 -port 13306 -user admin -pass admin -test.run TestUpdateOneQrProxyPort
+go test -v --args -addr 172.18.10.136 -port 13306 -user admin -pass admin -test.run TestUpdateOneQrDigest
+go test -v --args -addr 172.18.10.136 -port 13306 -user admin -pass admin -test.run TestUpdateOneQrMatchDigest
+go test -v --args -addr 172.18.10.136 -port 13306 -user admin -pass admin -test.run TestUpdateOneQrMatchPattern
+go test -v --args -addr 172.18.10.136 -port 13306 -user admin -pass admin -test.run TestUpdateOneQrNegateMatchPatternEnable
+go test -v --args -addr 172.18.10.136 -port 13306 -user admin -pass admin -test.run TestUpdateOneQrNegateMatchPatternDisable
+go test -v --args -addr 172.18.10.136 -port 13306 -user admin -pass admin -test.run TestUpdateOneQrFlagOut
+go test -v --args -addr 172.18.10.136 -port 13306 -user admin -pass admin -test.run TestUpdateOneQrReplacePattern
+go test -v --args -addr 172.18.10.136 -port 13306 -user admin -pass admin -test.run TestUpdateOneQrDestHostgroup
+go test -v --args -addr 172.18.10.136 -port 13306 -user admin -pass admin -test.run TestUpdateOneQrCacheTTL
+go test -v --args -addr 172.18.10.136 -port 13306 -user admin -pass admin -test.run TestUpdateOneQrReconnectEnable
+go test -v --args -addr 172.18.10.136 -port 13306 -user admin -pass admin -test.run TestUpdateOneQrReconnectDisable
+go test -v --args -addr 172.18.10.136 -port 13306 -user admin -pass admin -test.run TestUpdateOneQrTimeOut
+go test -v --args -addr 172.18.10.136 -port 13306 -user admin -pass admin -test.run TestUpdateOneQrRetries
+go test -v --args -addr 172.18.10.136 -port 13306 -user admin -pass admin -test.run TestUpdateOneQrDelay
+go test -v --args -addr 172.18.10.136 -port 13306 -user admin -pass admin -test.run TestUpdateOneQrMirrorFlagOut
+go test -v --args -addr 172.18.10.136 -port 13306 -user admin -pass admin -test.run TestUpdateOneQrMirrorHostgroup
+go test -v --args -addr 172.18.10.136 -port 13306 -user admin -pass admin -test.run TestUpdateOneQrErrorMsg
+go test -v --args -addr 172.18.10.136 -port 13306 -user admin -pass admin -test.run TestUpdateOneQrLogEnable
+go test -v --args -addr 172.18.10.136 -port 13306 -user admin -pass admin -test.run TestUpdateOneQrLogDisable
+go test -v --args -addr 172.18.10.136 -port 13306 -user admin -pass admin -test.run TestDeleteOneQr
+
+#RHG

@@ -73,4 +73,15 @@ go test -v --args -addr 172.18.10.136 -port 13306 -user admin -pass admin -test.
 go test -v --args -addr 172.18.10.136 -port 13306 -user admin -pass admin -test.run TestUpdateOneQrLogDisable
 go test -v --args -addr 172.18.10.136 -port 13306 -user admin -pass admin -test.run TestDeleteOneQr
 
-#RHG
+#scheduler
+go test -v --args -addr 172.18.10.136 -port 13306 -user admin -pass admin -test.run TestFindAllSchedulers
+go test -v --args -addr 172.18.10.136 -port 13306 -user admin -pass admin -test.run TestAddOneSchedulers
+go test -v --args -addr 172.18.10.136 -port 13306 -user admin -pass admin -test.run TestUpdateOneSchedulersActiveEnable
+go test -v --args -addr 172.18.10.136 -port 13306 -user admin -pass admin -test.run TestUpdateOneSchedulersActiveDisable
+go test -v --args -addr 172.18.10.136 -port 13306 -user admin -pass admin -test.run TestUpdateOneSchedulersIntervalMs
+go test -v --args -addr 172.18.10.136 -port 13306 -user admin -pass admin -test.run TestUpdateOneSchedulersArg1
+go test -v --args -addr 172.18.10.136 -port 13306 -user admin -pass admin -test.run TestUpdateOneSchedulersArg2
+go test -v --args -addr 172.18.10.136 -port 13306 -user admin -pass admin -test.run TestUpdateOneSchedulersArg3
+go test -v --args -addr 172.18.10.136 -port 13306 -user admin -pass admin -test.run TestUpdateOneSchedulersArg4
+go test -v --args -addr 172.18.10.136 -port 13306 -user admin -pass admin -test.run TestUpdateOneSchedulersArg5
+go test -v --args -addr 172.18.10.136 -port 13306 -user admin -pass admin -test.run TestDeleteOneSchedulers

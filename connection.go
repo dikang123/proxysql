@@ -4,6 +4,7 @@ package proxysql
 
 import (
 	"database/sql"
+	"flag"
 	"fmt"
 
 	_ "github.com/go-sql-driver/mysql"
@@ -25,6 +26,11 @@ type (
 		Retry     uint64
 	}
 )
+
+var proxysql_addr = flag.String("addr", "127.0.0.1", "proxysql listen address.default 127.0.0.1")
+var proxysql_port = flag.Uint64("port", 6032, "proxysql listen port,default 6032")
+var proxysql_user = flag.String("user", "admin", "proxysql administrator name.default admin")
+var proxysql_pass = flag.String("pass", "admin", "proxysql administrator password.default admin")
 
 func NewConn(addr string, port uint64, user string, password string) (*Conn, error) {
 

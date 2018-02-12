@@ -50,48 +50,13 @@ func TestAddOneQr(t *testing.T) {
 		t.Error(db, err)
 	}
 
-	newqr, err := NewQr("dev", 0)
+	newqr, err := NewQr("dev", "0")
 	if err != nil {
 		t.Error(err)
 	}
+	newqr.SetQrRuleid(1)
 
 	err = newqr.AddOneQr(db)
-	if err != nil {
-		t.Error(err)
-	}
-
-	err = conn.CloseConn(db)
-	if err != nil {
-		t.Error(err)
-	}
-}
-
-func TestUpdateOneQr(t *testing.T) {
-
-	flag.Parse()
-	conn, err := NewConn(*proxysql_addr, *proxysql_port, *proxysql_user, *proxysql_pass)
-	if err != nil {
-		t.Error(conn, err)
-	}
-
-	conn.SetCharset("utf8")
-	conn.SetCollation("utf8_general_ci")
-	conn.MakeDBI()
-
-	db, err := conn.OpenConn()
-	if err != nil {
-		t.Error(db, err)
-	}
-
-	newqr, err := NewQr("dev", 0)
-	if err != nil {
-		t.Error(err)
-	}
-
-	newqr.SetQrActive(1)
-	newqr.SetQrMatchDigest("^SELECT")
-
-	err = newqr.UpdateOneQrInfo(db)
 	if err != nil {
 		t.Error(err)
 	}
@@ -119,11 +84,11 @@ func TestUpdateOneQrActive(t *testing.T) {
 		t.Error(db, err)
 	}
 
-	newqr, err := NewQr("dev", 0)
+	newqr, err := NewQr("dev", "0")
 	if err != nil {
 		t.Error(err)
 	}
-
+	newqr.SetQrRuleid(1)
 	newqr.SetQrActive(1)
 
 	err = newqr.UpdateOneQrInfo(db)
@@ -153,11 +118,11 @@ func TestUpdateOneQrDisactive(t *testing.T) {
 		t.Error(db, err)
 	}
 
-	newqr, err := NewQr("dev", 0)
+	newqr, err := NewQr("dev", "0")
 	if err != nil {
 		t.Error(err)
 	}
-
+	newqr.SetQrRuleid(1)
 	newqr.SetQrActive(0)
 
 	err = newqr.UpdateOneQrInfo(db)
@@ -187,11 +152,11 @@ func TestUpdateOneQrApply(t *testing.T) {
 		t.Error(db, err)
 	}
 
-	newqr, err := NewQr("dev", 0)
+	newqr, err := NewQr("dev", "0")
 	if err != nil {
 		t.Error(err)
 	}
-
+	newqr.SetQrRuleid(1)
 	newqr.SetQrApply(1)
 
 	err = newqr.UpdateOneQrInfo(db)
@@ -221,11 +186,11 @@ func TestUpdateOneQrNotapply(t *testing.T) {
 		t.Error(db, err)
 	}
 
-	newqr, err := NewQr("dev", 0)
+	newqr, err := NewQr("dev", "0")
 	if err != nil {
 		t.Error(err)
 	}
-
+	newqr.SetQrRuleid(1)
 	newqr.SetQrApply(0)
 
 	err = newqr.UpdateOneQrInfo(db)
@@ -255,11 +220,11 @@ func TestUpdateOneQrSchemaname(t *testing.T) {
 		t.Error(db, err)
 	}
 
-	newqr, err := NewQr("dev", 0)
+	newqr, err := NewQr("dev", "0")
 	if err != nil {
 		t.Error(err)
 	}
-
+	newqr.SetQrRuleid(1)
 	newqr.SetQrSchemaname("devschema")
 
 	err = newqr.UpdateOneQrInfo(db)
@@ -289,11 +254,11 @@ func TestUpdateOneQrFlagIN(t *testing.T) {
 		t.Error(db, err)
 	}
 
-	newqr, err := NewQr("dev", 0)
+	newqr, err := NewQr("dev", "0")
 	if err != nil {
 		t.Error(err)
 	}
-
+	newqr.SetQrRuleid(1)
 	newqr.SetQrFlagIN(1)
 
 	err = newqr.UpdateOneQrInfo(db)
@@ -323,11 +288,11 @@ func TestUpdateOneQrClientAddr(t *testing.T) {
 		t.Error(db, err)
 	}
 
-	newqr, err := NewQr("dev", 0)
+	newqr, err := NewQr("dev", "0")
 	if err != nil {
 		t.Error(err)
 	}
-
+	newqr.SetQrRuleid(1)
 	newqr.SetQrClientAddr("192.168.200.101")
 
 	err = newqr.UpdateOneQrInfo(db)
@@ -357,11 +322,11 @@ func TestUpdateOneQrProxyAddr(t *testing.T) {
 		t.Error(db, err)
 	}
 
-	newqr, err := NewQr("dev", 0)
+	newqr, err := NewQr("dev", "0")
 	if err != nil {
 		t.Error(err)
 	}
-
+	newqr.SetQrRuleid(1)
 	newqr.SetQrProxyAddr("192.168.200.1")
 
 	err = newqr.UpdateOneQrInfo(db)
@@ -391,12 +356,12 @@ func TestUpdateOneQrProxyPort(t *testing.T) {
 		t.Error(db, err)
 	}
 
-	newqr, err := NewQr("dev", 0)
+	newqr, err := NewQr("dev", "0")
 	if err != nil {
 		t.Error(err)
 	}
-
-	newqr.SetProxyPort(9999)
+	newqr.SetQrRuleid(1)
+	newqr.SetProxyPort("9999")
 
 	err = newqr.UpdateOneQrInfo(db)
 	if err != nil {
@@ -425,12 +390,12 @@ func TestUpdateOneQrDigest(t *testing.T) {
 		t.Error(db, err)
 	}
 
-	newqr, err := NewQr("dev", 0)
+	newqr, err := NewQr("dev", "0")
 	if err != nil {
 		t.Error(err)
 	}
-
-	newqr.SetQrDigest("^SELECT")
+	newqr.SetQrRuleid(1)
+	newqr.SetQrDigest("0x0D34125A1267E1FE")
 
 	err = newqr.UpdateOneQrInfo(db)
 	if err != nil {
@@ -459,11 +424,11 @@ func TestUpdateOneQrMatchDigest(t *testing.T) {
 		t.Error(db, err)
 	}
 
-	newqr, err := NewQr("dev", 0)
+	newqr, err := NewQr("dev", "0")
 	if err != nil {
 		t.Error(err)
 	}
-
+	newqr.SetQrRuleid(1)
 	newqr.SetQrMatchDigest("^SELECT")
 
 	err = newqr.UpdateOneQrInfo(db)
@@ -493,11 +458,11 @@ func TestUpdateOneQrMatchPattern(t *testing.T) {
 		t.Error(db, err)
 	}
 
-	newqr, err := NewQr("dev", 0)
+	newqr, err := NewQr("dev", "0")
 	if err != nil {
 		t.Error(err)
 	}
-
+	newqr.SetQrRuleid(1)
 	newqr.SetQrMatchPattern("^UPDATE")
 
 	err = newqr.UpdateOneQrInfo(db)
@@ -527,11 +492,11 @@ func TestUpdateOneQrNegateMatchPatternEnable(t *testing.T) {
 		t.Error(db, err)
 	}
 
-	newqr, err := NewQr("dev", 0)
+	newqr, err := NewQr("dev", "0")
 	if err != nil {
 		t.Error(err)
 	}
-
+	newqr.SetQrRuleid(1)
 	newqr.SetQrNegateMatchPattern(1)
 
 	err = newqr.UpdateOneQrInfo(db)
@@ -562,11 +527,11 @@ func TestUpdateOneQrNegateMatchPatternDisable(t *testing.T) {
 		t.Error(db, err)
 	}
 
-	newqr, err := NewQr("dev", 0)
+	newqr, err := NewQr("dev", "0")
 	if err != nil {
 		t.Error(err)
 	}
-
+	newqr.SetQrRuleid(1)
 	newqr.SetQrNegateMatchPattern(0)
 
 	err = newqr.UpdateOneQrInfo(db)
@@ -596,12 +561,12 @@ func TestUpdateOneQrFlagOut(t *testing.T) {
 		t.Error(db, err)
 	}
 
-	newqr, err := NewQr("dev", 0)
+	newqr, err := NewQr("dev", "0")
 	if err != nil {
 		t.Error(err)
 	}
-
-	newqr.SetQrFlagOut(2)
+	newqr.SetQrRuleid(1)
+	newqr.SetQrFlagOut("2")
 
 	err = newqr.UpdateOneQrInfo(db)
 	if err != nil {
@@ -630,11 +595,11 @@ func TestUpdateOneQrReplacePattern(t *testing.T) {
 		t.Error(db, err)
 	}
 
-	newqr, err := NewQr("dev", 0)
+	newqr, err := NewQr("dev", "0")
 	if err != nil {
 		t.Error(err)
 	}
-
+	newqr.SetQrRuleid(1)
 	newqr.SetQrReplacePattern("^UPDATE3")
 
 	err = newqr.UpdateOneQrInfo(db)
@@ -664,12 +629,12 @@ func TestUpdateOneQrDestHostgroup(t *testing.T) {
 		t.Error(db, err)
 	}
 
-	newqr, err := NewQr("dev", 0)
+	newqr, err := NewQr("dev", "0")
 	if err != nil {
 		t.Error(err)
 	}
-
-	newqr.SetQrDestHostGroup(100)
+	newqr.SetQrRuleid(1)
+	newqr.SetQrDestHostGroup("100")
 
 	err = newqr.UpdateOneQrInfo(db)
 	if err != nil {
@@ -698,12 +663,12 @@ func TestUpdateOneQrCacheTTL(t *testing.T) {
 		t.Error(db, err)
 	}
 
-	newqr, err := NewQr("dev", 0)
+	newqr, err := NewQr("dev", "0")
 	if err != nil {
 		t.Error(err)
 	}
-
-	newqr.SetQrCacheTTL(5000)
+	newqr.SetQrRuleid(1)
+	newqr.SetQrCacheTTL("5000")
 
 	err = newqr.UpdateOneQrInfo(db)
 	if err != nil {
@@ -732,12 +697,12 @@ func TestUpdateOneQrReconnectEnable(t *testing.T) {
 		t.Error(db, err)
 	}
 
-	newqr, err := NewQr("dev", 0)
+	newqr, err := NewQr("dev", "0")
 	if err != nil {
 		t.Error(err)
 	}
-
-	newqr.SetQrReconnect(1)
+	newqr.SetQrRuleid(1)
+	newqr.SetQrReconnect("1")
 
 	err = newqr.UpdateOneQrInfo(db)
 	if err != nil {
@@ -766,12 +731,12 @@ func TestUpdateOneQrReconnectDisable(t *testing.T) {
 		t.Error(db, err)
 	}
 
-	newqr, err := NewQr("dev", 0)
+	newqr, err := NewQr("dev", "0")
 	if err != nil {
 		t.Error(err)
 	}
-
-	newqr.SetQrReconnect(0)
+	newqr.SetQrRuleid(1)
+	newqr.SetQrReconnect("0")
 
 	err = newqr.UpdateOneQrInfo(db)
 	if err != nil {
@@ -800,12 +765,12 @@ func TestUpdateOneQrTimeOut(t *testing.T) {
 		t.Error(db, err)
 	}
 
-	newqr, err := NewQr("dev", 0)
+	newqr, err := NewQr("dev", "0")
 	if err != nil {
 		t.Error(err)
 	}
-
-	newqr.SetQrTimeOut(600)
+	newqr.SetQrRuleid(1)
+	newqr.SetQrTimeOut("600")
 
 	err = newqr.UpdateOneQrInfo(db)
 	if err != nil {
@@ -834,12 +799,12 @@ func TestUpdateOneQrRetries(t *testing.T) {
 		t.Error(db, err)
 	}
 
-	newqr, err := NewQr("dev", 0)
+	newqr, err := NewQr("dev", "0")
 	if err != nil {
 		t.Error(err)
 	}
-
-	newqr.SetQrRetries(3)
+	newqr.SetQrRuleid(1)
+	newqr.SetQrRetries("3")
 
 	err = newqr.UpdateOneQrInfo(db)
 	if err != nil {
@@ -868,12 +833,12 @@ func TestUpdateOneQrDelay(t *testing.T) {
 		t.Error(db, err)
 	}
 
-	newqr, err := NewQr("dev", 0)
+	newqr, err := NewQr("dev", "0")
 	if err != nil {
 		t.Error(err)
 	}
-
-	newqr.SetQrDelay(10)
+	newqr.SetQrRuleid(1)
+	newqr.SetQrDelay("10")
 
 	err = newqr.UpdateOneQrInfo(db)
 	if err != nil {
@@ -902,12 +867,12 @@ func TestUpdateOneQrMirrorFlagOut(t *testing.T) {
 		t.Error(db, err)
 	}
 
-	newqr, err := NewQr("dev", 0)
+	newqr, err := NewQr("dev", "0")
 	if err != nil {
 		t.Error(err)
 	}
-
-	newqr.SetQrMirrorFlagOUT(1)
+	newqr.SetQrRuleid(1)
+	newqr.SetQrMirrorFlagOUT("1")
 
 	err = newqr.UpdateOneQrInfo(db)
 	if err != nil {
@@ -936,12 +901,12 @@ func TestUpdateOneQrMirrorHostgroup(t *testing.T) {
 		t.Error(db, err)
 	}
 
-	newqr, err := NewQr("dev", 0)
+	newqr, err := NewQr("dev", "0")
 	if err != nil {
 		t.Error(err)
 	}
-
-	newqr.SetQrMirrorHostgroup(100)
+	newqr.SetQrRuleid(1)
+	newqr.SetQrMirrorHostgroup("100")
 
 	err = newqr.UpdateOneQrInfo(db)
 	if err != nil {
@@ -970,11 +935,11 @@ func TestUpdateOneQrErrorMsg(t *testing.T) {
 		t.Error(db, err)
 	}
 
-	newqr, err := NewQr("dev", 0)
+	newqr, err := NewQr("dev", "0")
 	if err != nil {
 		t.Error(err)
 	}
-
+	newqr.SetQrRuleid(1)
 	newqr.SetQrErrorMsg("fuck errors.")
 
 	err = newqr.UpdateOneQrInfo(db)
@@ -1004,12 +969,12 @@ func TestUpdateOneQrLogEnable(t *testing.T) {
 		t.Error(db, err)
 	}
 
-	newqr, err := NewQr("dev", 0)
+	newqr, err := NewQr("dev", "0")
 	if err != nil {
 		t.Error(err)
 	}
-
-	newqr.SetQrLog(1)
+	newqr.SetQrRuleid(1)
+	newqr.SetQrLog("1")
 
 	err = newqr.UpdateOneQrInfo(db)
 	if err != nil {
@@ -1038,12 +1003,12 @@ func TestUpdateOneQrLogDisable(t *testing.T) {
 		t.Error(db, err)
 	}
 
-	newqr, err := NewQr("dev", 0)
+	newqr, err := NewQr("dev", "0")
 	if err != nil {
 		t.Error(err)
 	}
-
-	newqr.SetQrLog(0)
+	newqr.SetQrRuleid(1)
+	newqr.SetQrLog("0")
 
 	err = newqr.UpdateOneQrInfo(db)
 	if err != nil {
@@ -1073,11 +1038,12 @@ func TestDeleteOneQr(t *testing.T) {
 		t.Error(db, err)
 	}
 
-	newqr, err := NewQr("dev", 0)
+	newqr, err := NewQr("dev", "0")
 	if err != nil {
 		t.Error(err)
 	}
 
+	newqr.SetQrRuleid(1)
 	err = newqr.DeleteOneQr(db)
 	if err != nil {
 		t.Error(err)

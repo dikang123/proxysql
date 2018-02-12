@@ -17,23 +17,23 @@ type (
 		FlagIN                uint64 `db:"flagIN" json:"flagIN"`
 		Client_addr           string `db:"client_addr" json:"client_addr"`
 		Proxy_addr            string `db:"proxy_addr" json:"proxy_addr"`
-		Proxy_port            uint64 `db:"proxy_port" json:"proxy_port"`
+		Proxy_port            string `db:"proxy_port" json:"proxy_port"`
 		Digest                string `db:"digest" json:"digest"`
 		Match_digest          string `db:"match_digest" json:"match_digest"`
 		Match_pattern         string `db:"match_pattern" json:"match_pattern"`
 		Negate_match_pattern  uint64 `db:"negate_match_pattern" json:"negate_match_pattern"`
-		FlagOUT               uint64 `db:"flagOUT" json:"flagOUT"`
+		FlagOUT               string `db:"flagOUT" json:"flagOUT"`
 		Replace_pattern       string `db:"replace_pattern" json:"replace_pattern"`
-		Destination_hostgroup uint64 `db:"destination_hostgroup" json:"destination_hostgroup"`
-		Cache_ttl             uint64 `db:"cache_ttl" json:"cache_ttl"`
-		Reconnect             uint64 `db:"reconnect" json:"reconnect"`
-		Timeout               uint64 `db:"timeout" json:"timeout"`
-		Retries               uint64 `db:"retries" json:"retries"`
-		Delay                 uint64 `db:"delay" json:"delay"`
-		Mirror_flagOUT        uint64 `db:"mirror_flagOUT" json:"mirror_flagOUT"`
-		Mirror_hostgroup      uint64 `db:"mirror_hostgroup" json:"mirror_hostgroup"`
+		Destination_hostgroup string `db:"destination_hostgroup" json:"destination_hostgroup"`
+		Cache_ttl             string `db:"cache_ttl" json:"cache_ttl"`
+		Reconnect             string `db:"reconnect" json:"reconnect"`
+		Timeout               string `db:"timeout" json:"timeout"`
+		Retries               string `db:"retries" json:"retries"`
+		Delay                 string `db:"delay" json:"delay"`
+		Mirror_flagOUT        string `db:"mirror_flagOUT" json:"mirror_flagOUT"`
+		Mirror_hostgroup      string `db:"mirror_hostgroup" json:"mirror_hostgroup"`
 		Error_msg             string `db:"error_msg" json:"error_msg"`
-		Log                   uint64 `db:"log" json:"log"`
+		Log                   string `db:"log" json:"log"`
 		Apply                 uint64 `db:"apply" json:"apply"`
 		Comment               string `db:"comment" json:"comment"`
 	}
@@ -45,7 +45,7 @@ const (
 	INSERT 
 	INTO 
 		mysql_query_rules(rule_id,username) 
-	VALUES(%d,%q)`
+	VALUES(%d,%s)`
 
 	/*delete a query rules*/
 	StmtDeleteOneQr = `
@@ -93,7 +93,7 @@ const (
 		max(rule_id)
 	FROM mysql_query_rules
 	WHERE 
-		username = %q`
+		username = %s`
 
 	/*update a query rules.*/
 	StmtUpdateOneQr = `
@@ -103,33 +103,28 @@ const (
 		active=%d,
 		username=%s,
 		schemaname=%s,
+		flagIN=%d,
 		client_addr=%s,
+		proxy_addr=%s,
+		proxy_port=%s,
 		digest=%s,
 		match_digest=%s,
 		match_pattern=%s,
+		negate_match_pattern=%d,
+		flagOUT=%s,
 		replace_pattern=%s,
-		destination_hostgroup=%d,
-		cache_ttl=%d,
+		destination_hostgroup=%s,
+		cache_ttl=%s,
+		reconnect=%s,
+		timeout=%s,
+		retries=%s,
+		delay=%s,
+		mirror_flagOUT=%s,
+		mirror_hostgroup=%s,
 		error_msg=%s,
-		apply=%d 
-	WHERE 
-		rule_id=%d`
-
-	StmtUpdateOneQrNoCache = `
-	UPDATE 
-		mysql_query_rules 
-	SET 
-		active=%d,
-		username=%s,
-		schemaname=%s,
-		client_addr=%s,
-		digest=%s,
-		match_digest=%s,
-		match_pattern=%s,
-		replace_pattern=%s,
-		destination_hostgroup=%d,
-		error_msg=%s,
-		apply=%d 
+		log=%s,
+		apply=%d,
+		comment=%s
 	WHERE 
 		rule_id=%d`
 )
@@ -191,32 +186,38 @@ func FindAllQr(db *sql.DB, limit uint64, skip uint64) ([]QueryRules, error) {
 }
 
 // new mysql query rules
-func NewQr(username string, destination_hostgroup uint64) (*QueryRules, error) {
+func NewQr(username string, destination_hostgroup string) (*QueryRules, error) {
 	newqr := new(QueryRules)
 
-	newqr.Username = username
-	newqr.Destination_hostgroup = destination_hostgroup
+	if username == "" {
+		return nil, errors.BadRequestf(username)
+	}
+	if destination_hostgroup == "" {
+		return nil, errors.BadRequestf(destination_hostgroup)
+	}
+	newqr.Username = fmt.Sprintf("\"%s\"", username)
+	newqr.Destination_hostgroup = fmt.Sprintf("\"%s\"", destination_hostgroup)
 
 	newqr.Schemaname = "NULL"
 	newqr.FlagIN = 0
 	newqr.Client_addr = "NULL"
 	newqr.Proxy_addr = "NULL"
-	newqr.Proxy_port = 0
+	newqr.Proxy_port = "NULL"
 	newqr.Digest = "NULL"
 	newqr.Match_digest = "NULL"
 	newqr.Match_pattern = "NULL"
 	newqr.Negate_match_pattern = 0
-	newqr.FlagOUT = 0
+	newqr.FlagOUT = "NULL"
 	newqr.Replace_pattern = "NULL"
-	newqr.Cache_ttl = 0
-	newqr.Reconnect = 0
-	newqr.Timeout = 0
-	newqr.Retries = 0
-	newqr.Delay = 0
-	newqr.Mirror_flagOUT = 0
-	newqr.Mirror_hostgroup = 0
+	newqr.Cache_ttl = "NULL"
+	newqr.Reconnect = "NULL"
+	newqr.Timeout = "NULL"
+	newqr.Retries = "NULL"
+	newqr.Delay = "NULL"
+	newqr.Mirror_flagOUT = "NULL"
+	newqr.Mirror_hostgroup = "NULL"
 	newqr.Error_msg = "NULL"
-	newqr.Log = 0
+	newqr.Log = "NULL"
 	newqr.Apply = 0
 	newqr.Active = 0
 	newqr.Comment = "NULL"
@@ -258,7 +259,7 @@ func (qr *QueryRules) SetQrSchemaname(schema_name string) {
 	if schema_name == "" || len(schema_name) == 0 {
 		qr.Schemaname = "NULL"
 	} else {
-		qr.Schemaname = schema_name
+		qr.Schemaname = fmt.Sprintf("\"%s\"", schema_name)
 	}
 }
 
@@ -272,7 +273,7 @@ func (qr *QueryRules) SetQrClientAddr(client_addr string) {
 	if client_addr == "" || len(client_addr) == 0 {
 		qr.Client_addr = "NULL"
 	} else {
-		qr.Client_addr = client_addr
+		qr.Client_addr = fmt.Sprintf("\"%s\"", client_addr)
 	}
 }
 
@@ -281,13 +282,17 @@ func (qr *QueryRules) SetQrProxyAddr(proxy_addr string) {
 	if proxy_addr == "" || len(proxy_addr) == 0 {
 		qr.Proxy_addr = "NULL"
 	} else {
-		qr.Proxy_addr = proxy_addr
+		qr.Proxy_addr = fmt.Sprintf("\"%s\"", proxy_addr)
 	}
 }
 
 // set qr proxy_port
-func (qr *QueryRules) SetProxyPort(proxy_port uint64) {
-	qr.Proxy_port = proxy_port
+func (qr *QueryRules) SetProxyPort(proxy_port string) {
+	if proxy_port == "" || len(proxy_port) == 0 {
+		qr.Proxy_port = "NULL"
+	} else {
+		qr.Proxy_port = fmt.Sprintf("\"%s\"", proxy_port)
+	}
 }
 
 // set qr digest
@@ -295,7 +300,7 @@ func (qr *QueryRules) SetQrDigest(digest string) {
 	if digest == "" || len(digest) == 0 {
 		qr.Digest = "NULL"
 	} else {
-		qr.Digest = digest
+		qr.Digest = fmt.Sprintf("\"%s\"", digest)
 	}
 }
 
@@ -304,7 +309,7 @@ func (qr *QueryRules) SetQrMatchDigest(match_digest string) {
 	if match_digest == "" || len(match_digest) == 0 {
 		qr.Match_digest = "NULL"
 	} else {
-		qr.Match_digest = match_digest
+		qr.Match_digest = fmt.Sprintf("\"%s\"", match_digest)
 	}
 }
 
@@ -313,7 +318,7 @@ func (qr *QueryRules) SetQrMatchPattern(match_pattern string) {
 	if match_pattern == "" || len(match_pattern) == 0 {
 		qr.Match_pattern = "NULL"
 	} else {
-		qr.Match_pattern = match_pattern
+		qr.Match_pattern = fmt.Sprintf("\"%s\"", match_pattern)
 	}
 }
 
@@ -330,8 +335,12 @@ func (qr *QueryRules) SetQrNegateMatchPattern(negate_match_pattern uint64) {
 }
 
 // set qr flagout
-func (qr *QueryRules) SetQrFlagOut(flag_out uint64) {
-	qr.FlagOUT = flag_out
+func (qr *QueryRules) SetQrFlagOut(flag_out string) {
+	if flag_out == "" || len(flag_out) == 0 {
+		qr.FlagOUT = "NULL"
+	} else {
+		qr.FlagOUT = fmt.Sprintf("\"%s\"", flag_out)
+	}
 }
 
 // set qr replace_pattern
@@ -339,48 +348,80 @@ func (qr *QueryRules) SetQrReplacePattern(replace_pattern string) {
 	if replace_pattern == "" || len(replace_pattern) == 0 {
 		qr.Replace_pattern = "NULL"
 	} else {
-		qr.Replace_pattern = replace_pattern
+		qr.Replace_pattern = fmt.Sprintf("\"%s\"", replace_pattern)
 	}
 }
 
 // set qr destination_hostgroup
-func (qr *QueryRules) SetQrDestHostGroup(destination_hostgroup uint64) {
-	qr.Destination_hostgroup = destination_hostgroup
+func (qr *QueryRules) SetQrDestHostGroup(destination_hostgroup string) {
+	if destination_hostgroup == "" || len(destination_hostgroup) == 0 {
+		qr.Destination_hostgroup = "NULL"
+	} else {
+		qr.Destination_hostgroup = fmt.Sprintf("\"%s\"", destination_hostgroup)
+	}
 }
 
 // set qr cache_ttl
-func (qr *QueryRules) SetQrCacheTTL(cache_ttl uint64) {
-	qr.Cache_ttl = cache_ttl
+func (qr *QueryRules) SetQrCacheTTL(cache_ttl string) {
+	if cache_ttl == "" || len(cache_ttl) == 0 {
+		qr.Cache_ttl = "NULL"
+	} else {
+		qr.Cache_ttl = fmt.Sprintf("\"%s\"", cache_ttl)
+	}
 }
 
 // set qr reconnect
-func (qr *QueryRules) SetQrReconnect(reconnect uint64) {
-	qr.Reconnect = reconnect
+func (qr *QueryRules) SetQrReconnect(reconnect string) {
+	if reconnect == "" || len(reconnect) == 0 {
+		qr.Reconnect = "NULL"
+	} else {
+		qr.Reconnect = fmt.Sprintf("\"%s\"", reconnect)
+	}
 }
 
 // set qr timeout
-func (qr *QueryRules) SetQrTimeOut(timeout uint64) {
-	qr.Timeout = timeout
+func (qr *QueryRules) SetQrTimeOut(timeout string) {
+	if timeout == "" || len(timeout) == 0 {
+		qr.Timeout = "NULL"
+	} else {
+		qr.Timeout = fmt.Sprintf("\"%s\"", timeout)
+	}
 }
 
 // set qr retries
-func (qr *QueryRules) SetQrRetries(retries uint64) {
-	qr.Retries = retries
+func (qr *QueryRules) SetQrRetries(retries string) {
+	if retries == "" || len(retries) == 0 {
+		qr.Retries = "NULL"
+	} else {
+		qr.Retries = fmt.Sprintf("\"%s\"", retries)
+	}
 }
 
 // set qr delay
-func (qr *QueryRules) SetQrDelay(delay uint64) {
-	qr.Delay = delay
+func (qr *QueryRules) SetQrDelay(delay string) {
+	if delay == "" || len(delay) == 0 {
+		qr.Delay = "NULL"
+	} else {
+		qr.Delay = fmt.Sprintf("\"%s\"", delay)
+	}
 }
 
 // set qr mirror_flagout
-func (qr *QueryRules) SetQrMirrorFlagOUT(mirror_flagout uint64) {
-	qr.Mirror_flagOUT = mirror_flagout
+func (qr *QueryRules) SetQrMirrorFlagOUT(mirror_flagout string) {
+	if mirror_flagout == "" || len(mirror_flagout) == 0 {
+		qr.Mirror_flagOUT = "NULL"
+	} else {
+		qr.Mirror_flagOUT = fmt.Sprintf("\"%s\"", mirror_flagout)
+	}
 }
 
 // set qr mirror_hostgroup
-func (qr *QueryRules) SetQrMirrorHostgroup(mirror_hostgroup uint64) {
-	qr.Mirror_hostgroup = mirror_hostgroup
+func (qr *QueryRules) SetQrMirrorHostgroup(mirror_hostgroup string) {
+	if mirror_hostgroup == "" || len(mirror_hostgroup) == 0 {
+		qr.Mirror_hostgroup = "NULL"
+	} else {
+		qr.Mirror_hostgroup = fmt.Sprintf("\"%s\"", mirror_hostgroup)
+	}
 }
 
 // set qr error_msg
@@ -388,13 +429,17 @@ func (qr *QueryRules) SetQrErrorMsg(error_msg string) {
 	if error_msg == "" || len(error_msg) == 0 {
 		qr.Error_msg = "NULL"
 	} else {
-		qr.Error_msg = error_msg
+		qr.Error_msg = fmt.Sprintf("\"%s\"", error_msg)
 	}
 }
 
 // set qr log
-func (qr *QueryRules) SetQrLog(log uint64) {
-	qr.Log = log
+func (qr *QueryRules) SetQrLog(log string) {
+	if log == "" || len(log) == 0 {
+		qr.Log = "NULL"
+	} else {
+		qr.Log = fmt.Sprintf("\"%s\"", log)
+	}
 }
 
 // add a new query rules.
@@ -413,7 +458,7 @@ func (qr *QueryRules) AddOneQr(db *sql.DB) error {
 	/*
 		FIX:
 		It will always return 0 when you use sql.Result.LastInsertId() function to get last inserted row id.
-		And go-sql-driver/mysql not support transaction.
+		the proxysql not support transaction.
 		So,I Query a max(id) after insert a row.
 	*/
 	err = rows.Scan(&qr.Rule_id)
@@ -448,60 +493,38 @@ func (qr *QueryRules) DeleteOneQr(db *sql.DB) error {
 	return nil
 }
 
-func convertString(cs string) string {
-	var cstmp string
-	if cs == "" {
-		cstmp = "NULL"
-	} else {
-		cstmp = fmt.Sprintf("'%s'", cs)
-	}
-	return cstmp
-}
-
 //update a query rules.
 func (qr *QueryRules) UpdateOneQrInfo(db *sql.DB) error {
 
 	var Query string
-	qr.Username = convertString(qr.Username)
-	qr.Schemaname = convertString(qr.Schemaname)
-	qr.Client_addr = convertString(qr.Client_addr)
-	qr.Digest = convertString(qr.Digest)
-	qr.Match_digest = convertString(qr.Match_digest)
-	qr.Match_pattern = convertString(qr.Match_pattern)
-	qr.Replace_pattern = convertString(qr.Replace_pattern)
-	qr.Error_msg = convertString(qr.Error_msg)
 
-	if qr.Cache_ttl == 0 {
-		Query = fmt.Sprintf(StmtUpdateOneQrNoCache,
-			qr.Active,
-			qr.Username,
-			qr.Schemaname,
-			qr.Client_addr,
-			qr.Digest,
-			qr.Match_digest,
-			qr.Match_pattern,
-			qr.Replace_pattern,
-			qr.Destination_hostgroup,
-			qr.Error_msg,
-			qr.Active,
-			qr.Rule_id)
-	} else {
-		Query = fmt.Sprintf(StmtUpdateOneQr,
-			qr.Active,
-			qr.Username,
-			qr.Schemaname,
-			qr.Client_addr,
-			qr.Digest,
-			qr.Match_digest,
-			qr.Match_pattern,
-			qr.Replace_pattern,
-			qr.Destination_hostgroup,
-			qr.Cache_ttl,
-			qr.Error_msg,
-			qr.Active,
-			qr.Rule_id)
-
-	}
+	Query = fmt.Sprintf(StmtUpdateOneQr,
+		qr.Active,
+		qr.Username,
+		qr.Schemaname,
+		qr.FlagIN,
+		qr.Client_addr,
+		qr.Proxy_addr,
+		qr.Proxy_port,
+		qr.Digest,
+		qr.Match_digest,
+		qr.Match_pattern,
+		qr.Negate_match_pattern,
+		qr.FlagOUT,
+		qr.Replace_pattern,
+		qr.Destination_hostgroup,
+		qr.Cache_ttl,
+		qr.Reconnect,
+		qr.Timeout,
+		qr.Retries,
+		qr.Delay,
+		qr.Mirror_flagOUT,
+		qr.Mirror_hostgroup,
+		qr.Error_msg,
+		qr.Log,
+		qr.Apply,
+		qr.Comment,
+		qr.Rule_id)
 
 	result, err := db.Exec(Query)
 	if err != nil {

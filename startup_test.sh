@@ -42,7 +42,6 @@ go test -v --args -addr 172.18.10.136 -port 13306 -user admin -pass admin -test.
 #Queryrules
 go test -v --args -addr 172.18.10.136 -port 13306 -user admin -pass admin -test.run TestFindAllQr
 go test -v --args -addr 172.18.10.136 -port 13306 -user admin -pass admin -test.run TestAddOneQr
-go test -v --args -addr 172.18.10.136 -port 13306 -user admin -pass admin -test.run TestUpdateOneQr
 go test -v --args -addr 172.18.10.136 -port 13306 -user admin -pass admin -test.run TestUpdateOneQrActive
 go test -v --args -addr 172.18.10.136 -port 13306 -user admin -pass admin -test.run TestUpdateOneQrDisactive
 go test -v --args -addr 172.18.10.136 -port 13306 -user admin -pass admin -test.run TestUpdateOneQrApply

@@ -195,7 +195,7 @@ func TestUpdateOneUserActive(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	newuser.SetUserActive(0)
+	newuser.SetUserActive(1)
 
 	err = newuser.UpdateOneUserInfo(db)
 	if err != nil {
@@ -230,7 +230,7 @@ func TestUpdateOneUserDisactive(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	newuser.SetUserActive(1)
+	newuser.SetUserActive(0)
 
 	err = newuser.UpdateOneUserInfo(db)
 	if err != nil {

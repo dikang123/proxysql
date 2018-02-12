@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"strconv"
+	"strings"
 
 	"github.com/juju/errors"
 )
@@ -186,18 +187,19 @@ func FindAllQr(db *sql.DB, limit uint64, skip uint64) ([]QueryRules, error) {
 }
 
 // new mysql query rules
-func NewQr(username string, destination_hostgroup string) (*QueryRules, error) {
+func NewQr(username string) (*QueryRules, error) {
 	newqr := new(QueryRules)
 
 	if username == "" {
 		return nil, errors.BadRequestf(username)
 	}
-	if destination_hostgroup == "" {
-		return nil, errors.BadRequestf(destination_hostgroup)
+	if strings.Index(username, "\"") == -1 {
+		newqr.Username = fmt.Sprintf("\"%s\"", username)
+	} else {
+		newqr.Username = username
 	}
-	newqr.Username = fmt.Sprintf("\"%s\"", username)
-	newqr.Destination_hostgroup = fmt.Sprintf("\"%s\"", destination_hostgroup)
 
+	newqr.Destination_hostgroup = "NULL"
 	newqr.Schemaname = "NULL"
 	newqr.FlagIN = 0
 	newqr.Client_addr = "NULL"
@@ -259,7 +261,11 @@ func (qr *QueryRules) SetQrSchemaname(schema_name string) {
 	if schema_name == "" || len(schema_name) == 0 {
 		qr.Schemaname = "NULL"
 	} else {
-		qr.Schemaname = fmt.Sprintf("\"%s\"", schema_name)
+		if strings.Index(schema_name, "\"") == -1 {
+			qr.Schemaname = fmt.Sprintf("\"%s\"", schema_name)
+		} else {
+			qr.Schemaname = schema_name
+		}
 	}
 }
 
@@ -273,7 +279,11 @@ func (qr *QueryRules) SetQrClientAddr(client_addr string) {
 	if client_addr == "" || len(client_addr) == 0 {
 		qr.Client_addr = "NULL"
 	} else {
-		qr.Client_addr = fmt.Sprintf("\"%s\"", client_addr)
+		if strings.Index(client_addr, "\"") == -1 {
+			qr.Client_addr = fmt.Sprintf("\"%s\"", client_addr)
+		} else {
+			qr.Client_addr = client_addr
+		}
 	}
 }
 
@@ -282,7 +292,11 @@ func (qr *QueryRules) SetQrProxyAddr(proxy_addr string) {
 	if proxy_addr == "" || len(proxy_addr) == 0 {
 		qr.Proxy_addr = "NULL"
 	} else {
-		qr.Proxy_addr = fmt.Sprintf("\"%s\"", proxy_addr)
+		if strings.Index(proxy_addr, "\"") == -1 {
+			qr.Proxy_addr = fmt.Sprintf("\"%s\"", proxy_addr)
+		} else {
+			qr.Proxy_addr = proxy_addr
+		}
 	}
 }
 
@@ -291,7 +305,11 @@ func (qr *QueryRules) SetProxyPort(proxy_port string) {
 	if proxy_port == "" || len(proxy_port) == 0 {
 		qr.Proxy_port = "NULL"
 	} else {
-		qr.Proxy_port = fmt.Sprintf("\"%s\"", proxy_port)
+		if strings.Index(proxy_port, "\"") == -1 {
+			qr.Proxy_port = fmt.Sprintf("\"%s\"", proxy_port)
+		} else {
+			qr.Proxy_port = proxy_port
+		}
 	}
 }
 
@@ -300,7 +318,11 @@ func (qr *QueryRules) SetQrDigest(digest string) {
 	if digest == "" || len(digest) == 0 {
 		qr.Digest = "NULL"
 	} else {
-		qr.Digest = fmt.Sprintf("\"%s\"", digest)
+		if strings.Index(digest, "\"") == -1 {
+			qr.Digest = fmt.Sprintf("\"%s\"", digest)
+		} else {
+			qr.Digest = digest
+		}
 	}
 }
 
@@ -309,7 +331,11 @@ func (qr *QueryRules) SetQrMatchDigest(match_digest string) {
 	if match_digest == "" || len(match_digest) == 0 {
 		qr.Match_digest = "NULL"
 	} else {
-		qr.Match_digest = fmt.Sprintf("\"%s\"", match_digest)
+		if strings.Index(match_digest, "\"") == -1 {
+			qr.Match_digest = fmt.Sprintf("\"%s\"", match_digest)
+		} else {
+			qr.Match_digest = match_digest
+		}
 	}
 }
 
@@ -318,7 +344,11 @@ func (qr *QueryRules) SetQrMatchPattern(match_pattern string) {
 	if match_pattern == "" || len(match_pattern) == 0 {
 		qr.Match_pattern = "NULL"
 	} else {
-		qr.Match_pattern = fmt.Sprintf("\"%s\"", match_pattern)
+		if strings.Index(match_pattern, "\"") == -1 {
+			qr.Match_pattern = fmt.Sprintf("\"%s\"", match_pattern)
+		} else {
+			qr.Match_pattern = match_pattern
+		}
 	}
 }
 
@@ -339,7 +369,11 @@ func (qr *QueryRules) SetQrFlagOut(flag_out string) {
 	if flag_out == "" || len(flag_out) == 0 {
 		qr.FlagOUT = "NULL"
 	} else {
-		qr.FlagOUT = fmt.Sprintf("\"%s\"", flag_out)
+		if strings.Index(flag_out, "\"") == -1 {
+			qr.FlagOUT = fmt.Sprintf("\"%s\"", flag_out)
+		} else {
+			qr.FlagOUT = flag_out
+		}
 	}
 }
 
@@ -348,7 +382,11 @@ func (qr *QueryRules) SetQrReplacePattern(replace_pattern string) {
 	if replace_pattern == "" || len(replace_pattern) == 0 {
 		qr.Replace_pattern = "NULL"
 	} else {
-		qr.Replace_pattern = fmt.Sprintf("\"%s\"", replace_pattern)
+		if strings.Index(replace_pattern, "\"") == -1 {
+			qr.Replace_pattern = fmt.Sprintf("\"%s\"", replace_pattern)
+		} else {
+			qr.Replace_pattern = replace_pattern
+		}
 	}
 }
 
@@ -357,7 +395,11 @@ func (qr *QueryRules) SetQrDestHostGroup(destination_hostgroup string) {
 	if destination_hostgroup == "" || len(destination_hostgroup) == 0 {
 		qr.Destination_hostgroup = "NULL"
 	} else {
-		qr.Destination_hostgroup = fmt.Sprintf("\"%s\"", destination_hostgroup)
+		if strings.Index(destination_hostgroup, "\"") == -1 {
+			qr.Destination_hostgroup = fmt.Sprintf("\"%s\"", destination_hostgroup)
+		} else {
+			qr.Destination_hostgroup = destination_hostgroup
+		}
 	}
 }
 
@@ -366,7 +408,11 @@ func (qr *QueryRules) SetQrCacheTTL(cache_ttl string) {
 	if cache_ttl == "" || len(cache_ttl) == 0 {
 		qr.Cache_ttl = "NULL"
 	} else {
-		qr.Cache_ttl = fmt.Sprintf("\"%s\"", cache_ttl)
+		if strings.Index(cache_ttl, "\"") == -1 {
+			qr.Cache_ttl = fmt.Sprintf("\"%s\"", cache_ttl)
+		} else {
+			qr.Cache_ttl = cache_ttl
+		}
 	}
 }
 
@@ -375,7 +421,11 @@ func (qr *QueryRules) SetQrReconnect(reconnect string) {
 	if reconnect == "" || len(reconnect) == 0 {
 		qr.Reconnect = "NULL"
 	} else {
-		qr.Reconnect = fmt.Sprintf("\"%s\"", reconnect)
+		if strings.Index(reconnect, "\"") == -1 {
+			qr.Reconnect = fmt.Sprintf("\"%s\"", reconnect)
+		} else {
+			qr.Reconnect = reconnect
+		}
 	}
 }
 
@@ -384,7 +434,11 @@ func (qr *QueryRules) SetQrTimeOut(timeout string) {
 	if timeout == "" || len(timeout) == 0 {
 		qr.Timeout = "NULL"
 	} else {
-		qr.Timeout = fmt.Sprintf("\"%s\"", timeout)
+		if strings.Index(timeout, "\"") == -1 {
+			qr.Timeout = fmt.Sprintf("\"%s\"", timeout)
+		} else {
+			qr.Timeout = timeout
+		}
 	}
 }
 
@@ -393,7 +447,11 @@ func (qr *QueryRules) SetQrRetries(retries string) {
 	if retries == "" || len(retries) == 0 {
 		qr.Retries = "NULL"
 	} else {
-		qr.Retries = fmt.Sprintf("\"%s\"", retries)
+		if strings.Index(retries, "\"") == -1 {
+			qr.Retries = fmt.Sprintf("\"%s\"", retries)
+		} else {
+			qr.Retries = retries
+		}
 	}
 }
 
@@ -402,7 +460,11 @@ func (qr *QueryRules) SetQrDelay(delay string) {
 	if delay == "" || len(delay) == 0 {
 		qr.Delay = "NULL"
 	} else {
-		qr.Delay = fmt.Sprintf("\"%s\"", delay)
+		if strings.Index(delay, "\"") == -1 {
+			qr.Delay = fmt.Sprintf("\"%s\"", delay)
+		} else {
+			qr.Delay = delay
+		}
 	}
 }
 
@@ -411,7 +473,11 @@ func (qr *QueryRules) SetQrMirrorFlagOUT(mirror_flagout string) {
 	if mirror_flagout == "" || len(mirror_flagout) == 0 {
 		qr.Mirror_flagOUT = "NULL"
 	} else {
-		qr.Mirror_flagOUT = fmt.Sprintf("\"%s\"", mirror_flagout)
+		if strings.Index(mirror_flagout, "\"") == -1 {
+			qr.Mirror_flagOUT = fmt.Sprintf("\"%s\"", mirror_flagout)
+		} else {
+			qr.Mirror_flagOUT = mirror_flagout
+		}
 	}
 }
 
@@ -420,7 +486,11 @@ func (qr *QueryRules) SetQrMirrorHostgroup(mirror_hostgroup string) {
 	if mirror_hostgroup == "" || len(mirror_hostgroup) == 0 {
 		qr.Mirror_hostgroup = "NULL"
 	} else {
-		qr.Mirror_hostgroup = fmt.Sprintf("\"%s\"", mirror_hostgroup)
+		if strings.Index(mirror_hostgroup, "\"") == -1 {
+			qr.Mirror_hostgroup = fmt.Sprintf("\"%s\"", mirror_hostgroup)
+		} else {
+			qr.Mirror_hostgroup = mirror_hostgroup
+		}
 	}
 }
 
@@ -429,7 +499,11 @@ func (qr *QueryRules) SetQrErrorMsg(error_msg string) {
 	if error_msg == "" || len(error_msg) == 0 {
 		qr.Error_msg = "NULL"
 	} else {
-		qr.Error_msg = fmt.Sprintf("\"%s\"", error_msg)
+		if strings.Index(error_msg, "\"") == -1 {
+			qr.Error_msg = fmt.Sprintf("\"%s\"", error_msg)
+		} else {
+			qr.Error_msg = error_msg
+		}
 	}
 }
 
@@ -438,7 +512,11 @@ func (qr *QueryRules) SetQrLog(log string) {
 	if log == "" || len(log) == 0 {
 		qr.Log = "NULL"
 	} else {
-		qr.Log = fmt.Sprintf("\"%s\"", log)
+		if strings.Index(log, "\"") == -1 {
+			qr.Log = fmt.Sprintf("\"%s\"", log)
+		} else {
+			qr.Log = log
+		}
 	}
 }
 

@@ -57,6 +57,11 @@ func (ps *Conn) SetCollation(collation string) {
 	ps.Collation = collation
 }
 
+// set default schema,default is stats
+func (ps *Conn) SetDefaultSchema(schema string) {
+	ps.Database = schema
+}
+
 // set retrys.
 func (ps *Conn) SetRetry(retry uint64) {
 	ps.Retry = retry
